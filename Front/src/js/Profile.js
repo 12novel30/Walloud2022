@@ -1,35 +1,37 @@
 import axios from "axios";
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 const Profile = () => {
-  const { user, travel, travelName, username } = useParams();
+  const { user, travel, travelName } = useParams();
   const personid = useLocation().state.personid;
-  
+
   const [profile, setProfile] = useState({});
   const [person_in_List, seteventList] = useState([]);
 
   useEffect(() => {
     getProfile();
-  },[]);
+  }, []);
 
-  const getProfile = async() => {
-    await axios.get(`/api/${user}/${travel}/${personid}/personDetail`
-    ).then((res) => {
-      console.log(res.data);
-      setProfile(res.data);
-      console.log(res.data.eventList);
-      // setList(res.data.eventList);
-      seteventList(res.data.eventList);
-      console.log(person_in_List)
-    }).catch((error) => {
-      console.log(error);
-    })
-  }
+  const getProfile = async () => {
+    await axios
+      .get(`/api/${user}/${travel}/${personid}/personDetail`)
+      .then((res) => {
+        console.log(res.data);
+        setProfile(res.data);
+        console.log(res.data.eventList);
+        // setList(res.data.eventList);
+        seteventList(res.data.eventList);
+        console.log(person_in_List);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const displayEvents = () => {
     const events = profile.eventList;
-    console.log("eventList : ",events);
+    console.log("eventList : ", events);
 
     return (
       <div style={{ display: "flex" }}>
@@ -51,9 +53,7 @@ const Profile = () => {
 
   return (
     <div>
-      <Link
-        to={`/${user}/${travel}/${travelName}`}
-      >
+      <Link to={`/${user}/${travel}/${travelName}`}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2>{profile.userName}</h2>

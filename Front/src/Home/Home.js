@@ -16,7 +16,13 @@ const Home = () => {
   const [period, setPeriod] = useState("");
   const navigate = useNavigate();
   //받아오는 거를 eventList에서 eventlist로 수정
-
+  var userPersonId;
+  for (var i = 0; i < userList.length; i++) {
+    if (userList[i].userId === parseInt(user)) {
+      userPersonId = userList[i].id;
+      break;
+    }
+  }
   ////////////////////////////////////
 
   useEffect(() => {
@@ -27,10 +33,10 @@ const Home = () => {
   const getEventandUser = async () => {
     await axios
       .get(`/api/${user}/${travel}`)
-      .then((response) => {   
-        console.log(response.data)
-        if ( response.data.personCount === 1 ) {
-            navigate(`/${user}/${travel}/${travelName}/createUser`);
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.personCount === 1) {
+          navigate(`/${user}/${travel}/${travelName}/createUser`);
         }
         seteventList(response.data.eventList);
         setuserList(response.data.personList);
@@ -39,6 +45,7 @@ const Home = () => {
       .catch((error) => {
         console.log(error);
       });
+    console.log(userList);
   };
 
   /////////////////////////////////
@@ -59,7 +66,10 @@ const Home = () => {
         to={`/${user}/${travel}/${travelName}`}
         state={{ user: user, travel: travel, travelName: travelName }}
       >
-        <h1>{travelName}{" "+period}</h1>
+        <h1>
+          {travelName}
+          {" " + period}
+        </h1>
       </Link>
       <div className="big-box">
         <h2 className="home-h2">Events</h2>
@@ -83,7 +93,10 @@ const Home = () => {
             <Events event={event} key={event.id}></Events>
           ))}
         </div>
-        <Link to="createEvent" state={{ userList: userList }}>
+        <Link
+          to="createEvent"
+          state={{ userList: userList, userPersonId: userPersonId }}
+        >
           <button className="home-button">Add Event</button>
         </Link>
       </div>

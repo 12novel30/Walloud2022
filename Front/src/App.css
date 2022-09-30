@@ -364,6 +364,6 @@ select {
 
 ::-webkit-scrollbar-thumb {
   /* background-color: var(--ultimate-gray); */
-  background-color: #0f4c81;
+  background-color: #0f4c81b2;
   /* border-radius: 1rem; */
 }

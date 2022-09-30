@@ -1,25 +1,28 @@
 import axios from "axios";
+import { normalizeUnits } from "moment";
 import React, { useState } from "react";
 import { useLocation, Link, useParams, useNavigate } from "react-router-dom";
 import personSrc from "../img/person.png";
 
 function CreateEvent() {
   const users = useLocation().state.userList;
+  const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
-  const [payer, setPayer] = useState(users[0].id);
-  const [participants, setparticipants] = useState([...users]);
+  const [payer, setPayer] = useState(userPersonId);
+
+  const [participants, setParticipants] = useState([...users]);
   const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
     place: "",
     price: "",
-    date: "",
+    date: new Date().toISOString().substring(0, 10),
   });
-
   const { place, price, date } = inputs;
 
   const onChange = (e) => {
     const { value, name } = e.target;
+    console.log(value, name);
     setInputs({
       ...inputs,
       [name]: value,
@@ -28,37 +31,40 @@ function CreateEvent() {
 
   const checkHandler = (checked, elem) => {
     if (checked) {
-      setparticipants((prev) => [...prev, elem]);
+      setParticipants((prev) => [...prev, elem]);
       console.log(elem, "push", participants);
-    } else{
-      setparticipants(participants.filter((e) => e !== elem));
+    } else {
+      setParticipants(participants.filter((e) => e !== elem));
     }
   };
 
   const payer_in_parti = () => {
-    return participants.length === participants.filter(e => e.id !== payer).length;
-  }
+    return (
+      participants.length === participants.filter((e) => e.id !== payer).length
+    );
+  };
 
   const onSubmit = (e) => {
     if (place === "") {
       alert("Set place\n");
-    }else if (price === "") {
+    } else if (price === "") {
       alert("Set price\n");
-    }else if (date === "") {
-      alert("Set date\n");
-    }else if (payer_in_parti()) {
+      // } else if (date === "") {
+      // alert("Set date\n");
+    } else if (payer_in_parti()) {
       alert("payer should be in participants");
-    }
-    else {
+    } else {
       console.log(participants);
       console.log("payer : ", payer);
       console.log("participant : ", participants);
-      event_info();
+      // event_info();
     }
   };
 
   const setSelectedPayer = (e) => {
     setPayer(e.target.value);
+    document.getElementById(payer).disabled = false;
+    document.getElementById(e.target.value).disabled = true;
   };
 
   const event_info = async () => {
@@ -123,7 +129,6 @@ function CreateEvent() {
           id="place"
           name="place"
           onChange={onChange}
-          value={place}
           size="5"
           autoFocus
         />
@@ -133,7 +138,6 @@ function CreateEvent() {
           id="price"
           name="price"
           onChange={onChange}
-          value={price}
           size="5"
         />
         <label htmlFor="date">Date</label>
@@ -142,8 +146,8 @@ function CreateEvent() {
           id="date"
           name="date"
           onChange={onChange}
-          value={date}
           size="5"
+          defaultValue={new Date().toISOString().substring(0, 10)}
         />
       </div>
       {/* <label htmlFor="create-event">Participants</label> */}
@@ -155,11 +159,17 @@ function CreateEvent() {
       <div>
         <label htmlFor="participants">Payer</label>
         <select id="participants" onChange={setSelectedPayer}>
-          {users.map((user, id) => (
-            <option value={user.id} key={id}>
-              {user.name}
-            </option>
-          ))}
+          {users.map((userInfo, id) =>
+            parseInt(user) === parseInt(userInfo.userId) ? (
+              <option value={userInfo.id} key={id} selected>
+                {userInfo.name}
+              </option>
+            ) : (
+              <option value={userInfo.id} key={id}>
+                {userInfo.name}
+              </option>
+            )
+          )}
         </select>
       </div>
       <label>Participants</label>
@@ -171,7 +181,7 @@ function CreateEvent() {
           verticalAlign: "center",
         }}
       >
-        {users.map((user, id) => (
+        {users.map((userInfo, id) => (
           <div
             style={{
               display: "inline-block",
@@ -185,11 +195,12 @@ function CreateEvent() {
               className="checkbox"
               defaultChecked
               type="checkbox"
-              id={user.id}
-              onChange={(e) => checkHandler(e.target.checked, user)}
+              id={userInfo.id}
+              onChange={(e) => checkHandler(e.target.checked, userInfo)}
+              disabled={userInfo.id === userPersonId}
             />
-            <label className="checkbox-text" htmlFor={user.id}>
-              {user.name}
+            <label className="checkbox-text" htmlFor={userInfo.id}>
+              {userInfo.name}
             </label>
           </div>
         ))}

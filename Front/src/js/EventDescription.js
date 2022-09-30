@@ -40,7 +40,7 @@ const EventDescription = () => {
             type="text"
             id="price"
             onKeyDown={enterkey}
-            placeholder={price}
+            placeholder={`₩${price}`}
           />
         ) : (
           <h3 onDoubleClick={onDoubleClick}>₩{price}</h3>
@@ -82,7 +82,8 @@ const EventDescription = () => {
           />
         ) : (
           <h4 onDoubleClick={onDoubleClick}>
-            {moment(date).utc().format("YYYY-MM-DD")}
+            {/* {moment(date).utc().format("YYYY-MM-DD")} */}
+            {new Date(date).toISOString().substring(0, 10)}
           </h4>
         )}
       </div>
