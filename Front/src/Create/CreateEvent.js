@@ -64,6 +64,7 @@ function CreateEvent() {
   const setSelectedPayer = (e) => {
     setPayer(e.target.value);
     document.getElementById(payer).disabled = false;
+    document.getElementById(e.target.value).checked = true;
     document.getElementById(e.target.value).disabled = true;
   };
 
