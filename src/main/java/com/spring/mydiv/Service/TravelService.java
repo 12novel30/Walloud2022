@@ -3,6 +3,7 @@ package com.spring.mydiv.Service;
 import javax.transaction.Transactional;
 
 import com.spring.mydiv.Dto.TravelDto;
+import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
@@ -41,8 +42,9 @@ public class TravelService {
     } //fin
 
     public TravelDto.Response getTravelInfo(int no){
-        Optional<Travel> info = travelRepository.findById(Long.valueOf(no));
-        return TravelDto.Response.fromEntity(info.get());
+        return travelRepository.findById(Long.valueOf(no))
+                .map(TravelDto.Response::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_TRAVEL));
     }
 
     public TravelDto.HomeView getTravelToMainView(int travelId){

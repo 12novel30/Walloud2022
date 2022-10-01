@@ -45,7 +45,7 @@ public class PersonController {
                 return "200"; //success
             else return "-2"; //fail
         }
-    } //return int -> orElseThrow (?)
+    }
 
     @PostMapping("/{userId}/{travelId}/deleteUser")
     public String deletePerson2Travel(@RequestBody Map map){ //@PathVariable int travelId,
@@ -57,7 +57,7 @@ public class PersonController {
         else {
             return "-1";
         }
-    } //return int -> orElseThrow (?)
+    }
 
     @GetMapping("/{userid}/{travelid}/{personid}/personDetail")
     public PersonDto.Detail getPersonToDetailView(@PathVariable("travelid") int travelid,

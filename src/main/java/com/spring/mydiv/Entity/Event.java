@@ -43,4 +43,7 @@ public class Event implements Serializable {
 	@Column(name = "event_image")
 	private String image;
 
+	@Column(name = "payer_personid")
+	private Long payerPersonid;
+
 }

@@ -32,61 +32,59 @@ public class EventController {
 //        return personService.getPersonNameInTravel(travelid);
 //    }
 
-    @PostMapping("/{userid}/{travelid}/CreateEvent")
-    public int createEvent(@PathVariable("travelid") int travelId, @RequestBody Map map) throws ParseException {
-        //set event dto(name, travel(TravelCreateDto.Response), date, price)
+    @PostMapping("/{userId}/{travelId}/CreateEvent")
+    public int createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
+        // setting
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<Map> partiDtoList = (List)map.get("parti_list");
+        Boolean isPayerInParticipant = eventService.checkPayerInParticipant(partiDtoList, Long.valueOf(map.get("payer_person_id").toString()));
         int partiCount = partiDtoList.size();
+
+        // create event
         EventDto.Request request = EventDto.Request.builder()
                 .Name(map.get("event_name").toString())
-                .Travel(travelService.getTravelInfo(travelId))
+                .Travel(travelService.getTravelInfo(travelId)) //orElseThrow
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
                 .Price(Integer.parseInt(map.get("price").toString()))
                 .PartiCount(partiCount)
+                .isPayerInParticipant(isPayerInParticipant)
+                .PayerPersonId(Long.valueOf(map.get("payer_person_id").toString()))
                 .build();
-        boolean isPayerinParticipant = eventService.checkPayerInParticipant(partiDtoList,
-                Long.valueOf(map.get("payer_person_id").toString()));
-        //set dividePrice, takePrice
-        EventDto.Response eventDto = eventService.createEvent(request, isPayerinParticipant);
-        //get event dto(eventId)
+        EventDto.Response eventDto = eventService.createEvent(request);
 
-        if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){ //success to create event
+        // if success to create Event
+        if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
+            // setting
             List<Person> personList = new ArrayList<>();
             System.out.println(partiDtoList.size());
-            //set parti dto(personId, eventId, role)
-            for (Map partiDto : partiDtoList){ // 결제자가 참가자에 들어가지 않을 경우를 handling 해야함
-                Person person = personService.getPersonEntityByPersonId(Long
-                        .valueOf(partiDto.get("id").toString())); //orElseThrow
+            for (Map partiDto : partiDtoList){
+                Person person = personService.getPersonEntityByPersonId(
+                        Long.valueOf(partiDto.get("id").toString())); //orElseThrow
                 personList.add(person);
 
+                // create participant
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
                         .person(person)
-                        .event(eventService.getEventEntityByEventId(Long
-                                        .valueOf(eventDto.getId().toString()))) //orElseThrow
+                        .event(eventService.getEventEntityByEventId(
+                                Long.valueOf(eventDto.getId().toString()))) //orElseThrow
                         .role(Boolean.valueOf(partiDto.get("role").toString()))
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
                     return -2; //fail to create participate
             }
 
+            // if success to create Participant
+            // update person
             System.out.println(eventDto.getDividePrice());
-
-            //set person dto(sumsend, sumget, difference, travelRole)
             personService.updatePersonMoneyByCreating(personList,
                     Long.valueOf(map.get("payer_person_id").toString()),
                     eventDto.getDividePrice(),
                     eventDto.getTakePrice());
-//                return -3; //fail to update person
             personService.updatePersonRole(travelId);
-            return 200; //success all
-        } else
-            return -1; //fail to create event
-    }
 
-    /**이벤트 생성하고 디테일뷰에서 해당 내용 불러오기
-     * -> 자세히 어떤 내용 필요할지는 논의 후 작성
-     * */
+            return 200; //success all
+        } else return -1; //fail to create event
+    }
 
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
     public void deleteEvent(@PathVariable("eventid") int event_id)
