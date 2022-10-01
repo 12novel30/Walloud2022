@@ -31,9 +31,10 @@ class EventServiceTest {
                 .Date(date)
                 .Price(65000)
                 .PartiCount(4)
+                .isPayerInParticipant(true)
                 .build();
         //when
-        EventDto.Response eventDto = eventService.createEvent(request, true);
+        EventDto.Response eventDto = eventService.createEvent(request);
 
         //then
         System.out.println("status: " + ResponseEntity.ok(eventDto).toString());

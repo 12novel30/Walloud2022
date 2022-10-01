@@ -65,6 +65,9 @@ public class EventDto {
         private int Price;
         private int PartiCount;
         private String Image;
+        private boolean isPayerInParticipant;
+        @NotNull
+        private Long PayerPersonId;
     }
 
     @Getter
@@ -104,7 +107,7 @@ public class EventDto {
         private java.util.Date Date;
         @NotNull
         private int Price;
-        private String Payer;
+        private String PayerName;
 
         public static HomeView fromEntity(Event event) {
             return HomeView.builder()

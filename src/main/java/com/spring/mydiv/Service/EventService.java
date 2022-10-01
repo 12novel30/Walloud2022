@@ -8,6 +8,7 @@ import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
+import com.spring.mydiv.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +26,13 @@ import static com.spring.mydiv.Code.ErrorCode.*;
 public class EventService {
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
+    private final PersonRepository personRepository;
     private final ParticipantService participantService;
 
-    public EventDto.Response createEvent(EventDto.Request request, boolean isPayerinParti){
+    public EventDto.Response createEvent(EventDto.Request request){
         Double dividePrice = (double)request.getPrice()/request.getPartiCount();
         Double takePrice = (double)request.getPrice() - dividePrice;
-        if (!isPayerinParti){
+        if (!request.isPayerInParticipant()){
             takePrice = (double)request.getPrice();
         }
 
@@ -62,12 +64,13 @@ public class EventService {
         List<EventDto.HomeView> result = new ArrayList<>();
         for (Event e : list){
             EventDto.HomeView event = EventDto.HomeView.fromEntity(e);
-            Participant payer = participantRepository.findByEvent_IdAndEventRole(event.getId(),true); // payer가 participant에 포함되어 있지 않을 시 에러
-            event.setPayer(payer.getPerson().getUser().getName());
+            Person payer = personRepository.findById(e.getPayerPersonid())
+                    .orElseThrow(()-> new DefaultException(NO_PAYER));
+            event.setPayerName(payer.getUser().getName());
             result.add(event);
         }
         return result;
-    } //ing - payer가 parti에 없을 경우 ifpresentorelse로 person에서 찾도록 수정
+    }
 
     public int getEventCountInTravel(int travelId){
         return eventRepository.countByTravel_Id(Long.valueOf(travelId));

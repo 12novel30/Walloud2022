@@ -54,7 +54,7 @@ public class ParticipantService {
                         .get().getUser().getName());
             } else {
                 //      -> event id & event role==1 을 조건으로
-                Participant payer = participantRepository.findByEvent_IdAndEventRole(eventId, true);
+                Participant payer = participantRepository.findByEvent_IdAndEventRole(eventId, true).get();
                 //          -> in parti db) 결제자의 person id
                 tmpEvent.setPayerId(payer.getId());
                 //          -> in person db) 결제자의 name

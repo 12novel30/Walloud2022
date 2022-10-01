@@ -10,6 +10,7 @@ public enum ErrorCode {
     NO_USER("해당되는 사용자가 없습니다."),
     NO_TRAVEL("해당되는 여행이 없습니다."),
     NO_EVENT("해당되는 이벤트가 없습니다."),
+    NO_PAYER("결제자가 없는 이벤트입니다."),
 
 
     NO_DEVELOPER("해당되는 개발자가 없습니다."),

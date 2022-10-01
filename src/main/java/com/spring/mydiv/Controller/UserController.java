@@ -33,7 +33,7 @@ public class UserController {
         return "He";
     }
 
-    @PostMapping(value = "/Register") //ResponseEntity.ok
+    @PostMapping(value = "/Register")
     public ResponseEntity<UserDto.Response> createUser(@RequestBody Map map) {
         UserDto.Request request = new UserDto.Request(
                 map.get("user_name").toString(),
@@ -43,7 +43,7 @@ public class UserController {
         return ResponseEntity.ok(userservice.createUser(request));
     }
 
-    @PostMapping(value = "/login") //return int -> orElseThrow (?)
+    @PostMapping(value = "/login")
     public int login(@RequestBody Map map) {
         UserDto.Login loginUser = new UserDto.Login(
                 map.get("input_id").toString(),
@@ -55,12 +55,12 @@ public class UserController {
          */
     }
 
-    @GetMapping("/{userId}") //return empty
+    @GetMapping("/{userId}")
     public UserDto.WithTravel getUserInfo(@PathVariable int userId){
         return userservice.getUserInfoWithTravel(userId);
     }
 
-    @PostMapping("/erId}/createTravel") //return int -> orElseThrow (?)
+    @PostMapping("/{userId}/createTravel")
     public int joinTravel(@PathVariable int userId, @RequestBody Map map){
         TravelDto.Request travelRequest = new TravelDto.Request(map.get("travel_name").toString());
         PersonDto.Request personRequest = new PersonDto.Request(
