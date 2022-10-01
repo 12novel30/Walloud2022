@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 	List<Person> findByUser_Id(@Param(value = "user_id") Long id);
 
-	Person findByTravel_IdAndRole(Long id, Boolean role);
+	Optional<Person> findByTravel_IdAndRole(Long id, Boolean role);
 
 	boolean existsByUser_IdAndTravel_Id(Long id, Long id1);
 
