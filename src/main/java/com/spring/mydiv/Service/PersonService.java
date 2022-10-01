@@ -94,13 +94,15 @@ public class PersonService {
     public PersonDto.Detail getPersonToDetailView(int personId){
         //- 사용자 개인 정보 -> user(name, email, account)
         //- travel에서의 정보 -> person(sumsend, sumget, diff, travelrole)
-        Optional<Person> info = personRepository.findById(Long.valueOf(personId));
-        return PersonDto.Detail.fromEntity(info.get());
+        Person info = personRepository.findById(Long.valueOf(personId))
+                .orElseThrow(()-> new DefaultException(NO_USER));
+        return PersonDto.Detail.fromEntity(info);
     }
 
     public PersonDto.HomeView getPayerInTravel(int travelId){
-        return PersonDto.HomeView.fromEntity(personRepository
-                .findByTravel_IdAndRole(Long.valueOf(travelId), true));
+        return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
+                .map(PersonDto.HomeView::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_USER));
     }
 
     public void updatePersonMoneyByCreating(List<Person> personList, Long payer_personId,
@@ -144,7 +146,8 @@ public class PersonService {
 
     public void updatePersonRole(int travelId){
         List<Person> People = personRepository.findByTravel_Id(Long.valueOf(travelId));
-        Person currManager = personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true);
+        Person currManager = personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
+                .orElseThrow(()-> new DefaultException(NO_USER));
         personRepository.updateRoleById(FALSE, currManager.getId());
         Double maxDifference = currManager.getDifference();
 

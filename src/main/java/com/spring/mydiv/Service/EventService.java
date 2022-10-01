@@ -100,13 +100,14 @@ public class EventService {
 
     public EventDto.deleteRequest getEventDetailforDelete(int eventId){
         ParticipantDto.peopleList peopleList = participantService.getJoinedPeopleInEvent(eventId);
-        Optional<Event> event = eventRepository.findById(Long.valueOf(eventId));
+        Event event = eventRepository.findById(Long.valueOf(eventId))
+                .orElseThrow(()-> new DefaultException(NO_EVENT));
 
         return EventDto.deleteRequest.builder()
                 .joinedPerson(peopleList.getJoinedPerson())
                 .payerId(peopleList.getPayer().getId())
-                .DividePrice(event.get().getDividePrice())
-                .TakePrice(event.get().getTakePrice()).build();
+                .DividePrice(event.getDividePrice())
+                .TakePrice(event.getTakePrice()).build();
     }
 
     public void deleteEvent(int eventId){
