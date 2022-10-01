@@ -55,7 +55,7 @@ public class EventService {
     public boolean checkPayerInParticipant(List<Map> partiList, Long payerId){
         List<Long> partiIds = new ArrayList<>();
         for (Map parti : partiList){
-            partiIds.add(Long.valueOf(parti.get("person_id").toString()));
+            partiIds.add(Long.valueOf(parti.get("id").toString()));
         }
         return partiIds.contains(payerId);
     }
@@ -66,7 +66,7 @@ public class EventService {
         for (Event e : list){
             EventDto.HomeView event = EventDto.HomeView.fromEntity(e);
             Person payer = personRepository.findById(e.getPayerPersonid())
-                    .orElseThrow(()-> new DefaultException(NO_PAYER));
+                    .orElseThrow(()-> new DefaultException(NO_PAYER)); // Error 발생
             event.setPayerName(payer.getUser().getName());
             result.add(event);
         }

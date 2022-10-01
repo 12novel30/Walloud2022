@@ -59,7 +59,7 @@ public class EventController {
             System.out.println(partiDtoList.size());
             for (Map partiDto : partiDtoList){
                 Person person = personService.getPersonEntityByPersonId(
-                        Long.valueOf(partiDto.get("person_id").toString())); //orElseThrow
+                        Long.valueOf(partiDto.get("id").toString())); //orElseThrow // person_id가 아닌 id 입니다...
                 personList.add(person);
 
                 // create participant
