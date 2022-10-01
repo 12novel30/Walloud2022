@@ -111,7 +111,7 @@ class PersonServiceTest {
         Double takePrice = 140000.0;
 
         //when
-        personService.updatePersonMoneyByCreating(personList, payer_person_id, dividePrice, takePrice);
+        personService.updatePersonMoneyByCreating(personList, payer_person_id, dividePrice, takePrice, true);
         personService.updatePersonRole(91);
 
         //then

@@ -59,7 +59,7 @@ public class EventController {
             System.out.println(partiDtoList.size());
             for (Map partiDto : partiDtoList){
                 Person person = personService.getPersonEntityByPersonId(
-                        Long.valueOf(partiDto.get("id").toString())); //orElseThrow
+                        Long.valueOf(partiDto.get("person_id").toString())); //orElseThrow
                 personList.add(person);
 
                 // create participant
@@ -79,7 +79,8 @@ public class EventController {
             personService.updatePersonMoneyByCreating(personList,
                     Long.valueOf(map.get("payer_person_id").toString()),
                     eventDto.getDividePrice(),
-                    eventDto.getTakePrice());
+                    eventDto.getTakePrice(),
+                    isPayerInParticipant);
             personService.updatePersonRole(travelId);
 
             return 200; //success all

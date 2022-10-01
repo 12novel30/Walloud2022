@@ -104,9 +104,17 @@ public class PersonService {
     }
 
     public void updatePersonMoneyByCreating(List<Person> personList, Long payer_personId,
-                                       Double dividePrice, Double takePrice){
+                                       Double dividePrice, Double takePrice, Boolean isPayerInParticipant){
+        if (!isPayerInParticipant){
+            Person p = personRepository.findById(payer_personId)
+                    .orElseThrow(()-> new DefaultException(NO_USER));
+            p.setSumGet(p.getSumGet() + takePrice);
+            p.setDifference(p.getDifference() + takePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
         for (Person p : personList){
             if (p.getId().equals(payer_personId)){ // payer
+                System.out.println(p.getId());
                 p.setSumGet(p.getSumGet() + takePrice);
                 p.setDifference(p.getDifference() + takePrice);
                 personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
