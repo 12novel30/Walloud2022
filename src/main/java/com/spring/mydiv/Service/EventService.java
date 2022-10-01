@@ -46,6 +46,7 @@ public class EventService {
                         .build())
                 .dividePrice(dividePrice)
                 .takePrice(takePrice)
+                .payerPersonid(request.getPayerPersonId())
                 .build();
         eventRepository.save(event);
         return EventDto.Response.fromEntity(event);
@@ -54,7 +55,7 @@ public class EventService {
     public boolean checkPayerInParticipant(List<Map> partiList, Long payerId){
         List<Long> partiIds = new ArrayList<>();
         for (Map parti : partiList){
-            partiIds.add(Long.valueOf(parti.get("id").toString()));
+            partiIds.add(Long.valueOf(parti.get("person_id").toString()));
         }
         return partiIds.contains(payerId);
     }
