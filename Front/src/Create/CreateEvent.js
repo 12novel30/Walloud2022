@@ -8,9 +8,11 @@ function CreateEvent() {
   const users = useLocation().state.userList;
   const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
-  const [payer, setPayer] = useState(userPersonId);
+  // const [payer, setPayer] = useState(userPersonId);
+  var payer = userPersonId;
 
-  const [participants, setParticipants] = useState([...users]);
+  // const [participants, setParticipants] = useState([...users]);
+  var participants = [...users];
   const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
@@ -31,17 +33,26 @@ function CreateEvent() {
 
   const checkHandler = (checked, elem) => {
     if (checked) {
-      setParticipants((prev) => [...prev, elem]);
+      //setParticipants((prev) => [...prev, elem]);
+      participants.push(elem);
       console.log(elem, "push", participants);
     } else {
-      setParticipants(participants.filter((e) => e !== elem));
+      // setParticipants(participants.filter((e) => e !== elem));
+      participants = participants.filter((e) => e !== elem);
     }
   };
 
   const payer_in_parti = () => {
-    return (
-      participants.length === participants.filter((e) => e.id !== payer).length
-    );
+    for (var i = 0; i < participants.length; i++) {
+      if (parseInt(participants[i]["id"]) == parseInt(payer)) {
+        return true;
+      }
+    }
+
+    return false;
+    // return (
+    // participants.length === participants.filter((e) => e.id !== payer).length
+    // );
   };
 
   const onSubmit = (e) => {
@@ -51,19 +62,23 @@ function CreateEvent() {
       alert("Set price\n");
       // } else if (date === "") {
       // alert("Set date\n");
-    } else if (payer_in_parti()) {
+    } else if (!payer_in_parti()) {
       alert("payer should be in participants");
-    } else {
       console.log(participants);
+      console.log(payer);
+    } else {
       console.log("payer : ", payer);
       console.log("participant : ", participants);
-      // event_info();
+      event_info();
     }
   };
 
   const setSelectedPayer = (e) => {
-    setPayer(e.target.value);
+    // setPayer(e.target.value);
+    console.log(participants);
     document.getElementById(payer).disabled = false;
+    payer = e.target.value;
+    console.log(payer);
     document.getElementById(e.target.value).checked = true;
     document.getElementById(e.target.value).disabled = true;
   };
@@ -85,33 +100,33 @@ function CreateEvent() {
       payer_person_id: payer,
     });
 
-    // await axios
-    //   .post(`/api/${user}/${travel}/CreateEvent`, {
-    //     parti_list: temp_list,
-    //     event_name: place,
-    //     event_date: date,
-    //     price: price,
-    //     payer_person_id: payer,
-    //   })
-    //   .then((res) => {
-    //     switch (res.data) {
-    //       case -1:
-    //         alert("fail to create event");
-    //         break;
-    //       case -2:
-    //         alert("fail to create participate");
-    //         break;
-    //       case 200:
-    //         alert("Success");
-    //         navigate(`/${user}/${travel}/${travelName}`);
-    //         break;
-    //       default:
-    //         throw "Network Error";
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    await axios
+      .post(`/api/${user}/${travel}/CreateEvent`, {
+        parti_list: temp_list,
+        event_name: place,
+        event_date: date,
+        price: price,
+        payer_person_id: payer,
+      })
+      .then((res) => {
+        switch (res.data) {
+          case -1:
+            alert("fail to create event");
+            break;
+          case -2:
+            alert("fail to create participate");
+            break;
+          case 200:
+            alert("Success");
+            navigate(`/${user}/${travel}/${travelName}`);
+            break;
+          default:
+            throw "Network Error";
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
