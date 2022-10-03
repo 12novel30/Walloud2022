@@ -6,6 +6,7 @@ import LogIn from "./Authentication/LogIn";
 import Register from "./Authentication/Register";
 import Calendar from "./Home/Calendar";
 import { CreateEvent } from "./Create/CreateEvent";
+import { ChangeEvent } from "./js/ChangeEvent";
 import CreateUser from "./Create/CreateUser";
 import EventDescription from "./js/EventDescription";
 import { Routes, Route } from "react-router-dom";
@@ -26,6 +27,10 @@ const App = () => {
         <Route
           path="/:user/:travel/:travelName/createEvent"
           element={<CreateEvent />}
+        />
+        <Route
+          path="/:user/:travel/:travelName/changeEvent"
+          element={<ChangeEvent />}
         />
         <Route
           path="/:user/:travel/:travelName/createUser"

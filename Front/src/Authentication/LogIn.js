@@ -101,7 +101,7 @@ const LogIn = () => {
       <h2>Log In</h2>
       <label htmlFor="email">Email</label>
       <input
-        type="text"
+        type="email"
         name="email"
         id="email"
         value={input_id}
