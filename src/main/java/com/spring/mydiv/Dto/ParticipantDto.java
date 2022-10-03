@@ -46,7 +46,7 @@ public class ParticipantDto {
     @Builder
     public static class detailView {
         @NotNull
-        private Long Id;
+        private Long PersonId;
         @NotNull
         private String Name;
         @NotNull
@@ -69,23 +69,6 @@ public class ParticipantDto {
          * 1, true: payer
          * 0, false: -
          */
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Response {
-        @NotNull
-        private Long Id;
-        @NotNull
-        private String Name;
-        public static Response fromEntity(Participant participant) {
-            return Response.builder()
-
-                    .build();
-        }
     }
 
 }
