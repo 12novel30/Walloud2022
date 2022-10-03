@@ -12,7 +12,7 @@ const EventDescription = () => {
 
   const onDelete = async() => {
     if(window.confirm("Are you sure you want to delete?")) {
-      await axios.delete(`/api/${user}/${travel}/${description.id}/deleteEvent`)
+      await axios.delete(`/api/${user}/${travel}/${description.eventId}/deleteEvent`)
       .then((res) => {
         console.log(res.data);
         window.alert("Succesfully Deleted");
