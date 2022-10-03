@@ -1,11 +1,15 @@
 package com.spring.mydiv.Controller;
 
 import com.spring.mydiv.Dto.TravelDto;
+import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Service.EventService;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author 12nov
@@ -34,5 +38,12 @@ public class TravelController {
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
         System.out.println("_________________________7");
         return homeView;
+    }
+
+    @PutMapping("/{userId}/{travelId}/updateTravelInfo")
+    public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
+        TravelDto.Request updateRequest = new TravelDto.Request(map.get("travel_name").toString());
+        return ResponseEntity.ok(travelservice.updateTravelInfo(travelId, updateRequest)
+        );
     }
 }

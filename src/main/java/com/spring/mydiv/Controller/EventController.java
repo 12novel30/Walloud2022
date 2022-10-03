@@ -102,4 +102,5 @@ public class EventController {
     public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable("eventid") int eventid){
         return participantService.getParticipantInEvent(eventid);
     }
+
 }

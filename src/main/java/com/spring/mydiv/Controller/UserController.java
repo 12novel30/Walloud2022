@@ -76,4 +76,15 @@ public class UserController {
     public void deleteTravel(@PathVariable int travelId) {
         travelservice.deleteTravel(travelId);
     }
+
+    @PutMapping("/{userId}/updateUserInfo")
+    public ResponseEntity<UserDto.Response> updateUser(@PathVariable int userId, @RequestBody Map map) {
+        UserDto.Request updateRequest = new UserDto.Request(
+                map.get("user_name").toString(),
+                map.get("user_email").toString(),
+                map.get("user_password").toString(),
+                map.get("user_account").toString());
+        return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
+        );
+    }
 }

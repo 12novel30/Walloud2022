@@ -100,4 +100,17 @@ public class UserService {
         return dto;
     }
 
+    @Transactional
+    public UserDto.Response updateUserInfo(int userId, UserDto.Request updateRequest){
+        User user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+
+        if (updateRequest.getName() != null) user.setName(updateRequest.getName());
+        if (updateRequest.getEmail() != null) user.setEmail(updateRequest.getEmail());
+        if (updateRequest.getPassword() != null) user.setPassword(updateRequest.getPassword());
+        if (updateRequest.getAccount() != null) user.setAccount(updateRequest.getAccount());
+
+        return UserDto.Response.fromEntity(userRepository.save(user));
+    }
+
 }
