@@ -4,6 +4,7 @@ import moment from "moment";
 import axios from "axios";
 
 const EventDescription = () => {
+  const users = useLocation().state.users;
   const description = useLocation().state.event;
   const navigate = useNavigate();
   console.log("event : ", description);
@@ -156,6 +157,16 @@ const EventDescription = () => {
         ))}
       </div>
       <button onClick={onDelete}>Delete Event</button>
+      <Link
+        to={`/${user}/${travel}/${travelName}/changeEvent`}
+        state={{
+          description: description,
+          users: users,
+          parti_list: parti_list,
+        }}
+      >
+        <button>Change</button>
+      </Link>
     </div>
   );
 };
