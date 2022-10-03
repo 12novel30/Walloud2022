@@ -6,6 +6,7 @@ import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -64,5 +65,15 @@ public class TravelService {
             personRepository.delete(person);
         }
         travelRepository.deleteById(Long.valueOf(travelId));
+    }
+
+    @Transactional
+    public TravelDto.Response updateTravelInfo(int travelId, TravelDto.Request updateRequest){
+        Travel travel = travelRepository.findById(Long.valueOf(travelId))
+                .orElseThrow(() -> new DefaultException(NO_TRAVEL));
+
+        if (updateRequest.getName() != null) travel.setName(updateRequest.getName());
+
+        return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
 }
