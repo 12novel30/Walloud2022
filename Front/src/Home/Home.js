@@ -105,6 +105,7 @@ const Home = () => {
           <button className="home-button">Add Event</button>
         </Link>
       </div>
+      
       <div className="big-box">
         <h2 className="home-h2">Participants</h2>
         {/* <Link to="createUser">
