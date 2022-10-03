@@ -70,7 +70,7 @@ public class UserService {
         List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : list){
             TravelDto.Response travel = TravelDto.Response.builder()
-                    .Id(p.getTravel().getId())
+                    .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
                     .build();
             result.add(travel);
@@ -91,7 +91,7 @@ public class UserService {
         if (!user.isPresent()) return null;
 
         UserDto.Response dto = UserDto.Response.builder()
-                .Id(user.get().getId())
+                .UserId(user.get().getId())
                 .Name(user.get().getName())
                 .Email(user.get().getEmail())
                 .Account(user.get().getAccount())

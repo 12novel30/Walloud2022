@@ -67,7 +67,7 @@ public class UserController {
                 userservice.getUserInfo(userId),
                 travelservice.createTravel(travelRequest));
         if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
-            return personRequest.getTravel().getId().intValue();
+            return personRequest.getTravel().getTravelId().intValue();
         else return -1;
     }
 

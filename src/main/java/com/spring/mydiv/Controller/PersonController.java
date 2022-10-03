@@ -34,7 +34,7 @@ public class PersonController {
         if (userDetailDto == null){
             return "-1"; // not matchable user
         } else {
-            if (personService.checkIsUserinTravel(userDetailDto.getId(), travelId)){
+            if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId)){
                 return "-3"; // already existed
             }
             PersonDto.Request request = new PersonDto.Request(
