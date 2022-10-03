@@ -19,7 +19,6 @@ const Profile = () => {
       .then((res) => {
         console.log(res.data);
         setProfile(res.data);
-        // setList(res.data.eventList);
         seteventList(res.data.eventList);
         console.log(person_in_List);
       })
@@ -30,7 +29,7 @@ const Profile = () => {
 
   const delPerson = async() => {
     if(window.confirm("Username "+profile.userName+"should be not in any events\nAre you sure you want to delete?")) {
-      await axios.post(`/api/${user}/${travel}/deleteUser`,{
+      await axios.delete(`/api/${user}/${travel}/deleteUser`,{
         person_id : personid
       }).then((res) => {
         switch(res.data) {
