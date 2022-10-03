@@ -63,12 +63,12 @@ public class PersonDto {
 	@NoArgsConstructor
 	@Builder
 	public static class Simple {
-		private Long Id;
+		private Long PersonId;
 		private String Name;
 
 		public static Simple fromEntity(Person person) {
 			return Simple.builder()
-					.Id(person.getId())
+					.PersonId(person.getId())
 					.Name(person.getUser().getName())
 					.build();
 		}
@@ -80,14 +80,14 @@ public class PersonDto {
 	@NoArgsConstructor
 	@Builder
 	public static class HomeView {
-		private Long Id;
+		private Long PersonId;
 		private String Name;
 		private Boolean Role;
 		private Double Difference;
 		private Long UserId;
 		public static HomeView fromEntity(Person person) {
 			return HomeView.builder()
-					.Id(person.getId())
+					.PersonId(person.getId())
 					.Name(person.getUser().getName())
 					.Role(person.getRole())
 					.Difference(person.getDifference())

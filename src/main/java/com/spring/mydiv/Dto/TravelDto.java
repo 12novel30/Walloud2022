@@ -30,12 +30,12 @@ public class TravelDto {
     @Builder
     public static class Response {
         @NotNull
-        private Long Id;
+        private Long TravelId;
         @NotNull
         private String Name;
         public static Response fromEntity(Travel travel) {
             return Response.builder()
-                    .Id(travel.getId())
+                    .TravelId(travel.getId())
                     .Name(travel.getName())
                     .build();
         }
