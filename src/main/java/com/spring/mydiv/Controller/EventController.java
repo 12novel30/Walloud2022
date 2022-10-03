@@ -66,7 +66,7 @@ public class EventController {
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
                         .person(person)
                         .event(eventService.getEventEntityByEventId(
-                                Long.valueOf(eventDto.getId().toString()))) //orElseThrow
+                                Long.valueOf(eventDto.getEventId().toString()))) //orElseThrow
                         .role(Boolean.valueOf(partiDto.get("role").toString()))
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)

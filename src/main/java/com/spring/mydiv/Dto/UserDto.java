@@ -49,7 +49,7 @@ public class UserDto {
 	@Builder
 	public static class Response {
 		@NotNull
-		private Long Id;
+		private Long UserId;
 		@NotNull
 		private String Name;
 		@NotNull
@@ -61,7 +61,7 @@ public class UserDto {
 
 		public static Response fromEntity(User user) {
 			return Response.builder()
-					.Id(user.getId())
+					.UserId(user.getId())
 					.Name(user.getName())
 					.Email(user.getEmail())
 					.Password(user.getPassword())

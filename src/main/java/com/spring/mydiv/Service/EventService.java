@@ -41,7 +41,7 @@ public class EventService {
                 .date(request.getDate())
                 .price(request.getPrice())
                 .travel(Travel.builder()
-                        .id(request.getTravel().getId())
+                        .id(request.getTravel().getTravelId())
                         .name(request.getTravel().getName())
                         .build())
                 .dividePrice(dividePrice)

@@ -77,7 +77,7 @@ public class EventDto {
     @Builder
     public static class Response {
         @NotNull
-        private Long Id;
+        private Long EventId;
         @NotNull
         private String Name;
         private Double DividePrice;
@@ -85,7 +85,7 @@ public class EventDto {
 
         public static Response fromEntity(Event event) {
             return Response.builder()
-                    .Id(event.getId())
+                    .EventId(event.getId())
                     .Name(event.getName())
                     .DividePrice(event.getDividePrice())
                     .TakePrice(event.getTakePrice())
@@ -100,7 +100,7 @@ public class EventDto {
     @Builder
     public static class HomeView {
         @NotNull
-        private Long Id;
+        private Long EventId;
         @NotNull
         private String Name;
         @NotNull
@@ -111,7 +111,7 @@ public class EventDto {
 
         public static HomeView fromEntity(Event event) {
             return HomeView.builder()
-                    .Id(event.getId())
+                    .EventId(event.getId())
                     .Name(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
