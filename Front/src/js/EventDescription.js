@@ -10,21 +10,17 @@ const EventDescription = () => {
   const { user, travel, travelName } = useParams();
   const [parti_list, setParti] = useState([]);
 
-  const onDelete = async () => {
-    if (window.confirm("Are you sure you want to delete?")) {
-      await axios
-        .delete(`/api/${user}/${travel}/${description.id}/deleteEvent`)
-        .then((res) => {
-          console.log(res.data);
-          window.alert("Succesfully Deleted");
-          navigate(`/${user}/${travel}/${travelName}`, {
-            state: { created: false },
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          window.location.reload();
-        });
+  const onDelete = async() => {
+    if(window.confirm("Are you sure you want to delete?")) {
+      await axios.delete(`/api/${user}/${travel}/${description.eventId}/deleteEvent`)
+      .then((res) => {
+        console.log(res.data);
+        window.alert("Succesfully Deleted");
+        navigate(`/${user}/${travel}/${travelName}`, {state : {created : false}});
+      }).catch((error) => {
+        console.log(error);
+        window.location.reload();
+      })
     }
   };
 
