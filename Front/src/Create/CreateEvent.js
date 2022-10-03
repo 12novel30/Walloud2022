@@ -8,10 +8,8 @@ function CreateEvent() {
   const users = useLocation().state.userList;
   const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
-  // const [payer, setPayer] = useState(userPersonId);
   var payer = userPersonId;
 
-  // const [participants, setParticipants] = useState([...users]);
   var participants = [...users];
   const navigate = useNavigate();
 
@@ -33,13 +31,12 @@ function CreateEvent() {
 
   const checkHandler = (checked, elem) => {
     if (checked) {
-      //setParticipants((prev) => [...prev, elem]);
       participants.push(elem);
       console.log(elem, "push", participants);
     } else {
-      // setParticipants(participants.filter((e) => e !== elem));
-      participants = participants.filter((e) => e !== elem);
+      participants = participants.filter((e) => e.id !== elem.id);
     }
+    console.log(participants);
   };
 
   const payer_in_parti = () => {
@@ -50,22 +47,16 @@ function CreateEvent() {
     }
 
     return false;
-    // return (
-    // participants.length === participants.filter((e) => e.id !== payer).length
-    // );
   };
 
   const onSubmit = (e) => {
+    console.log("participants : ", participants);
+    console.log("payer : ", payer);
+
     if (place === "") {
       alert("Set place\n");
     } else if (price === "") {
       alert("Set price\n");
-      // } else if (date === "") {
-      // alert("Set date\n");
-    } else if (!payer_in_parti()) {
-      alert("payer should be in participants");
-      console.log(participants);
-      console.log(payer);
     } else {
       console.log("payer : ", payer);
       console.log("participant : ", participants);
@@ -74,13 +65,9 @@ function CreateEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    // setPayer(e.target.value);
     console.log(participants);
-    document.getElementById(payer).disabled = false;
     payer = e.target.value;
     console.log(payer);
-    document.getElementById(e.target.value).checked = true;
-    document.getElementById(e.target.value).disabled = true;
   };
 
   const event_info = async () => {
@@ -118,7 +105,9 @@ function CreateEvent() {
             break;
           case 200:
             alert("Success");
-            navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
+            navigate(`/${user}/${travel}/${travelName}`, {
+              state: { created: false },
+            });
             break;
           default:
             throw "Network Error";
@@ -131,11 +120,7 @@ function CreateEvent() {
 
   return (
     <div>
-      <Link
-        to={`/${user}/${travel}/${travelName}`}
-        // state={{ user_id: userid, travel_id: travelid, travelName: travelname }}
-        state = {{created : false}}
-      >
+      <Link to={`/${user}/${travel}/${travelName}`} state={{ created: false }}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2>Create Event</h2>
@@ -214,7 +199,6 @@ function CreateEvent() {
               type="checkbox"
               id={userInfo.id}
               onChange={(e) => checkHandler(e.target.checked, userInfo)}
-              disabled={userInfo.id === userPersonId}
             />
             <label className="checkbox-text" htmlFor={userInfo.id}>
               {userInfo.name}

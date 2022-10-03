@@ -25,12 +25,11 @@ const EventDescription = () => {
   };
 
   useEffect(() => {
-    axios.get(`/api/${user}/${travel}/${description.id}/detail`)
-    .then((res) => {
+    axios.get(`/api/${user}/${travel}/${description.id}/detail`).then((res) => {
       console.log(res.data);
       setParti(res.data);
-    })
-  },[])
+    });
+  }, []);
 
   const ModifiablePrice = ({ value }) => {
     const [price, setPrice] = useState(value);
@@ -63,8 +62,20 @@ const EventDescription = () => {
             placeholder={`₩${price}`}
           />
         ) : (
-          <h3 onDoubleClick={onDoubleClick}>₩{price}</h3>
-          // <h4>₩{price / userList.length} per person</h4> //userList 추가시 인당 가격 추가
+          <div>
+            <h3
+              style={{ display: "inline-block", margin: "0" }}
+              onDoubleClick={onDoubleClick}
+            >
+              {" "}
+              ₩{price}
+            </h3>
+            <h4 style={{ display: "inline-block", margin: "0" }}>
+              ({description.payerName})
+            </h4>
+            <h5>₩{Math.round(price / parti_list.length)} per person</h5>
+            {/* 추가시 인당 가격 추가 */}
+          </div>
         )}
       </div>
     );
@@ -112,7 +123,7 @@ const EventDescription = () => {
 
   return (
     <div>
-      <Link to={`/${user}/${travel}/${travelName}`} state = {{created : false}}>
+      <Link to={`/${user}/${travel}/${travelName}`} state={{ created: false }}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2 id="headers">{description.name}</h2>
@@ -124,35 +135,24 @@ const EventDescription = () => {
             {description.payer}
           </h3>
         </Link>
-        <h4>Double Click to Modify, Press Enter to Confirm</h4>
-        {/* <h4 id="headers">{description.price}</h4> */}
+        <h5>Double Click to Modify, Press Enter to Confirm</h5>
         <ModifiablePrice value={description.price} />
-        {/* <h4 id="headers">
-          {moment(description.date).utc().format("YYYY-MM-DD")}
-        </h4> */}
         <ModifiableDate value={description.date} />
+        {/* <h4>{description.payerName}</h4> */}
       </div>
+      <div style={{ display: "flex" }}></div>
       <div style={{ display: "flex" }}>
-        {/* {description.participants.map((participant, id) => (
-          <Link
-            to={`/${user}/${travel}/${travelName}/profile/${participant}`}
-            style={{ margin: "auto" }}
-          >
-            <h3 className="link-text" key={id}>
-              {" "}
-              {participant}{" "}
-            </h3>
-          </Link>
-        ))} */}
-      </div>
-      <div style={{ display: "flex" }}>
-        {/*/15/157/3호선/profile/황장원*/}
         {parti_list.map((parti, index) => (
-        <div>
-          <Link to={`/${user}/${travel}/${travelName}/profile/${parti.name}`} state={{ personid: parti.id }}>
-            <h3 className="link-text" key={index}>{parti.name}</h3>
-          </Link>
-        </div>
+          <div>
+            <Link
+              to={`/${user}/${travel}/${travelName}/profile/${parti.name}`}
+              state={{ personid: parti.id }}
+            >
+              <h3 className="link-text" key={index}>
+                {parti.name}
+              </h3>
+            </Link>
+          </div>
         ))}
       </div>
       <button onClick={onDelete}>Delete Event</button>
