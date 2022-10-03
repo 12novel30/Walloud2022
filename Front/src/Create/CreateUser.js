@@ -89,7 +89,7 @@ const CreateUser = () => {
         }
         if(need_to_send.length === 0) {
           console.log("test")
-          navigate(`/${user}/${travel}/${travelName}`);
+          navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
         }
       }).catch((error) => {
         console.log(error);
@@ -102,7 +102,7 @@ const CreateUser = () => {
     <div>
       <Link
         to={`/${user}/${travel}/${travelName}`}
-        state={{ user: user, travel: travel, travelName: travelName }}
+        state = {{created : false}}
       >
       
        <h1 className="home">{travelName}</h1>

@@ -118,7 +118,7 @@ function CreateEvent() {
             break;
           case 200:
             alert("Success");
-            navigate(`/${user}/${travel}/${travelName}`);
+            navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
             break;
           default:
             throw "Network Error";
@@ -134,6 +134,7 @@ function CreateEvent() {
       <Link
         to={`/${user}/${travel}/${travelName}`}
         // state={{ user_id: userid, travel_id: travelid, travelName: travelname }}
+        state = {{created : false}}
       >
         <h1 className="home">{travelName}</h1>
       </Link>
