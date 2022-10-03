@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import NavigationBar from "../js/NavigationBar";
 import DisplayUsers from "./DisplayUsers";
 import Events from "./Events";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import plusSrc from "../img/plus.jpg";
 import axios from "axios";
 import { min } from "moment";
@@ -10,6 +10,8 @@ import { min } from "moment";
 const Home = () => {
   // const user = useLocation().state.user_id;
   // const travel = useLocation().state.travel_id;
+
+  const [created,setCreate] = useState(useLocation().state.created);
   const { user, travel, travelName } = useParams();
   const [userList, setuserList] = useState([]);
   const [eventList, seteventList] = useState([]);
@@ -29,14 +31,22 @@ const Home = () => {
     getEventandUser();
   }, []);
 
+  const goHome = () => {
+    navigate(`/${user}/${travel}/${travelName}`, {state : {created : false}});
+  }
   // parameter = user info,
   const getEventandUser = async () => {
     await axios
       .get(`/api/${user}/${travel}`)
       .then((response) => {
         console.log(response.data);
-        if (response.data.personCount === 1) {
-          navigate(`/${user}/${travel}/${travelName}/createUser`);
+        if (created) {
+          if(window.confirm("여행 참가자가 있습니까?")) {
+            navigate(`/${user}/${travel}/${travelName}/createUser`);
+          }
+          else {
+            setCreate(false);
+          }
         }
         seteventList(response.data.eventList);
         setuserList(response.data.personList);
@@ -62,15 +72,10 @@ const Home = () => {
 
   return (
     <div>
-      <Link
-        to={`/${user}/${travel}/${travelName}`}
-        state={{ user: user, travel: travel, travelName: travelName }}
-      >
-        <h1>
-          {travelName}
-          {" " + period}
-        </h1>
-      </Link>
+      <h1 onClick = {goHome}>
+        {travelName}
+        { period === null ? <div></div> : <div>{" " + period}</div>}
+      </h1>
       <div className="big-box">
         <h2 className="home-h2">Events</h2>
         {/* <Link to="createEvent" key={(user, travel)}>

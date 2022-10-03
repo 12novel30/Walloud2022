@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
   const { user, travel, travelName } = useParams();
   const personid = useLocation().state.personid;
-
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const [person_in_List, seteventList] = useState([]);
 
@@ -19,7 +19,6 @@ const Profile = () => {
       .then((res) => {
         console.log(res.data);
         setProfile(res.data);
-        console.log(res.data.eventList);
         // setList(res.data.eventList);
         seteventList(res.data.eventList);
         console.log(person_in_List);
@@ -29,31 +28,31 @@ const Profile = () => {
       });
   };
 
-  const displayEvents = () => {
-    const events = profile.eventList;
-    console.log("eventList : ", events);
-
-    return (
-      <div style={{ display: "flex" }}>
-        {events.map((event, index) => (
-          <div>
-            <Link
-              to={`/${user}/${travel}/${travelName}/${event}`}
-              state={{ event: event }}
-            >
-              <h3 className="link-text" key={index}>
-                {event}
-              </h3>
-            </Link>
-          </div>
-        ))}
-      </div>
-    );
-  };
+  const delPerson = async() => {
+    if(window.confirm("Username "+profile.userName+"should be not in any events\nAre you sure you want to delete?")) {
+      await axios.post(`/api/${user}/${travel}/deleteUser`,{
+        person_id : personid
+      }).then((res) => {
+        switch(res.data) {
+          case 200:
+            window.alert("Succesfully Delete");
+            navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
+            break;
+          case -1:
+            window.alert("User has joined some events. Delete user from events");
+            break;
+          default:
+            throw "Network Error";
+        }
+      }).catch((error)=> {
+        console.log(error);
+      })
+    }
+  }
 
   return (
     <div>
-      <Link to={`/${user}/${travel}/${travelName}`}>
+      <Link to={`/${user}/${travel}/${travelName}`} state = {{created : false}}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2>{profile.userName}</h2>
@@ -77,6 +76,7 @@ const Profile = () => {
           </div>
         ))}
       </div>
+      <button onClick = {delPerson}>Delete person</button>
       <br />
     </div>
   );

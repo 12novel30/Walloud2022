@@ -28,7 +28,7 @@ const CreateTravel = (props) => {
       .post(`/api/${user_id}/createTravel`, { travel_name: Travel_name })
       .then((res) => {
         console.log(res.data);
-        navigate(`/${user_id}/${res.data}/${Travel_name}/`);
+        navigate(`/${user_id}/${res.data}/${Travel_name}/`, {state : { created : true}});
       })
       .catch((error) => {
         console.log(error);

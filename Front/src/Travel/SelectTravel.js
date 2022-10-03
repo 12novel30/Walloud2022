@@ -9,6 +9,7 @@ const SelectTravel = () => {
   const [myTravel, setTravellist] = useState([]);
 
   const [try_del, setDelete] = useState(false);
+  const [user_account, setAccount] = useState("");
   const [checkAllButton, setCheckAllButton] = useState("전체 선택");
   const [checkedItems, setCheckedItems] = useState([]);
   const [checkedTravel, setCheckedTravel] = useState([]);
@@ -22,6 +23,7 @@ const SelectTravel = () => {
       .get(`/api/${user}`)
       .then((response) => {
         setTravellist(response.data.travelList);
+        setAccount(response.data.account);
         console.log(response.data);
       })
       .catch((error) => {
@@ -104,7 +106,7 @@ const SelectTravel = () => {
       <div style={{ display: "flex" }}>
         <div>
           <img src={personPng} alt="me" />
-          <h3> Account : test Account</h3>
+          <h3> Account : {user_account}</h3>
           <button onClick={Logout}>Log Out</button>
         </div>
         <div>
@@ -118,9 +120,7 @@ const SelectTravel = () => {
                       key={idx}
                       to={`/${user}/${travel.id}/${travel.name}`}
                       state={{
-                        user: user,
-                        travel: travel.id,
-                        travelName: travel.name,
+                        created : false
                       }}
                     >
                       <h4

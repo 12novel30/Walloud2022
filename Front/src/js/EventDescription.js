@@ -1,16 +1,36 @@
-import React, { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import axios from "axios";
 
 const EventDescription = () => {
-  console.log("event description");
   const description = useLocation().state.event;
+  const navigate = useNavigate();
   console.log("event : ", description);
   const { user, travel, travelName } = useParams();
+  const [parti_list, setParti] = useState([]);
 
-  const onDelete = () => {
-    window.alert("Are you sure you want to delete?");
+  const onDelete = async() => {
+    if(window.confirm("Are you sure you want to delete?")) {
+      await axios.delete(`/api/${user}/${travel}/${description.id}/deleteEvent`)
+      .then((res) => {
+        console.log(res.data);
+        window.alert("Succesfully Deleted");
+        navigate(`/${user}/${travel}/${travelName}`, {state : {created : false}});
+      }).catch((error) => {
+        console.log(error);
+        window.location.reload();
+      })
+    }
   };
+
+  useEffect(() => {
+    axios.get(`/api/${user}/${travel}/${description.id}/detail`)
+    .then((res) => {
+      console.log(res.data);
+      setParti(res.data);
+    })
+  },[])
 
   const ModifiablePrice = ({ value }) => {
     const [price, setPrice] = useState(value);
@@ -92,7 +112,7 @@ const EventDescription = () => {
 
   return (
     <div>
-      <Link to={`/${user}/${travel}/${travelName}`}>
+      <Link to={`/${user}/${travel}/${travelName}`} state = {{created : false}}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2 id="headers">{description.name}</h2>
@@ -125,7 +145,16 @@ const EventDescription = () => {
           </Link>
         ))} */}
       </div>
-
+      <div style={{ display: "flex" }}>
+        {/*/15/157/3호선/profile/황장원*/}
+        {parti_list.map((parti, index) => (
+        <div>
+          <Link to={`/${user}/${travel}/${travelName}/profile/${parti.name}`} state={{ personid: parti.id }}>
+            <h3 className="link-text" key={index}>{parti.name}</h3>
+          </Link>
+        </div>
+        ))}
+      </div>
       <button onClick={onDelete}>Delete Event</button>
     </div>
   );
