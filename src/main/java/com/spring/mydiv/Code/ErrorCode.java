@@ -12,6 +12,8 @@ public enum ErrorCode {
     NO_EVENT("There is no corresponding EVENT."),
     NO_PAYER("There is no PAYER for the event."),
 
+    WRONG_EMAIL("There is no such email information."),
+    WRONG_PASSWORD("Invalid password."),
 
     NO_DEVELOPER("해당되는 개발자가 없습니다."),
     DUPLICATED_MEMBER_ID("memberId가 중복됩니다."),
