@@ -69,6 +69,8 @@ public class ParticipantDto {
          * 1, true: payer
          * 0, false: -
          */
+        @NotNull
+        private Double chargedPrice;
     }
 
 }

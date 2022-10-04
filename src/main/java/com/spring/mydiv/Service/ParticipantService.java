@@ -31,9 +31,14 @@ public class ParticipantService {
                 .person(request.getPerson())
                 .event(request.getEvent())
                 .eventRole(request.getRole())
+                .chargedPrice(request.getChargedPrice())
                 .build();
         participantRepository.save(participant);
         return ParticipantDto.basic.fromEntity(participant);
+    }
+
+    public Double calculateChargedPrice(int eventPrice, int partiSize){
+            return (double) eventPrice / partiSize; // 추후 업데이트에 따라 로직 변경 가능
     }
 
     public List<EventDto.PersonView> getEventListThatPersonJoin(int personId){

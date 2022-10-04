@@ -36,4 +36,7 @@ public class Participant implements Serializable {
 	 * 0, false: -
 	 */
 
+	@Column(name = "participant_chargedprice")
+	private Double chargedPrice;
+
 }

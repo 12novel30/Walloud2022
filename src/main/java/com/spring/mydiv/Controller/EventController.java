@@ -56,11 +56,12 @@ public class EventController {
         if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
             // setting
             List<Person> personList = new ArrayList<>();
-            System.out.println(partiDtoList.size());
-            for (Map partiDto : partiDtoList){
+            for (Map partiDto : partiDtoList) {
                 Person person = personService.getPersonEntityByPersonId(
-                        Long.valueOf(partiDto.get("id").toString())); //orElseThrow // person_id가 아닌 id 입니다...
+                        Long.valueOf(partiDto.get("id").toString()));
                 personList.add(person);
+
+                Double chargedPrice = participantService.calculateChargedPrice(Integer.parseInt(map.get("price").toString()), partiCount);
 
                 // create participant
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
@@ -68,21 +69,33 @@ public class EventController {
                         .event(eventService.getEventEntityByEventId(
                                 Long.valueOf(eventDto.getEventId().toString()))) //orElseThrow
                         .role(Boolean.valueOf(partiDto.get("role").toString()))
+                        .chargedPrice(chargedPrice)
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
                     return -2; //fail to create participate
             }
 
+            if (!isPayerInParticipant){
+                ParticipantDto.Request payerRequest = ParticipantDto.Request.builder()
+                        .person(personService.getPersonEntityByPersonId(
+                                Long.valueOf(map.get("payer_person_id").toString())))
+                        .event(eventService.getEventEntityByEventId(
+                                Long.valueOf(eventDto.getEventId().toString()))) //orElseThrow
+                        .role(true)
+                        .chargedPrice(0.0)
+                        .build();
+                participantService.createParticipant(payerRequest);
+            } // clean code 위해 추후 수정해야 함
+
             // if success to create Participant
             // update person
-            System.out.println(eventDto.getDividePrice());
             personService.updatePersonMoneyByCreating(personList,
                     Long.valueOf(map.get("payer_person_id").toString()),
                     eventDto.getDividePrice(),
                     eventDto.getTakePrice(),
                     isPayerInParticipant);
+            // clean code 위해 추후 수정 (for문 안에 함께 들어가야 함)
             personService.updatePersonRole(travelId);
-
             return 200; //success all
         } else return -1; //fail to create event
     }
