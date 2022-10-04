@@ -45,17 +45,24 @@ public class UserService {
         return UserDto.Response.fromEntity(user);
     } //fin
 
-    int result = 0;
+
     public int login(UserDto.Login loginUser) {
-        //ver1. int return
-        Optional<User> info = userRepository.findByEmail(loginUser.getEmail());
-        info.ifPresentOrElse(
-            user -> //"Wrong Password!"
-                {if (loginUser.getPassword().toString().equals(user.getPassword().toString())) {
-                    result = user.getId().intValue();}
-                else{result = -1;}},
-            ()-> {if(loginUser.getEmail()!=null){result = -2;}} //"Wrong Email!"
-        );
+        int result = 0;
+
+//        Optional<User> info1 = userRepository.findByEmail(loginUser.getEmail());
+//        info1.ifPresentOrElse(
+//            user -> //"Wrong Password!"
+//                {if (loginUser.getPassword().toString().equals(user.getPassword().toString())) {
+//                    result = user.getId().intValue();}
+//                else{result = -1;}},
+//            ()-> {if(loginUser.getEmail()!=null){result = -2;}} //"Wrong Email!"
+//        );
+
+        User entity = userRepository.findByEmail(loginUser.getEmail())
+                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+        if (loginUser.getPassword().toString().equals(entity.getPassword().toString()))
+            result = entity.getId().intValue();
+        else throw new DefaultException(WRONG_PASSWORD);
         return result;
     } //ing
 
