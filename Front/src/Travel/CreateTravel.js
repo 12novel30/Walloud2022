@@ -31,7 +31,9 @@ const CreateTravel = (props) => {
         navigate(`/${user_id}/${res.data}/${Travel_name}/`, {state : { created : true}});
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
       });
     }
   };
