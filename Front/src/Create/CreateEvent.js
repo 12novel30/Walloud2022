@@ -8,9 +8,7 @@ function CreateEvent() {
   const users = useLocation().state.userList;
   const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
-  var payer = userPersonId;
-
-  console.log(users);
+  const [payer, setPayer] = useState(users[0].personId)
 
   var participants = [...users];
   const navigate = useNavigate();
@@ -24,7 +22,6 @@ function CreateEvent() {
 
   const onChange = (e) => {
     const { value, name } = e.target;
-    console.log(value, name);
     setInputs({
       ...inputs,
       [name]: value,
@@ -32,54 +29,41 @@ function CreateEvent() {
   };
 
   const checkHandler = (checked, elem) => {
+    console.log(elem)
     if (checked) {
       participants.push(elem);
-      console.log(elem, "push", participants);
     } else {
-      participants = participants.filter((e) => e.id !== elem.id);
+      participants = participants.filter((e) => e.personId !== elem.personId);
     }
-    console.log(participants);
-  };
-
-  const payer_in_parti = () => {
-    for (var i = 0; i < participants.length; i++) {
-      if (parseInt(participants[i]["id"]) == parseInt(payer)) {
-        return true;
-      }
-    }
-
-    return false;
   };
 
   const onSubmit = (e) => {
-    console.log("participants : ", participants);
-    console.log("payer : ", payer);
 
     if (place === "") {
       alert("Set place\n");
     } else if (price === "") {
       alert("Set price\n");
     } else {
-      console.log("payer : ", payer);
-      console.log("participant : ", participants);
       event_info();
     }
   };
 
   const setSelectedPayer = (e) => {
-    console.log(participants);
-    payer = e.target.value;
-    console.log(payer);
+    console.log(e.target.value);
+    setPayer(e.target.value)
   };
 
   const event_info = async () => {
-    let temp_list = [...participants].map(function (row) {
-      delete row.name;
-      delete row.difference;
-      delete row.userId;
 
-      return row;
-    });
+    let temp_list = [];
+    for (let i = 0; i < participants.length; i++) {
+      let t_elem = {
+        role : participants[i].role,
+        id : participants[i].personId
+      }
+      temp_list.push(t_elem);
+    }
+
 
     console.log("event json", {
       parti_list: temp_list,
@@ -164,7 +148,7 @@ function CreateEvent() {
         <label htmlFor="participants">Payer</label>
         <select id="participants" onChange={setSelectedPayer}>
           {users.map((userInfo, id) =>
-            parseInt(user) === parseInt(userInfo.personId) ? (
+            parseInt(user) === parseInt(userInfo.userId) ? (
               <option value={userInfo.personId} key={id} selected>
                 {userInfo.name}
               </option>
