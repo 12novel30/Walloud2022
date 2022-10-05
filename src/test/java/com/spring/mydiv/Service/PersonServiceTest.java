@@ -98,24 +98,6 @@ class PersonServiceTest {
     @Commit
     @DisplayName("이벤트 생성으로 person 정보 업데이트")
     void updatePersonWithEvent() {
-        //given
-        List<Person> personList = new ArrayList<>();
-        Person person1 = personService.getPersonEntityByPersonId(Long.valueOf(92));
-        personList.add(person1);
-        Person person2 = personService.getPersonEntityByPersonId(Long.valueOf(93));
-        personList.add(person2);
-        Person person3 = personService.getPersonEntityByPersonId(Long.valueOf(94));
-        personList.add(person3);
-        Long payer_person_id = Long.valueOf(94);
-        Double dividePrice = 70000.0;
-        Double takePrice = 140000.0;
-
-        //when
-        personService.updatePersonMoneyByCreating(personList, payer_person_id, dividePrice, takePrice, true);
-        personService.updatePersonRole(91);
-
-        //then
-        System.out.println("check DB");
     }
 
     @Test
@@ -169,7 +151,7 @@ class PersonServiceTest {
         //when
         PersonDto.HomeView tmp = personService.getPayerInTravel(travelId);
         //then
-        System.out.println("payer : " + tmp.getId());
+        System.out.println("payer : " + tmp.getPersonId());
         System.out.println("payer : " + tmp.getName());
     }
 

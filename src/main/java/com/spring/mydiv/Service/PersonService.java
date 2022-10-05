@@ -105,26 +105,17 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_USER));
     }
 
-    public void updatePersonMoneyByCreating(List<Person> personList, Long payer_personId,
-                                       Double dividePrice, Double takePrice, Boolean isPayerInParticipant){
-        if (!isPayerInParticipant){
-            Person p = personRepository.findById(payer_personId)
-                    .orElseThrow(()-> new DefaultException(NO_USER));
+    public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
+        if(p_role){
+            Double takePrice = eventPrice - chargedPrice;
             p.setSumGet(p.getSumGet() + takePrice);
             p.setDifference(p.getDifference() + takePrice);
             personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
-        for (Person p : personList){
-            if (p.getId().equals(payer_personId)){ // payer
-                System.out.println(p.getId());
-                p.setSumGet(p.getSumGet() + takePrice);
-                p.setDifference(p.getDifference() + takePrice);
-                personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
-            } else { // ~payer
-                p.setSumSend(p.getSumSend() + dividePrice);
-                p.setDifference(p.getDifference() - dividePrice);
-                personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
-            }
+        else{
+            p.setSumSend(p.getSumSend() + chargedPrice);
+            p.setDifference(p.getDifference() - chargedPrice);
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
 

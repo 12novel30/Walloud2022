@@ -42,62 +42,54 @@ public class EventController {
         List<Map> partiDtoList = (List)map.get("parti_list");
         Boolean isPayerInParticipant = eventService.checkPayerInParticipant(partiDtoList, Long.valueOf(map.get("payer_person_id").toString()));
         int partiCount = partiDtoList.size();
+        int eventPrice = Integer.parseInt(map.get("price").toString());
+        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
 
         // create event
         EventDto.Request request = EventDto.Request.builder()
                 .Name(map.get("event_name").toString())
                 .Travel(travelService.getTravelInfo(travelId)) //orElseThrow
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
-                .Price(Integer.parseInt(map.get("price").toString()))
+                .Price(eventPrice)
                 .PartiCount(partiCount)
                 .isPayerInParticipant(isPayerInParticipant)
-                .PayerPersonId(Long.valueOf(map.get("payer_person_id").toString()))
+                .PayerPersonId(payerId)
                 .build();
         EventDto.Response eventDto = eventService.createEvent(request);
 
-        // if success to create Event
         if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
-            // setting
-            List<Person> personList = new ArrayList<>();
-            for (Map partiDto : partiDtoList) {
-                Person person = personService.getPersonEntityByPersonId(
-                        Long.valueOf(partiDto.get("id").toString()));
-                personList.add(person);
+            List<Long> peopleId = new ArrayList<>();
+            for (Map partiDto : partiDtoList){
+               peopleId.add(Long.valueOf(partiDto.get("id").toString()));
+            }
+            if (!isPayerInParticipant){
+                peopleId.add(payerId);
+            }
 
-                Double chargedPrice = participantService.calculateChargedPrice(Integer.parseInt(map.get("price").toString()), partiCount);
+            for(Long personId : peopleId){
+                System.out.println(personId);
+                System.out.println(payerId);
+                Person person = personService.getPersonEntityByPersonId(personId);
+                Double chargedPrice = participantService.calculateChargedPrice(eventPrice, partiCount);
+                Boolean p_role = false;
+                if (personId.equals(payerId)){
+                    p_role = true;
+                    if(!isPayerInParticipant){
+                        chargedPrice = 0.0;
+                    }
+                }
 
-                // create participant
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
                         .person(person)
-                        .event(eventService.getEventEntityByEventId(
-                                Long.valueOf(eventDto.getEventId().toString()))) //orElseThrow
-                        .role(Boolean.valueOf(partiDto.get("role").toString()))
+                        .event(eventService.getEventEntityByEventId(Long.valueOf(eventDto.getEventId().toString())))
+                        .role(p_role)
                         .chargedPrice(chargedPrice)
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
                     throw new DefaultException(CREATE_PARTICIPANT_FAIL);
+
+                personService.updatePersonMoneyByCreating(person, eventPrice, chargedPrice, p_role);
             }
-
-            if (!isPayerInParticipant){
-                ParticipantDto.Request payerRequest = ParticipantDto.Request.builder()
-                        .person(personService.getPersonEntityByPersonId(
-                                Long.valueOf(map.get("payer_person_id").toString())))
-                        .event(eventService.getEventEntityByEventId(
-                                Long.valueOf(eventDto.getEventId().toString()))) //orElseThrow
-                        .role(true)
-                        .chargedPrice(0.0)
-                        .build();
-                participantService.createParticipant(payerRequest);
-            } // clean code 위해 추후 수정해야 함
-
-            // if success to create Participant
-            // update person
-            personService.updatePersonMoneyByCreating(personList,
-                    Long.valueOf(map.get("payer_person_id").toString()),
-                    eventDto.getDividePrice(),
-                    eventDto.getTakePrice(),
-                    isPayerInParticipant);
-            // clean code 위해 추후 수정 (for문 안에 함께 들어가야 함)
             personService.updatePersonRole(travelId);
         } else throw new DefaultException(CREATE_EVENT_FAIL);
     }
