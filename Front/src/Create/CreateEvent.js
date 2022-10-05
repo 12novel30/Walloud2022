@@ -54,7 +54,6 @@ function CreateEvent() {
   };
 
   const event_info = async () => {
-
     let temp_list = [];
     for (let i = 0; i < participants.length; i++) {
       let t_elem = {
@@ -63,7 +62,6 @@ function CreateEvent() {
       }
       temp_list.push(t_elem);
     }
-
 
     console.log("event json", {
       parti_list: temp_list,
@@ -81,26 +79,15 @@ function CreateEvent() {
         price: price,
         payer_person_id: payer,
       })
-      .then((res) => {
-        switch (res.data) {
-          case -1:
-            alert("fail to create event");
-            break;
-          case -2:
-            alert("fail to create participate");
-            break;
-          case 200:
-            alert("Success");
-            navigate(`/${user}/${travel}/${travelName}`, {
-              state: { created: false },
-            });
-            break;
-          default:
-            throw "Network Error";
-        }
+      .then(() => {
+        navigate(`/${user}/${travel}/${travelName}`, {
+          state: { created: false },
+        });
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
       });
   };
 

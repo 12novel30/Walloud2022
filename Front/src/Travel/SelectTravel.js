@@ -34,7 +34,9 @@ const SelectTravel = () => {
         console.log(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
       });
   };
 
@@ -59,7 +61,9 @@ const SelectTravel = () => {
                 alert("삭제되었습니다.");
               })
               .catch((error) => {
-                console.log(error);
+                if (error.response.data.status === 500) {
+                  alert(error.response.data.message);
+                }
               });
           });
           window.location.reload();

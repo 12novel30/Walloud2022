@@ -3,14 +3,12 @@ import React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { debounce, throttle } from "lodash";
 
 const LogIn = () => {
   const [input_id, setId] = useState("");
   const [input_password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("none");
   const navigate = useNavigate();
-  const [submitLoading, setSubmitLoading] = useState(false);
 
   const onIdHandler = (event) => {
     setId(event.currentTarget.value);
@@ -28,37 +26,22 @@ const LogIn = () => {
       })
       .then((response) => {
         console.log(response.data);
-        switch (response.data) {
-          case 0:
-            throw "Network Error";
-          case -1:
-            alert("Wrong Password");
-            navigate("/login");
-            break;
-          case -2:
-            alert("Wrong Email");
-            navigate("/login");
-            break;
-          default:
-            alert("Login Success!");
-            navigate("/selectTravel", { state: { id: response.data } });
-            break;
-        }
+        alert("Login Success!");
+        navigate("/selectTravel", { state: { id: response.data } });
       })
       .catch((error) => {
-        console.log(error);
-        setPasswordCheck(true);
+
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
+        else {
+          alert("Check The network");
+        }
       });
   };
 
   const onSubmit = (event) => {
-    console.log("world");
-    if (submitLoading === false) {
-      console.log("hello");
-      try_LogIn(event);
-      setSubmitLoading(true);
-    }
-    setSubmitLoading(false);
+    try_LogIn(event)
   };
 
   const enterkey = () => {

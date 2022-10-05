@@ -69,30 +69,18 @@ const CreateUser = () => {
       axios.post(`/api/${user}/${travel}/createUser`,{
         user_email : invite_elem.email
       }).then((res) => {
-        switch(res.data) {
-          case 200:
-            need_to_send = need_to_send.filter(e => e.id !== invite_elem.id);
-            console.log("invite List : ", need_to_send);
-            setInvite(need_to_send);
-            break;
-          case -1:
-            alert("check the email (" + invite_elem.email + ") is correct");
-            break;
-          case -2:
-            alert("Network Error");
-            break;
-          case -3:
-            alert("User ("+ invite_elem.email +") is already existed.");
-            break;
-          default:
-            break;
-        }
+        console.log(res.data);
+        need_to_send = need_to_send.filter(e => e.id !== invite_elem.id);
+        console.log("invite List : ", need_to_send);
+        setInvite(need_to_send);
         if(need_to_send.length === 0) {
           console.log("test")
           navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
         }
       }).catch((error) => {
-        console.log(error);
+        if (error.response.data.status === 500) {
+          alert(invite_elem.email+error.response.data.message);
+        }
       })
     })
   }

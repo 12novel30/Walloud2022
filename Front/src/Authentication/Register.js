@@ -46,7 +46,9 @@ const Register = () => {
         setConfirmPassword("");
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
       });
   };
 

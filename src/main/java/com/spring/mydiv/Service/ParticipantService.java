@@ -97,7 +97,8 @@ public class ParticipantService {
             Long personId = participant.getPerson().getId();
             String participantName = participant.getPerson().getUser().getName();
             Boolean eventRole = participant.getEventRole();
-            ParticipantDto.detailView participantDetail = new ParticipantDto.detailView(personId, participantName, eventRole);
+            Double chargedPrice = participant.getChargedPrice();
+            ParticipantDto.detailView participantDetail = new ParticipantDto.detailView(personId, participantName, eventRole, chargedPrice);
             participantDetailList.add(participantDetail);
         }
 

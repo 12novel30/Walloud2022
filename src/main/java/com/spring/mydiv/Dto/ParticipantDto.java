@@ -51,6 +51,8 @@ public class ParticipantDto {
         private String Name;
         @NotNull
         private boolean eventRole;
+        @NotNull
+        private Double chargedPrice;
     }
 
     @Getter
