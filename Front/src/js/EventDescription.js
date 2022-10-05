@@ -5,31 +5,38 @@ import axios from "axios";
 
 const EventDescription = () => {
   const users = useLocation().state.users;
+  console.log("event description", users);
   const description = useLocation().state.event;
   const navigate = useNavigate();
   console.log("event : ", description);
   const { user, travel, travelName } = useParams();
   const [parti_list, setParti] = useState([]);
 
-  const onDelete = async() => {
-    if(window.confirm("Are you sure you want to delete?")) {
-      await axios.delete(`/api/${user}/${travel}/${description.eventId}/deleteEvent`)
-      .then((res) => {
-        console.log(res.data);
-        window.alert("Succesfully Deleted");
-        navigate(`/${user}/${travel}/${travelName}`, {state : {created : false}});
-      }).catch((error) => {
-        console.log(error);
-        window.location.reload();
-      })
+  const onDelete = async () => {
+    if (window.confirm("Are you sure you want to delete?")) {
+      await axios
+        .delete(`/api/${user}/${travel}/${description.eventId}/deleteEvent`)
+        .then((res) => {
+          console.log(res.data);
+          window.alert("Succesfully Deleted");
+          navigate(`/${user}/${travel}/${travelName}`, {
+            state: { created: false },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          window.location.reload();
+        });
     }
   };
 
   useEffect(() => {
-    axios.get(`/api/${user}/${travel}/${description.EventId}/detail`).then((res) => {
-      console.log(res.data);
-      setParti(res.data);
-    });
+    axios
+      .get(`/api/${user}/${travel}/${description.eventId}/detail`)
+      .then((res) => {
+        console.log(res.data);
+        setParti(res.data);
+      });
   }, []);
 
   const ModifiablePrice = ({ value }) => {

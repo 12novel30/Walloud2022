@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
   const { user, travel, travelName } = useParams();
-  const personid = useLocation().state.personid;
+  const personId = useLocation().state.personId;
   const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const [person_in_List, seteventList] = useState([]);
@@ -15,7 +15,7 @@ const Profile = () => {
 
   const getProfile = async () => {
     await axios
-      .get(`/api/${user}/${travel}/${personid}/personDetail`)
+      .get(`/api/${user}/${travel}/${personId}/personDetail`)
       .then((res) => {
         console.log(res.data);
         setProfile(res.data);
@@ -27,31 +27,44 @@ const Profile = () => {
       });
   };
 
-  const delPerson = async() => {
-    if(window.confirm("Username "+profile.userName+"should be not in any events\nAre you sure you want to delete?")) {
-      await axios.delete(`/api/${user}/${travel}/deleteUser`,{
-        person_id : personid
-      }).then((res) => {
-        switch(res.data) {
-          case 200:
-            window.alert("Succesfully Delete");
-            navigate(`/${user}/${travel}/${travelName}`,{state : {created : false}});
-            break;
-          case -1:
-            window.alert("User has joined some events. Delete user from events");
-            break;
-          default:
-            throw "Network Error";
-        }
-      }).catch((error)=> {
-        console.log(error);
-      })
+  const delPerson = async () => {
+    if (
+      window.confirm(
+        "Username " +
+          profile.userName +
+          "should be not in any events\nAre you sure you want to delete?"
+      )
+    ) {
+      await axios
+        .delete(`/api/${user}/${travel}/deleteUser`, {
+          person_id: personId,
+        })
+        .then((res) => {
+          switch (res.data) {
+            case 200:
+              window.alert("Succesfully Delete");
+              navigate(`/${user}/${travel}/${travelName}`, {
+                state: { created: false },
+              });
+              break;
+            case -1:
+              window.alert(
+                "User has joined some events. Delete user from events"
+              );
+              break;
+            default:
+              throw "Network Error";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }
+  };
 
   return (
     <div>
-      <Link to={`/${user}/${travel}/${travelName}`} state = {{created : false}}>
+      <Link to={`/${user}/${travel}/${travelName}`} state={{ created: false }}>
         <h1 className="home">{travelName}</h1>
       </Link>
       <h2>{profile.userName}</h2>
@@ -75,7 +88,7 @@ const Profile = () => {
           </div>
         ))}
       </div>
-      <button onClick = {delPerson}>Delete person</button>
+      <button onClick={delPerson}>Delete person</button>
       <br />
     </div>
   );

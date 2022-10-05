@@ -9,9 +9,9 @@ function ChangeEvent() {
   const users = useLocation().state.users;
   const { user, travel, travelName } = useParams();
 
-  const parti_list_id = useLocation().state.parti_list.map((e) => e.id);
+  const parti_list_id = useLocation().state.parti_list.map((e) => e.personId);
 
-  var participants = users.filter((e) => parti_list_id.includes(e.id));
+  var participants = users.filter((e) => parti_list_id.includes(e.personId));
   var payer = users.filter((e) => e.name === description.payerName)[0].id;
   const navigate = useNavigate();
 
@@ -88,6 +88,7 @@ function ChangeEvent() {
         price: price,
         payer_person_id: payer,
       })
+
       .then((res) => {
         switch (res.data) {
           case -1:
@@ -185,9 +186,9 @@ function ChangeEvent() {
           >
             <input
               className="checkbox"
-              defaultChecked={parti_list_id.includes(userInfo.id)}
+              defaultChecked={parti_list_id.includes(userInfo.personId)}
               type="checkbox"
-              id={userInfo.id}
+              id={userInfo.personid}
               onChange={(e) => checkHandler(e.target.checked, userInfo)}
             />
             <label className="checkbox-text" htmlFor={userInfo.id}>
