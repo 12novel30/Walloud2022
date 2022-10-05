@@ -27,11 +27,6 @@ public class EventService {
     private final ParticipantService participantService;
 
     public EventDto.Response createEvent(EventDto.Request request){
-        Double dividePrice = (double)request.getPrice()/request.getPartiCount();
-        Double takePrice = (double)request.getPrice() - dividePrice;
-        if (!request.isPayerInParticipant()){
-            takePrice = (double)request.getPrice();
-        }
 
         Event event = Event.builder()
                 .name(request.getName())
@@ -41,8 +36,6 @@ public class EventService {
                         .id(request.getTravel().getTravelId())
                         .name(request.getTravel().getName())
                         .build())
-                .dividePrice(dividePrice)
-                .takePrice(takePrice)
                 .payerPersonid(request.getPayerPersonId())
                 .build();
         eventRepository.save(event);
@@ -95,6 +88,7 @@ public class EventService {
                 .orElseThrow(()-> new DefaultException(NO_EVENT));
     }
 
+    /*
     public EventDto.deleteRequest getEventDetailforDelete(int eventId){
         ParticipantDto.peopleList peopleList = participantService.getJoinedPeopleInEvent(eventId);
         Event event = eventRepository.findById(Long.valueOf(eventId))
@@ -106,6 +100,8 @@ public class EventService {
                 .DividePrice(event.getDividePrice())
                 .TakePrice(event.getTakePrice()).build();
     }
+
+     */
 
     public void deleteEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));

@@ -21,8 +21,6 @@ public class EventDto {
         private String Name;
         private Date Date;
         private int Price;
-        private Double DividePrice;
-        private Double TakePrice;
 
         public static basic fromEntity(Event event){
             return basic.builder()
@@ -30,8 +28,6 @@ public class EventDto {
                     .Name(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
-                    .DividePrice(event.getDividePrice())
-                    .TakePrice(event.getTakePrice())
                     .build();
         }
     }
@@ -45,8 +41,6 @@ public class EventDto {
         private List<Person> joinedPerson;
         @NotNull
         private Long payerId;
-        private Double DividePrice;
-        private Double TakePrice;
     }
 
     @Getter
@@ -80,15 +74,11 @@ public class EventDto {
         private Long EventId;
         @NotNull
         private String Name;
-        private Double DividePrice;
-        private Double TakePrice;
 
         public static Response fromEntity(Event event) {
             return Response.builder()
                     .EventId(event.getId())
                     .Name(event.getName())
-                    .DividePrice(event.getDividePrice())
-                    .TakePrice(event.getTakePrice())
                     .build();
         }
     }
@@ -133,10 +123,6 @@ public class EventDto {
         private java.util.Date Date;
         @NotNull
         private int Price;
-        @NotNull
-        private Double DividePrice;
-        @NotNull
-        private Double TakePrice;
         private Long PayerId;
         private String PayerName;
         public static PersonView fromEntity(Event event) {
@@ -145,8 +131,6 @@ public class EventDto {
                     .EventName(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
-                    .DividePrice(event.getDividePrice())
-                    .TakePrice(event.getTakePrice())
                     .build();
         }
     }

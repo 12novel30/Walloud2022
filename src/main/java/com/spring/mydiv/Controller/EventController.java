@@ -94,6 +94,7 @@ public class EventController {
         } else throw new DefaultException(CREATE_EVENT_FAIL);
     }
 
+    /*
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
     public void deleteEvent(@PathVariable("eventid") int event_id)
     {
@@ -104,6 +105,7 @@ public class EventController {
                 DeleteRequest.getTakePrice());
         eventService.deleteEvent(event_id);
     }
+    */
 
     @GetMapping("/{userid}/{travelid}/{eventid}/detail")
     public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable("eventid") int eventid){
