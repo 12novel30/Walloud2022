@@ -49,10 +49,10 @@ public class UserController {
                 map.get("input_id").toString(),
                 map.get("input_password").toString());
         return userservice.login(loginUser);
-        /**success -> return [user id]
-         * wrong email -> -2
-         * wrong pw -> -1
-         */
+//        /**success -> return [user id]
+//         * wrong email -> -2
+//         * wrong pw -> -1
+//         */
     }
 
     @GetMapping("/{userId}")

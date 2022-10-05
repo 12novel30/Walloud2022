@@ -18,9 +18,6 @@ import java.util.*;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 
-/**
- * @author 12nov
- */
 @Service
 @RequiredArgsConstructor
 public class EventService {

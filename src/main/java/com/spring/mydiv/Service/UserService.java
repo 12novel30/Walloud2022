@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
@@ -60,7 +61,7 @@ public class UserService {
 
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
-        if (loginUser.getPassword().toString().equals(entity.getPassword().toString()))
+        if (loginUser.getPassword().equals(entity.getPassword()))
             result = entity.getId().intValue();
         else throw new DefaultException(WRONG_PASSWORD);
         return result;
