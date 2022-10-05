@@ -2,6 +2,7 @@ package com.spring.mydiv.Controller;
 
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.EventService;
 import com.spring.mydiv.Service.ParticipantService;
 import com.spring.mydiv.Service.PersonService;
@@ -14,6 +15,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.spring.mydiv.Code.ErrorCode.*;
 
 /**
  * @author 12nov
@@ -33,7 +36,7 @@ public class EventController {
 //    }
 
     @PostMapping("/{userId}/{travelId}/CreateEvent")
-    public int createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
+    public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
         // setting
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<Map> partiDtoList = (List)map.get("parti_list");
@@ -72,7 +75,7 @@ public class EventController {
                         .chargedPrice(chargedPrice)
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
-                    return -2; //fail to create participate
+                    throw new DefaultException(CREATE_PARTICIPANT_FAIL);
             }
 
             if (!isPayerInParticipant){
@@ -96,8 +99,7 @@ public class EventController {
                     isPayerInParticipant);
             // clean code 위해 추후 수정 (for문 안에 함께 들어가야 함)
             personService.updatePersonRole(travelId);
-            return 200; //success all
-        } else return -1; //fail to create event
+        } else throw new DefaultException(CREATE_EVENT_FAIL);
     }
 
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
