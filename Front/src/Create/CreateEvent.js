@@ -10,6 +10,8 @@ function CreateEvent() {
   const { user, travel, travelName } = useParams();
   var payer = userPersonId;
 
+  console.log(users);
+
   var participants = [...users];
   const navigate = useNavigate();
 
@@ -162,12 +164,12 @@ function CreateEvent() {
         <label htmlFor="participants">Payer</label>
         <select id="participants" onChange={setSelectedPayer}>
           {users.map((userInfo, id) =>
-            parseInt(user) === parseInt(userInfo.userId) ? (
-              <option value={userInfo.id} key={id} selected>
+            parseInt(user) === parseInt(userInfo.personId) ? (
+              <option value={userInfo.personId} key={id} selected>
                 {userInfo.name}
               </option>
             ) : (
-              <option value={userInfo.id} key={id}>
+              <option value={userInfo.personId} key={id}>
                 {userInfo.name}
               </option>
             )
@@ -197,10 +199,10 @@ function CreateEvent() {
               className="checkbox"
               defaultChecked
               type="checkbox"
-              id={userInfo.id}
+              id={userInfo.personId}
               onChange={(e) => checkHandler(e.target.checked, userInfo)}
             />
-            <label className="checkbox-text" htmlFor={userInfo.id}>
+            <label className="checkbox-text" htmlFor={userInfo.personId}>
               {userInfo.name}
             </label>
           </div>

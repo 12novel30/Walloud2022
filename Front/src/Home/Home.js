@@ -20,8 +20,8 @@ const Home = () => {
   //받아오는 거를 eventList에서 eventlist로 수정
   var userPersonId;
   for (var i = 0; i < userList.length; i++) {
-    if (userList[i].userId === parseInt(user)) {
-      userPersonId = userList[i].id;
+    if (userList[i].personId === parseInt(user)) {
+      userPersonId = userList[i].personId;
       break;
     }
   }
@@ -54,7 +54,6 @@ const Home = () => {
       .catch((error) => {
         console.log(error);
       });
-    console.log(userList);
   };
 
   /////////////////////////////////

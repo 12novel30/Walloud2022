@@ -54,13 +54,14 @@ const LogIn = () => {
     setPassword(event.currentTarget.value);
   };
 
-  const try_LogIn = async (event) => {
+  const try_LogIn = async () => {
     await axios
       .post("/api/login", {
         input_id: input_id,
         input_password: input_password,
       })
       .then((response) => {
+        console.log(response.data);
         switch (response.data) {
           case 0:
             throw "Network Error";
@@ -79,7 +80,6 @@ const LogIn = () => {
         }
       })
       .catch((error) => {
-        event.preventDefault();
         console.log(error);
         alert("Error");
       });

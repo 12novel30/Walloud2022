@@ -26,7 +26,7 @@ const EventDescription = () => {
   };
 
   useEffect(() => {
-    axios.get(`/api/${user}/${travel}/${description.id}/detail`).then((res) => {
+    axios.get(`/api/${user}/${travel}/${description.EventId}/detail`).then((res) => {
       console.log(res.data);
       setParti(res.data);
     });

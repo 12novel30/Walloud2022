@@ -7,9 +7,12 @@ import personPng from "../img/person.png";
 const SelectTravel = () => {
   const user = useLocation().state.id;
   const [myTravel, setTravellist] = useState([]);
-
   const [try_del, setDelete] = useState(false);
-  const [user_account, setAccount] = useState("");
+  const [user_info, setUser_info] = useState({
+    account : "",
+    email : "",
+    name : ""
+  });
   const [checkAllButton, setCheckAllButton] = useState("전체 선택");
   const [checkedItems, setCheckedItems] = useState([]);
   const [checkedTravel, setCheckedTravel] = useState([]);
@@ -23,7 +26,9 @@ const SelectTravel = () => {
       .get(`/api/${user}`)
       .then((response) => {
         setTravellist(response.data.travelList);
-        setAccount(response.data.account);
+        setUser_info({account : response.data.account,
+          email : response.data.email,
+          name : response.data.name});
         console.log(response.data);
       })
       .catch((error) => {
@@ -42,10 +47,10 @@ const SelectTravel = () => {
       if (checkedItems.length !== 0) {
         if (
           window.confirm(
-            checkedTravel + " 이 선택되었습니다.\n 삭제하시겠습니까?"
+            checkedItems + " 이 선택되었습니다.\n 삭제하시겠습니까?"
           )
         ) {
-          checkedItems.map((travel_id, idx) => {
+          checkedItems.map((travel_id) => {
             axios
               .delete(`/api/${user}/${travel_id}/delete`)
               .then(() => {
@@ -69,11 +74,11 @@ const SelectTravel = () => {
 
   const checkHandler = (checked, elem) => {
     if (checked) {
-      setCheckedItems((prev) => [...prev, elem.id]);
+      setCheckedItems((prev) => [...prev, elem.travelId]);
       setCheckedTravel((prev) => [...prev, elem.name]);
       console.log(elem, "push", checkedItems);
     } else {
-      setCheckedItems(checkedItems.filter((e) => e !== elem.id));
+      setCheckedItems(checkedItems.filter((e) => e !== elem.travelId));
       setCheckedTravel(checkedTravel.filter((e) => e !== elem.name));
       console.log(elem, "pop", checkedItems);
     }
@@ -85,7 +90,7 @@ const SelectTravel = () => {
       const idArray = [];
       const travelArray = [];
       myTravel.forEach((e) => {
-        idArray.push(e.id);
+        idArray.push(e.travelId);
         travelArray.push(e.name);
       });
       setCheckedItems(idArray);
@@ -106,7 +111,8 @@ const SelectTravel = () => {
       <div style={{ display: "flex" }}>
         <div>
           <img src={personPng} alt="me" />
-          <h3> Account : {user_account}</h3>
+          <h3>{user_info.name}</h3>
+          <h3> Account : {user_info.account}</h3>
           <button onClick={Logout}>Log Out</button>
         </div>
         <div>
@@ -118,7 +124,7 @@ const SelectTravel = () => {
                   {myTravel.map((travel, idx) => (
                     <Link
                       key={idx}
-                      to={`/${user}/${travel.id}/${travel.name}`}
+                      to={`/${user}/${travel.travelId}/${travel.name}`}
                       state={{
                         created : false
                       }}
@@ -150,19 +156,19 @@ const SelectTravel = () => {
                         }}
                       >
                         <input
-                          id={travel.id}
+                          id={travel.travelId}
                           style={{ display: "inline-block", margin: "0" }}
                           className="checkbox"
                           type="checkbox"
-                          value={travel.id}
+                          value={travel.travelId}
                           onChange={(e) =>
                             checkHandler(e.target.checked, travel)
                           }
                           checked={
-                            checkedItems.includes(travel.id) ? true : false
+                            checkedItems.includes(travel.travelId) ? true : false
                           }
                         />
-                        <label htmlFor={travel.id} className="checkbox-text">
+                        <label htmlFor={travel.travelId} className="checkbox-text">
                           {travel.name}
                         </label>
                       </div>
