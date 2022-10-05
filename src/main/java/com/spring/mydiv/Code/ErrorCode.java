@@ -13,9 +13,14 @@ public enum ErrorCode {
     NO_TRAVEL(400, "TRAVEL-ERR-400","There is no corresponding TRAVEL."),
     NO_EVENT(400, "EVENT-ERR-400","There is no corresponding EVENT."),
     NO_PAYER(500, "EVENT-ERR-500","There is no PAYER for the event."),
-
     WRONG_EMAIL(500,"LOGIN-ERR-500","There is no such email information."),
-    WRONG_PASSWORD(500, "LOGIN-ERR-500","Invalid password.");
+    WRONG_PASSWORD(500, "LOGIN-ERR-500","Invalid password."),
+    ALREADY_EXISTED(500, "CREATE-PERSON-ERR-500","Users using this email have already been invited."),
+    CREATE_FAIL(500, "CREATE-ERR-500", "Failed to create entity on request."),
+    CREATE_EVENT_FAIL(500, "CREATE-ERR-500", "Failed to create event entity on request."),
+    CREATE_PARTICIPANT_FAIL(500, "CREATE-ERR-500", "Failed to create participant entity on request."),
+    DELETE_FAIL(500, "DELETE-ERR-500", "Failed to delete entity on request.");
+
 
     private int status;
     private String errorCode;

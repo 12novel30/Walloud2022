@@ -1,6 +1,7 @@
 package com.spring.mydiv.Controller;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.ParticipantService;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.spring.mydiv.Code.ErrorCode.*;
 import static java.lang.Boolean.FALSE;
 
 /**
@@ -27,36 +29,29 @@ public class PersonController {
     private final ParticipantService participantService;
 
     @PostMapping("/{userId}/{travelId}/createUser")
-    public String createPerson2Travel(@PathVariable int travelId,
+    public void createPerson2Travel(@PathVariable int travelId,
                                       @RequestBody Map map){
         String user_email = map.get("user_email").toString();
         UserDto.Response userDetailDto = userService.getUserInfoByEmail(user_email);
-        if (userDetailDto == null){
-            return "-1"; // not matchable user
-        } else {
-            if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId)){
-                return "-3"; // already existed
-            }
+        if (userDetailDto == null) throw new DefaultException(WRONG_EMAIL);
+        else {
+            if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId))
+                throw new DefaultException(ALREADY_EXISTED);
             PersonDto.Request request = new PersonDto.Request(
                     userDetailDto,
                     travelService.getTravelInfo(travelId));
             PersonDto.basic personDto = personService.createPerson(request, FALSE);
-            if (personDto != null)
-                return "200"; //success
-            else return "-2"; //fail
+            if (personDto == null) throw new DefaultException(CREATE_FAIL);
         }
     }
 
     @PostMapping("/{userId}/{travelId}/deleteUser")
-    public String deletePerson2Travel(@RequestBody Map map){ //@PathVariable int travelId,
+    public void deletePerson2Travel(@RequestBody Map map){ //@PathVariable int travelId,
         int person_id = Integer.parseInt(map.get("person_id").toString());
         if (participantService.getSizeOfJoinedEventList(person_id) == 0){
             personService.deleteJoinTravel(person_id);
-            return "200";
         }
-        else {
-            return "-1";
-        }
+        else throw new DefaultException(DELETE_FAIL);
     }
 
     @GetMapping("/{userid}/{travelid}/{personid}/personDetail")

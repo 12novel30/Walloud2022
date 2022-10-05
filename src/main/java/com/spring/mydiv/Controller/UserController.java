@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import com.spring.mydiv.Service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.spring.mydiv.Code.ErrorCode.*;
 import static java.lang.Boolean.TRUE;
 
 /**
@@ -68,7 +70,7 @@ public class UserController {
                 travelservice.createTravel(travelRequest));
         if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
             return personRequest.getTravel().getTravelId().intValue();
-        else return -1;
+        else throw new DefaultException(CREATE_FAIL);
     }
 
     // 여행을 생성한 user가 여행 자체를 삭제하는 메소드
