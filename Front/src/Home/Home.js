@@ -95,7 +95,7 @@ const Home = () => {
             <h4 className="description">Date</h4>
           </div>
           {eventList.map((event) => (
-            <Events event={event} key={event.id}></Events>
+            <Events event={event} key={event.eventId}></Events>
           ))}
         </div>
         <Link
