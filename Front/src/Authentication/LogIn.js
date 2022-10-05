@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { debounce, throttle } from "lodash"
 
 const Container = styled.div`
   margin-top: 50px;
@@ -45,6 +46,9 @@ const LogIn = () => {
   const [input_id, setId] = useState("");
   const [input_password, setPassword] = useState("");
   const navigate = useNavigate();
+  const debounceButton = debounce(() => {
+    console.log("...waiting");
+  },3000);
 
   const onIdHandler = (event) => {
     setId(event.currentTarget.value);
@@ -86,7 +90,7 @@ const LogIn = () => {
   };
 
   const onSubmit = (event) => {
-    try_LogIn(event);
+    debounce(try_LogIn(event), 1000);
   };
 
   const enterkey = () => {
@@ -120,9 +124,9 @@ const LogIn = () => {
         required
         // autoFocus
       />
-      <button id="log-in" type="submit" onClick={onSubmit}>
-        Log In
-      </button>
+        <button id="log-in" type="submit" onClick={onSubmit}>
+          Log In
+        </button>
       <h5 style={{ margin: "5rem 0 0 0 " }}>
         If you don't have ID, register first
       </h5>
