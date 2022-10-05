@@ -9,9 +9,9 @@ const SelectTravel = () => {
   const [myTravel, setTravellist] = useState([]);
   const [try_del, setDelete] = useState(false);
   const [user_info, setUser_info] = useState({
-    account : "",
-    email : "",
-    name : ""
+    account: "",
+    email: "",
+    name: "",
   });
   const [checkAllButton, setCheckAllButton] = useState("전체 선택");
   const [checkedItems, setCheckedItems] = useState([]);
@@ -26,9 +26,11 @@ const SelectTravel = () => {
       .get(`/api/${user}`)
       .then((response) => {
         setTravellist(response.data.travelList);
-        setUser_info({account : response.data.account,
-          email : response.data.email,
-          name : response.data.name});
+        setUser_info({
+          account: response.data.account,
+          email: response.data.email,
+          name: response.data.name,
+        });
         console.log(response.data);
       })
       .catch((error) => {
@@ -116,7 +118,8 @@ const SelectTravel = () => {
         <div>
           <img src={personPng} alt="me" />
           <h3>{user_info.name}</h3>
-          <h3> Account : {user_info.account}</h3>
+          <h4>Email: {user_info.email}</h4>
+          <h4> Account : {user_info.account}</h4>
           <button onClick={Logout}>Log Out</button>
         </div>
         <div>
@@ -130,7 +133,7 @@ const SelectTravel = () => {
                       key={idx}
                       to={`/${user}/${travel.travelId}/${travel.name}`}
                       state={{
-                        created : false
+                        created: false,
                       }}
                     >
                       <h4
@@ -169,10 +172,15 @@ const SelectTravel = () => {
                             checkHandler(e.target.checked, travel)
                           }
                           checked={
-                            checkedItems.includes(travel.travelId) ? true : false
+                            checkedItems.includes(travel.travelId)
+                              ? true
+                              : false
                           }
                         />
-                        <label htmlFor={travel.travelId} className="checkbox-text">
+                        <label
+                          htmlFor={travel.travelId}
+                          className="checkbox-text"
+                        >
                           {travel.name}
                         </label>
                       </div>

@@ -5,12 +5,11 @@ import { Link, useParams } from "react-router-dom";
 function DisplayUsers({ users, preferences }) {
   const currentLoggedIn = JSON.parse(localStorage.getItem("id"));
   const { user, travel, travelName } = useParams();
-  function CreateUser({ username, personid, spent }) {
-
+  function CreateUser({ username, personId, spent }) {
     return (
       <Link
         to={`/${user}/${travel}/${travelName}/profile/${username}`}
-        state={{ personid: personid }}
+        state={{ personId: personId }}
       >
         <div className="user">
           {preferences.displayIcon ? (
@@ -43,15 +42,15 @@ function DisplayUsers({ users, preferences }) {
             .filter(
               (user) =>
                 (user.role && type === "총무") ||
-                (!user.role && (user.difference >= 0 && (type === "Receive")) ||
-                (user.difference < 0 && type === "Send"))
+                (!user.role && user.difference >= 0 && type === "Receive") ||
+                (user.difference < 0 && type === "Send")
             )
             .map((user) => (
               <CreateUser
                 username={user.name}
                 spent={user.difference}
-                personid={user.id}
-                key={user.id}
+                personId={user.personId}
+                key={user.personId}
               />
             ))}
         </div>

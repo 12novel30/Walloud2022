@@ -11,13 +11,14 @@ const Home = () => {
   // const user = useLocation().state.user_id;
   // const travel = useLocation().state.travel_id;
 
-  const [created,setCreate] = useState(useLocation().state.created);
+  const [created, setCreate] = useState(useLocation().state.created);
   const { user, travel, travelName } = useParams();
   const [userList, setuserList] = useState([]);
   const [eventList, seteventList] = useState([]);
   const [period, setPeriod] = useState("");
   const navigate = useNavigate();
   //받아오는 거를 eventList에서 eventlist로 수정
+
   var userPersonId;
   for (var i = 0; i < userList.length; i++) {
     if (userList[i].userId === parseInt(user)) {
@@ -32,8 +33,8 @@ const Home = () => {
   }, []);
 
   const goHome = () => {
-    navigate(`/${user}/${travel}/${travelName}`, {state : {created : false}});
-  }
+    navigate(`/${user}/${travel}/${travelName}`, { state: { created: false } });
+  };
   // parameter = user info,
   const getEventandUser = async () => {
     await axios
@@ -41,10 +42,9 @@ const Home = () => {
       .then((response) => {
         console.log(response.data);
         if (created) {
-          if(window.confirm("여행 참가자가 있습니까?")) {
+          if (window.confirm("여행 참가자가 있습니까?")) {
             navigate(`/${user}/${travel}/${travelName}/createUser`);
-          }
-          else {
+          } else {
             setCreate(false);
           }
         }
@@ -72,9 +72,9 @@ const Home = () => {
 
   return (
     <div>
-      <h1 onClick = {goHome}>
+      <h1 onClick={goHome}>
         {travelName}
-        { period === null ? <div></div> : <div>{" " + period}</div>}
+        {period === null ? <div></div> : <div>{" " + period}</div>}
       </h1>
       <div className="big-box">
         <h2 className="home-h2">Events</h2>
@@ -95,7 +95,7 @@ const Home = () => {
             <h4 className="description">Date</h4>
           </div>
           {eventList.map((event) => (
-            <Events event={event} key={event.eventId}></Events>
+            <Events event={event} userList={userList} key={event.id}></Events>
           ))}
         </div>
         <Link
@@ -105,7 +105,7 @@ const Home = () => {
           <button className="home-button">Add Event</button>
         </Link>
       </div>
-      
+
       <div className="big-box">
         <h2 className="home-h2">Participants</h2>
         {/* <Link to="createUser">
