@@ -95,7 +95,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
-    public void deleteEvent(@PathVariable("eventid") int event_id)
+    public void deleteEvent(@PathVariable("travelid") int travelId, @PathVariable("eventid") int event_id)
     {
         for(ParticipantDto.detailView DetailView : participantService.getParticipantInEvent(event_id)){
             personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(DetailView.getPersonId()),
@@ -103,6 +103,7 @@ public class EventController {
                     DetailView.getChargedPrice(),
                     DetailView.isEventRole());
         }
+        personService.updatePersonRole(travelId);
         eventService.deleteEvent(event_id);
     }
 
