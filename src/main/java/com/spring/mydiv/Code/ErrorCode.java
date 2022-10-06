@@ -16,6 +16,7 @@ public enum ErrorCode {
     WRONG_EMAIL(500,"LOGIN-ERR-500","There is no such email information."),
     WRONG_PASSWORD(500, "LOGIN-ERR-500","Invalid password."),
     ALREADY_EXISTED(500, "CREATE-PERSON-ERR-500","have already been invited."),
+    ALREADY_REGISTERED(500, "CREATE-USER-ERR-500","is already registered."),
     CREATE_FAIL(500, "CREATE-ERR-500", "Failed to create entity on request."),
     CREATE_EVENT_FAIL(500, "CREATE-ERR-500", "Failed to create event entity on request."),
     CREATE_PARTICIPANT_FAIL(500, "CREATE-ERR-500", "Failed to create participant entity on request."),
