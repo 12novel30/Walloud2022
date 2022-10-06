@@ -22,7 +22,6 @@ class TravelServiceTest {
         //when
         TravelDto.Response response = travelService.createTravel(travelInfo);
         //then
-        System.out.println("id = " + response.getId());
     }
 
     @Test

@@ -30,17 +30,12 @@ class EventServiceTest {
                 .Travel(travelService.getTravelInfo(78)) //서울 여행
                 .Date(date)
                 .Price(65000)
-                .PartiCount(4)
-                .isPayerInParticipant(true)
                 .build();
         //when
         EventDto.Response eventDto = eventService.createEvent(request);
 
         //then
         System.out.println("status: " + ResponseEntity.ok(eventDto).toString());
-        System.out.println("event id: " + eventDto.getId());
-        System.out.println("dividePrice: "+ eventDto.getDividePrice());
-        System.out.println("takePrice: "+ eventDto.getTakePrice());
         /**result
          * status: <200 OK OK,com.spring.mydiv.Dto.EventCreateDto$Response@6d2693f,[]>
          * event id: 2
@@ -67,13 +62,22 @@ class EventServiceTest {
 
     @Test
     @Commit
-    @DisplayName("이벤트 생성")
-    void getEventCountInTravel() {
+    @DisplayName("이벤트 업데이트")
+    void eventUpdateTest() {
         //given
-
+        int event_id = 155;
+        int payer_id = 154;
+        Date date = new Date(22, 10, 1);
+        EventDto.Request request = EventDto.Request.builder()
+                .Name("구의역")
+                .Date(date)
+                .Price(160000)
+                .PayerPersonId((long) payer_id)
+                .build();
         //when
-
+        eventService.updateEvent(event_id, request);
         //then
+        System.out.println("check DB");
     }
 
     @Test

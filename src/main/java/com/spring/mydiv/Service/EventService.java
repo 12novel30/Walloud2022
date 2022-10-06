@@ -26,8 +26,7 @@ public class EventService {
     private final PersonRepository personRepository;
     private final ParticipantService participantService;
 
-    public EventDto.Response createEvent(EventDto.Request request){
-
+    public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
                 .name(request.getName())
                 .date(request.getDate())
@@ -40,6 +39,14 @@ public class EventService {
                 .build();
         eventRepository.save(event);
         return EventDto.Response.fromEntity(event);
+    }
+
+    public void updateEvent(int eventId, EventDto.Request request){
+        eventRepository.updateNameAndDateAndPriceAndPayerPersonidById(request.getName(),
+                request.getDate(),
+                request.getPrice(),
+                request.getPayerPersonId(),
+                Long.valueOf(eventId));
     }
 
     public boolean checkPayerInParticipant(List<Map> partiList, Long payerId){

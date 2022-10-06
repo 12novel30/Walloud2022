@@ -30,11 +30,6 @@ public class EventController {
     private final TravelService travelService;
     private final ParticipantService participantService;
 
-//    @GetMapping("/{userid}/{travelid}/createEvent") //don't use this
-//    public List<PersonDto.Simple> getPersonNameInTravel(@PathVariable("travelid") int travelid){
-//        return personService.getPersonNameInTravel(travelid);
-//    }
-
     @PostMapping("/{userId}/{travelId}/CreateEvent")
     public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
         // setting
@@ -51,8 +46,6 @@ public class EventController {
                 .Travel(travelService.getTravelInfo(travelId)) //orElseThrow
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
                 .Price(eventPrice)
-                .PartiCount(partiCount)
-                .isPayerInParticipant(isPayerInParticipant)
                 .PayerPersonId(payerId)
                 .build();
         EventDto.Response eventDto = eventService.createEvent(request);
@@ -108,8 +101,20 @@ public class EventController {
     }
 
     @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
-    public void updateEvent(@PathVariable("eventid") int event_id){
-        // json을 똑같은 type 으로 받는가?
+    public void updateEvent(@PathVariable("eventid") int event_id, @RequestBody Map map) throws ParseException{
+        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int eventPrice = Integer.parseInt(map.get("price").toString());
+        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
+
+        EventDto.Request request = EventDto.Request.builder()
+                .Name(map.get("event_name").toString())
+                .Date(simpleDateFormat.parse(map.get("event_date").toString()))
+                .Price(eventPrice)
+                .PayerPersonId(payerId)
+                .build();
+        eventService.updateEvent(event_id, request);
+
+
     }
 
     @GetMapping("/{userid}/{travelid}/{eventid}/detail")

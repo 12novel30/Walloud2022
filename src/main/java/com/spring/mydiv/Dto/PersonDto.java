@@ -127,4 +127,16 @@ public class PersonDto {
 					.build();
 		}
 	}
+
+	@Getter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Builder
+	public static class MoneyUpdateRequest {
+		private boolean eventRole;
+		private int prevPrice;
+		private int currPrice;
+		private Double prevChargedPrice;
+		private Double currChargedPrice;
+	}
 }

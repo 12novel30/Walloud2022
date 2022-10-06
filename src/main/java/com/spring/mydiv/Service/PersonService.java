@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.NO_USER;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.*;
 
 /**
  * @author 12nov
@@ -129,6 +128,22 @@ public class PersonService {
         else{
             p.setSumSend(p.getSumSend() - chargedPrice);
             p.setDifference(p.getDifference() + chargedPrice);
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
+        }
+    }
+
+    public void updatePersonMoney(int personId, PersonDto.MoneyUpdateRequest request){
+        Person p = personRepository.findById((Long.valueOf(personId))).get();
+        if(request.isEventRole()){
+            Double prevTakePrice = request.getPrevPrice() - request.getPrevChargedPrice();
+            Double currTakePrice = request.getCurrPrice() - request.getCurrChargedPrice();
+            p.setSumSend(p.getSumGet() - prevTakePrice + currTakePrice);
+            p.setDifference(p.getDifference() - prevTakePrice + currTakePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), Long.valueOf(personId));
+        }
+        else{
+            p.setSumSend(p.getSumSend() - request.getPrevChargedPrice() + request.getCurrChargedPrice());
+            p.setDifference(p.getDifference() + request.getPrevChargedPrice() - request.getCurrChargedPrice());
             personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
