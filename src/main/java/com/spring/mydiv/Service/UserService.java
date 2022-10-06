@@ -46,7 +46,9 @@ public class UserService {
         return UserDto.Response.fromEntity(user);
     } //fin
 
-
+    public boolean checkIsEmailRegistered(String email){
+        return userRepository.existsByEmail(email);
+    }
     public int login(UserDto.Login loginUser) {
         int result = 0;
 
@@ -122,3 +124,5 @@ public class UserService {
     }
 
 }
+
+//

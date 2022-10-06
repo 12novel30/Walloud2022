@@ -37,12 +37,14 @@ public class UserController {
 
     @PostMapping(value = "/Register")
     public ResponseEntity<UserDto.Response> createUser(@RequestBody Map map) {
-        UserDto.Request request = new UserDto.Request(
-                map.get("user_name").toString(),
-                map.get("user_email").toString(),
-                map.get("user_password").toString(),
-                map.get("user_account").toString());
-        return ResponseEntity.ok(userservice.createUser(request));
+        if (!userservice.checkIsEmailRegistered(map.get("user_email").toString())) {
+            UserDto.Request request = new UserDto.Request(
+                    map.get("user_name").toString(),
+                    map.get("user_email").toString(),
+                    map.get("user_password").toString(),
+                    map.get("user_account").toString());
+            return ResponseEntity.ok(userservice.createUser(request));
+        } else throw new DefaultException(ALREADY_REGISTERED);
     }
 
     @PostMapping(value = "/login")
