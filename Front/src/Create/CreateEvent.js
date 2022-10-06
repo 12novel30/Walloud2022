@@ -1,6 +1,6 @@
 import axios from "axios";
 import { normalizeUnits } from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link, useParams, useNavigate } from "react-router-dom";
 import personSrc from "../img/person.png";
 
@@ -8,40 +8,57 @@ function CreateEvent() {
   const users = useLocation().state.userList;
   const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
-  const [payer, setPayer] = useState(users[0].personId)
+  const [payer, setPayer] = useState(users[0].personId);
 
-  var participants = [...users];
   const navigate = useNavigate();
 
-  const [inputs, setInputs] = useState({
-    place: "",
-    price: "",
-    date: new Date().toISOString().substring(0, 10),
-  });
-  const { place, price, date } = inputs;
-
-  const onChange = (e) => {
-    const { value, name } = e.target;
-    setInputs({
-      ...inputs,
-      [name]: value,
-    });
+  const [price, setPrice] = useState(0);
+  var place = "";
+  var date = new Date().toISOString().substring(0, 10);
+  const onChangePrice = (e) => {
+    setPrice(() => e.target.value);
   };
 
+  const [participants, setParticipants] = useState([...users]);
+
+  const changeSpent = (elem) => {
+    const parti_id = participants.map((e) => e.personId);
+    users.map((e) => {
+      if (parti_id.includes(parseInt(e.personId)) && !e.modified) {
+        document.getElementById(`${e.personId}-spent`).disabled = false;
+        document.getElementById(`${e.personId}-spent`).value = Math.round(
+          price / participants.filter((e) => !e.modified).length
+        );
+      } else if (e.modified) {
+      } else {
+        document.getElementById(`${e.personId}-spent`).disabled = true;
+        document.getElementById(`${e.personId}-spent`).value = 0;
+      }
+    });
+  };
   const checkHandler = (checked, elem) => {
-    console.log(elem)
     if (checked) {
-      participants.push(elem);
+      // participants.push(elem);
+      setParticipants(() => [...participants, elem]);
     } else {
-      participants = participants.filter((e) => e.personId !== elem.personId);
+      // participants = participants.filter((e) => e.personId !== elem.personId);
+      setParticipants(() =>
+        [...participants].filter((e) => e.personId !== elem.personId)
+      );
     }
   };
 
-  const onSubmit = (e) => {
+  const onChangeSpent = (elem) => {};
 
+  useEffect(() => {
+    changeSpent();
+  }, [price, participants]);
+
+  const onSubmit = (e) => {
+    place = document.querySelector("#place").value;
     if (place === "") {
       alert("Set place\n");
-    } else if (price === "") {
+    } else if (parseInt(price) === 0) {
       alert("Set price\n");
     } else {
       event_info();
@@ -50,18 +67,18 @@ function CreateEvent() {
 
   const setSelectedPayer = (e) => {
     console.log(e.target.value);
-    setPayer(e.target.value)
+    setPayer(e.target.value);
   };
 
   const event_info = async () => {
-    let temp_list = [];
-    for (let i = 0; i < participants.length; i++) {
-      let t_elem = {
-        role : participants[i].role,
-        id : participants[i].personId
-      }
-      temp_list.push(t_elem);
-    }
+    let temp_list = [...participants].map(function (row) {
+      delete row.name;
+      delete row.difference;
+      delete row.userId;
+      row.spent = document.getElementById(`${row.personId}-spent`).value;
+
+      return row;
+    });
 
     console.log("event json", {
       parti_list: temp_list,
@@ -99,28 +116,20 @@ function CreateEvent() {
       <h2>Create Event</h2>
       <div>
         <label htmlFor="place">Place</label>
-        <input
-          type="text"
-          id="place"
-          name="place"
-          onChange={onChange}
-          size="5"
-          autoFocus
-        />
+        <input type="text" id="place" name="place" size="5" autoFocus />
         <label htmlFor="price">Price</label>
         <input
           type="text"
           id="price"
           name="price"
-          onChange={onChange}
           size="5"
+          onChange={onChangePrice}
         />
         <label htmlFor="date">Date</label>
         <input
           type="date"
           id="date"
           name="date"
-          onChange={onChange}
           size="5"
           defaultValue={new Date().toISOString().substring(0, 10)}
         />
@@ -159,8 +168,7 @@ function CreateEvent() {
         {users.map((userInfo, id) => (
           <div
             style={{
-              display: "inline-block",
-              minWidth: "33%",
+              width: "100%",
               alignItems: "center",
               marginBottom: "3%",
             }}
@@ -173,9 +181,18 @@ function CreateEvent() {
               id={userInfo.personId}
               onChange={(e) => checkHandler(e.target.checked, userInfo)}
             />
-            <label className="checkbox-text" htmlFor={userInfo.personId}>
+            <label
+              className="checkbox-text"
+              htmlFor={userInfo.personId}
+              style={{ width: "30%" }}
+            >
               {userInfo.name}
             </label>
+            <input
+              id={`${userInfo.personId}-spent`}
+              style={{ display: "inline-block", width: "40%" }}
+              onChange={onChangeSpent}
+            />
           </div>
         ))}
       </div>

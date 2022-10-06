@@ -115,14 +115,14 @@ const SelectTravel = () => {
       <h1>Divide by N</h1>
       <h2>My Travel List</h2>
       <div style={{ display: "flex" }}>
-        <div>
+        <div style={{ width: "50%", borderRight: "3px solid black" }}>
           <img src={personPng} alt="me" />
           <h3>{user_info.name}</h3>
           <h4>Email: {user_info.email}</h4>
           <h4> Account : {user_info.account}</h4>
           <button onClick={Logout}>Log Out</button>
         </div>
-        <div>
+        <div style={{ width: "50%" }}>
           <h3>Existing Travels</h3>
           {myTravel.length !== 0 ? (
             <div>
