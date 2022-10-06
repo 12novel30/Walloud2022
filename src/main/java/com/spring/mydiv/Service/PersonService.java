@@ -132,18 +132,28 @@ public class PersonService {
         }
     }
 
-    public void updatePersonMoney(int personId, PersonDto.MoneyUpdateRequest request){
-        Person p = personRepository.findById((Long.valueOf(personId))).get();
-        if(request.isEventRole()){
+    public void updatePersonMoney(Person p, PersonDto.MoneyUpdateRequest request){
+        if(request.isPervEventRole()){
             Double prevTakePrice = request.getPrevPrice() - request.getPrevChargedPrice();
-            Double currTakePrice = request.getCurrPrice() - request.getCurrChargedPrice();
-            p.setSumSend(p.getSumGet() - prevTakePrice + currTakePrice);
-            p.setDifference(p.getDifference() - prevTakePrice + currTakePrice);
-            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), Long.valueOf(personId));
+            p.setSumSend(p.getSumGet() - prevTakePrice);
+            p.setDifference(p.getDifference() - prevTakePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
         else{
-            p.setSumSend(p.getSumSend() - request.getPrevChargedPrice() + request.getCurrChargedPrice());
-            p.setDifference(p.getDifference() + request.getPrevChargedPrice() - request.getCurrChargedPrice());
+            p.setSumSend(p.getSumSend() - request.getPrevChargedPrice());
+            p.setDifference(p.getDifference() + request.getPrevChargedPrice());
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
+        }
+
+        if(request.isCurrEventRole()){
+            Double currTakePrice = request.getCurrPrice() - request.getCurrChargedPrice();
+            p.setSumSend(p.getSumGet() + currTakePrice);
+            p.setDifference(p.getDifference() + currTakePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
+        else{
+            p.setSumSend(p.getSumSend() + request.getCurrChargedPrice());
+            p.setDifference(p.getDifference() - request.getCurrChargedPrice());
             personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }

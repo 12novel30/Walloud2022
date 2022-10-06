@@ -1,6 +1,7 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Repository.EventRepository;
@@ -89,5 +90,13 @@ public class ParticipantService {
         }
 
         return participantDetailList;
+    }
+
+    public void updateParticipant(Boolean eventRole, Double chargedPrice, Person person){
+        participantRepository.updateEventRoleAndChargedPriceByPerson(eventRole, chargedPrice, person);
+    }
+
+    public void deleteParticipant(Person p, Event e){
+        participantRepository.deleteByPersonAndEvent(p, e);
     }
 }

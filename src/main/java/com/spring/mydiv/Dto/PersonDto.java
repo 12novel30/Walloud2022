@@ -129,11 +129,13 @@ public class PersonDto {
 	}
 
 	@Getter
+	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
 	public static class MoneyUpdateRequest {
-		private boolean eventRole;
+		private boolean pervEventRole;
+		private boolean currEventRole;
 		private int prevPrice;
 		private int currPrice;
 		private Double prevChargedPrice;
