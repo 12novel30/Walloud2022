@@ -67,6 +67,10 @@ public class EventService {
         return eventRepository.countByTravel_Id(Long.valueOf(travelId));
     } //fin
 
+    public int getEventPriceById(int eventId){
+        return eventRepository.findById(Long.valueOf(eventId)).get().getPrice();
+    }
+
     public String getTravelPeriod(int travelId, int eventCount){
         if (eventCount == 0) return null;
         else {
@@ -87,21 +91,6 @@ public class EventService {
         return eventRepository.findById(id)
                 .orElseThrow(()-> new DefaultException(NO_EVENT));
     }
-
-    /*
-    public EventDto.deleteRequest getEventDetailforDelete(int eventId){
-        ParticipantDto.peopleList peopleList = participantService.getJoinedPeopleInEvent(eventId);
-        Event event = eventRepository.findById(Long.valueOf(eventId))
-                .orElseThrow(()-> new DefaultException(NO_EVENT));
-
-        return EventDto.deleteRequest.builder()
-                .joinedPerson(peopleList.getJoinedPerson())
-                .payerId(peopleList.getPayer().getId())
-                .DividePrice(event.getDividePrice())
-                .TakePrice(event.getTakePrice()).build();
-    }
-
-     */
 
     public void deleteEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));

@@ -20,6 +20,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Event findFirstByTravel_IdOrderByDateDesc(Long id);
 
     void delete(Event event);
+
+    Optional<Event> findById(Long aLong);
+
     void deleteById(Long id);
 
 }

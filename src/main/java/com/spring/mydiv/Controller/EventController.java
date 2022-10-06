@@ -94,18 +94,22 @@ public class EventController {
         } else throw new DefaultException(CREATE_EVENT_FAIL);
     }
 
-    /*
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
     public void deleteEvent(@PathVariable("eventid") int event_id)
     {
-        EventDto.deleteRequest DeleteRequest = eventService.getEventDetailforDelete(event_id);
-        personService.updatePersonMoneyByDeleting(DeleteRequest.getJoinedPerson(),
-                DeleteRequest.getPayerId(),
-                DeleteRequest.getDividePrice(),
-                DeleteRequest.getTakePrice());
+        for(ParticipantDto.detailView DetailView : participantService.getParticipantInEvent(event_id)){
+            personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(DetailView.getPersonId()),
+                    eventService.getEventPriceById(event_id),
+                    DetailView.getChargedPrice(),
+                    DetailView.isEventRole());
+        }
         eventService.deleteEvent(event_id);
     }
-    */
+
+    @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
+    public void updateEvent(@PathVariable("eventid") int event_id){
+        // json을 똑같은 type 으로 받는가?
+    }
 
     @GetMapping("/{userid}/{travelid}/{eventid}/detail")
     public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable("eventid") int eventid){

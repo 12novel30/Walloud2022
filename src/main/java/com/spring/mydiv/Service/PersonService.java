@@ -119,18 +119,17 @@ public class PersonService {
         }
     }
 
-    public void updatePersonMoneyByDeleting(List<Person> personList, Long payer_personId,
-                                            Double dividePrice, Double takePrice){
-        for (Person p : personList){
-            if (p.getId().equals(payer_personId)){ // payer
-                p.setSumGet(p.getSumGet() - takePrice);
-                p.setDifference(p.getDifference() - takePrice);
-                personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
-            } else { // ~payer
-                p.setSumSend(p.getSumSend() - dividePrice);
-                p.setDifference(p.getDifference() + dividePrice);
-                personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
-            }
+    public void updatePersonMoneyByDeleting(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
+        if(p_role){
+            Double takePrice = eventPrice - chargedPrice;
+            p.setSumGet(p.getSumGet() - takePrice);
+            p.setDifference(p.getDifference() - takePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
+        else{
+            p.setSumSend(p.getSumSend() - chargedPrice);
+            p.setDifference(p.getDifference() + chargedPrice);
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
 

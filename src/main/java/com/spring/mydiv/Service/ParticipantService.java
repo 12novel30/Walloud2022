@@ -75,20 +75,6 @@ public class ParticipantService {
         return participantRepository.findByPerson_Id(Long.valueOf(personId)).size();
     }
 
-    public ParticipantDto.peopleList getJoinedPeopleInEvent(int eventId){
-        List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
-        List<Person> joinedPeople = new ArrayList<Person>();
-        Person Payer = new Person();
-        for(Participant participant : participantList){
-            joinedPeople.add(participant.getPerson());
-            if (participant.getEventRole() == Boolean.TRUE){
-                Payer = participant.getPerson();
-            }
-        }
-        ParticipantDto.peopleList peopleList = new ParticipantDto.peopleList(joinedPeople, Payer);
-        return peopleList;
-    }
-
     public List<ParticipantDto.detailView> getParticipantInEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
         List<ParticipantDto.detailView> participantDetailList = new ArrayList<>();
