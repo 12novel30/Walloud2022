@@ -14,8 +14,8 @@ function Events({ event, userList }) {
       >
         <span className="link-text">{event.name}</span>
       </Link>
-      <span className="event">{event.payerName}</span>
       <span className="event">₩{event.price}</span>
+      <span className="event">{event.payerName}</span>
       <span className="event">{moment(event.date).utc().format("MM/DD")}</span>
     </div>
   );
