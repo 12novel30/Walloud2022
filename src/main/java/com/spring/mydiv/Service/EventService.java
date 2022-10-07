@@ -99,6 +99,11 @@ public class EventService {
                 .orElseThrow(()-> new DefaultException(NO_EVENT));
     }
 
+    public Long getSuperUser(int travelId){
+        return personRepository.findByTravel_IdAndIsSuper(Long.valueOf(travelId), true)
+                .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
+                .getId();
+    }
     public void deleteEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
         for(Participant participant : participantList){

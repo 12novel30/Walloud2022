@@ -59,6 +59,8 @@ public class TravelDto {
         private int EventCount;
         private String Period;
 
+        private Long SuperUser;
+
         public static HomeView fromEntity(Travel travel) {
             return HomeView.builder()
                     .TravelId(travel.getId())

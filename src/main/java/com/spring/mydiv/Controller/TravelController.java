@@ -37,6 +37,7 @@ public class TravelController {
         System.out.println("_________________________6");
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
         System.out.println("_________________________7");
+        homeView.setSuperUser(eventService.getSuperUser(travelId));
         return homeView;
     }
 
