@@ -148,7 +148,7 @@ public class EventController {
                 personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
             }
         }
-        if (eventService.checkPayerInParticipant(partiDtoList, payerId)){
+        if (!eventService.checkPayerInParticipant(partiDtoList, payerId)){
             Person payer = personService.getPersonEntityByPersonId(payerId);
             Boolean eventRole = true;
 
@@ -183,7 +183,6 @@ public class EventController {
                 participantService.deleteParticipant(p, e);
             }
         }
-
         personService.updatePersonRole(travel_id);
     }
 

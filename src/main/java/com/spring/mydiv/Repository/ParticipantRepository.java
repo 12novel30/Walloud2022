@@ -20,7 +20,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByPerson_Id(Long id);
     List<Participant> findByEvent_Id(Long id);
     void delete(Participant participant);
-
+    @Transactional
     long deleteByPersonAndEvent(Person person, Event event);
 
     @Transactional

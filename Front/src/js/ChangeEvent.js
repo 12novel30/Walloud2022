@@ -46,7 +46,6 @@ function ChangeEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    console.log(participants);
     payer = e.target.value;
     console.log(payer);
   };
@@ -141,11 +140,11 @@ function ChangeEvent() {
         <select id="participants" onChange={setSelectedPayer}>
           {users.map((userInfo, id) =>
             userInfo.name === description.payerName ? (
-              <option value={userInfo.id} key={id} selected>
+              <option value={userInfo.personId} key={id} selected>
                 {userInfo.name}
               </option>
             ) : (
-              <option value={userInfo.id} key={id}>
+              <option value={userInfo.personId} key={id}>
                 {userInfo.name}
               </option>
             )

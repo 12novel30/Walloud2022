@@ -135,7 +135,7 @@ public class PersonService {
     public void updatePersonMoney(Person p, PersonDto.MoneyUpdateRequest request){
         if(request.isPervEventRole()){
             Double prevTakePrice = request.getPrevPrice() - request.getPrevChargedPrice();
-            p.setSumSend(p.getSumGet() - prevTakePrice);
+            p.setSumGet(p.getSumGet() - prevTakePrice);
             p.setDifference(p.getDifference() - prevTakePrice);
             personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
@@ -147,7 +147,7 @@ public class PersonService {
 
         if(request.isCurrEventRole()){
             Double currTakePrice = request.getCurrPrice() - request.getCurrChargedPrice();
-            p.setSumSend(p.getSumGet() + currTakePrice);
+            p.setSumGet(p.getSumGet() + currTakePrice);
             p.setDifference(p.getDifference() + currTakePrice);
             personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
