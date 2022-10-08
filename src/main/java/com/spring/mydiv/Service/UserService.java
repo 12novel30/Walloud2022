@@ -2,13 +2,13 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
-import com.spring.mydiv.Dto.TravelCreateDto;
-import com.spring.mydiv.Dto.UserDetailDto;
+import com.spring.mydiv.Code.ErrorCode;
+import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Exception.DefaultException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Dto.UserCreateDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -16,10 +16,13 @@ import com.spring.mydiv.Repository.TravelRepository;
 import com.spring.mydiv.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.spring.mydiv.Code.ErrorCode.*;
 
 /**
  * @author 12nov
@@ -32,7 +35,7 @@ public class UserService {
 	private final TravelRepository travelRepository;
 	
     @Transactional
-    public UserCreateDto.Response createUser(UserCreateDto.Request request) {
+    public UserDto.Response createUser(UserDto.Request request) {
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -40,52 +43,65 @@ public class UserService {
                 .account(request.getAccount())
                 .build();
         userRepository.save(user);
-        return UserCreateDto.Response.fromEntity(user);
+        return UserDto.Response.fromEntity(user);
+    } //fin
+
+    public boolean checkIsEmailRegistered(String email){
+        return userRepository.existsByEmail(email);
     }
+    public int login(UserDto.Login loginUser) {
+        int result = 0;
 
+//        Optional<User> info1 = userRepository.findByEmail(loginUser.getEmail());
+//        info1.ifPresentOrElse(
+//            user -> //"Wrong Password!"
+//                {if (loginUser.getPassword().toString().equals(user.getPassword().toString())) {
+//                    result = user.getId().intValue();}
+//                else{result = -1;}},
+//            ()-> {if(loginUser.getEmail()!=null){result = -2;}} //"Wrong Email!"
+//        );
 
-    int result = 0;
-    public int login(UserCreateDto.Login loginUser) {
-        Optional<User> info = userRepository.findByEmail(loginUser.getEmail());
-        info.ifPresentOrElse(
-            user ->
-                {if (loginUser.getPassword().toString().equals(user.getPassword().toString())) {
-                    result = user.getId().intValue();}
-                else{result = -1;}}, //"Wrong Password!"
-            ()-> {if(loginUser.getEmail()!=null){result = -2;}} //"Wrong Email!"
-        );
+        User entity = userRepository.findByEmail(loginUser.getEmail())
+                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+        if (loginUser.getPassword().equals(entity.getPassword()))
+            result = entity.getId().intValue();
+        else throw new DefaultException(WRONG_PASSWORD);
         return result;
-    }
+    } //ing
 
-    public UserDetailDto getUserInfo(int no){ //travellist없이 user 정보만 리턴
-        Optional<User> info = userRepository.findById(Long.valueOf(no));
-        return UserDetailDto.fromEntity(info.get());
-    }
+    public UserDto.Response getUserInfo(int no){
+        return userRepository.findById(Long.valueOf(no))
+                .map(UserDto.Response::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_USER));
+    } //fin
 
-    public List<TravelCreateDto.Response> getUserJoinedTravel(int no){
+    public List<TravelDto.Response> getUserJoinedTravel(int no){
         List<Person> list = personRepository.findByUser_Id(Long.valueOf(no));
-        List<TravelCreateDto.Response> result = new ArrayList<TravelCreateDto.Response>();
+        List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : list){
-            TravelCreateDto.Response travel = TravelCreateDto.Response.builder()
-                    .Id(p.getTravel().getId())
+            TravelDto.Response travel = TravelDto.Response.builder()
+                    .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
                     .build();
             result.add(travel);
         }
         return result;
-    }
+    } //fin
 
-    public UserDetailDto.WithTravel getUserInfoWithTravel(int no){
-        Optional<User> info = userRepository.findById(Long.valueOf(no));
-        UserDetailDto.WithTravel dto = UserDetailDto.WithTravel.fromEntity(info.get());
+    public UserDto.WithTravel getUserInfoWithTravel(int no){
+        User entity = userRepository.findById(Long.valueOf(no))
+                .orElseThrow(()-> new DefaultException(NO_USER));
+        UserDto.WithTravel dto = UserDto.WithTravel.fromEntity(entity);
         dto.setTravelList(getUserJoinedTravel(no));
         return dto;
-    }
+    } //fin
 
-    public UserDetailDto getUserInfoByEmail(String email){
+    public UserDto.Response getUserInfoByEmail(String email){
         Optional<User> user = userRepository.findByEmail(email);
-        UserDetailDto dto = UserDetailDto.builder()
-                .Id(user.get().getId())
+        if (!user.isPresent()) return null;
+
+        UserDto.Response dto = UserDto.Response.builder()
+                .UserId(user.get().getId())
                 .Name(user.get().getName())
                 .Email(user.get().getEmail())
                 .Account(user.get().getAccount())
@@ -94,4 +110,19 @@ public class UserService {
         return dto;
     }
 
+    @Transactional
+    public UserDto.Response updateUserInfo(int userId, UserDto.Request updateRequest){
+        User user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+
+        if (updateRequest.getName() != null) user.setName(updateRequest.getName());
+        if (updateRequest.getEmail() != null) user.setEmail(updateRequest.getEmail());
+        if (updateRequest.getPassword() != null) user.setPassword(updateRequest.getPassword());
+        if (updateRequest.getAccount() != null) user.setAccount(updateRequest.getAccount());
+
+        return UserDto.Response.fromEntity(userRepository.save(user));
+    }
+
 }
+
+//

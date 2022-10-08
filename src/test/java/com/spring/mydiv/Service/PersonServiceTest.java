@@ -1,20 +1,18 @@
 package com.spring.mydiv.Service;
 
-import com.spring.mydiv.Dto.PersonCreateDto;
 import com.spring.mydiv.Dto.PersonDto;
-import com.spring.mydiv.Dto.TravelCreateDto;
-import com.spring.mydiv.Entity.Event;
+import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Boolean.FALSE;
 
 @SpringBootTest
 class PersonServiceTest {
@@ -33,16 +31,16 @@ class PersonServiceTest {
     void createPerson() {
         //given
         int userNo = 13;
-        TravelCreateDto.Request travelInfo = TravelCreateDto.Request.builder()
+        TravelDto.Request travelInfo = TravelDto.Request.builder()
                 .Name("광주 여행")
                 .build();
-        PersonCreateDto.Request request = PersonCreateDto.Request.builder()
+        PersonDto.Request request = PersonDto.Request.builder()
                 .User(userService.getUserInfo(userNo))
                 .Travel(travelService.createTravel(travelInfo))
                 .build();
 
         //when
-        PersonDto person = personService.createPerson(request);
+        PersonDto.basic person = personService.createPerson(request, FALSE);
 
         //then
         System.out.println("User name = " + person.getUser().getName());
@@ -57,10 +55,10 @@ class PersonServiceTest {
         int travelId = 57; //서울 여행
 
         //when
-        List<PersonCreateDto.Simple> list = personService.getPersonNameInTravel(travelId);
+        List<PersonDto.Simple> list = personService.getPersonNameInTravel(travelId);
 
         //then
-        for (PersonCreateDto.Simple p : list){
+        for (PersonDto.Simple p : list){
             System.out.println("Name: " + p.getName());
         }
 
@@ -68,14 +66,13 @@ class PersonServiceTest {
 
     @Test
     @Commit
-    @DisplayName("여행 삭제")
+    @DisplayName("여행에서 참가자 삭제")
     void deleteJoinTravel() {
         //given
-        int userId = 16;
-        int travelId = 67;
+        int personId = 100;
 
         //when
-        personService.deleteJoinTravel(userId, travelId);
+        personService.deleteJoinTravel(personId);
 
         //then
         System.out.println("check DB please!");
@@ -88,8 +85,7 @@ class PersonServiceTest {
         //given
         Long person_id = Long.valueOf(50); //이하은
         //when
-        Person person = personService.getPersonEntityByPersonId(person_id)
-                .get();
+        Person person = personService.getPersonEntityByPersonId(person_id);
         //then
         System.out.println("id: " + person.getId());
         System.out.println("id: " + person.getSumSend());
@@ -100,24 +96,14 @@ class PersonServiceTest {
 
     @Test
     @Commit
-    @DisplayName("이벤트로 person 정보 업데이트")
+    @DisplayName("이벤트 생성으로 person 정보 업데이트")
     void updatePersonWithEvent() {
-        //given
-        Event event = eventService.getEventEntityByEventId(Long.valueOf(2)).get(); //대치동
-        List<Person> personList = new ArrayList<>();
-        Person person1 = personService.getPersonEntityByPersonId(Long.valueOf(50)).get();
-        personList.add(person1);
-        Person person2 = personService.getPersonEntityByPersonId(Long.valueOf(52)).get();
-        personList.add(person2);
-        Long payer_person_id = Long.valueOf(52);
-        Double dividePrice = event.getDividePrice();
-        Double takePrice = event.getTakePrice();
+    }
 
-        //when
-        personService.updatePersonWithEvent(personList, payer_person_id, dividePrice, takePrice);
-
-        //then
-        System.out.println("finish!");
+    @Test
+    @Commit
+    @DisplayName("이벤트 삭제로 person 정보 업데이트")
+    void updatePersonWithEventDelete() {
     }
 
     @Test
@@ -127,7 +113,7 @@ class PersonServiceTest {
         //given
         int person_id = 50; //이하은
         //when
-        PersonCreateDto.Detail detail = personService.getPersonToDetailView(person_id);
+        PersonDto.Detail detail = personService.getPersonToDetailView(person_id);
         //then
         System.out.println("personID: " + detail.getPersonId());
         System.out.println("personID: " + detail.getUserName());
@@ -145,11 +131,26 @@ class PersonServiceTest {
         //given
         int travelId = 57; // 서울 여행
         //when
-        PersonCreateDto.HomeView tmp = personService.getPayerInTravel(travelId);
+        PersonDto.HomeView tmp = personService.getPayerInTravel(travelId);
         //then
-        System.out.println("payer : " + tmp.getId());
+        System.out.println("payer : " + tmp.getPersonId());
         System.out.println("payer : " + tmp.getName());
     }
+
+    @Test
+    @Commit
+    @DisplayName("역할 세팅 테스트")
+    void setRoleTest() {
+        //given
+        int travelId = 91; // 베를린 여행
+        //when
+        personService.updatePersonRole(travelId);
+        //then
+        System.out.println("CheckOUT DB");
+    }
+
+
+
 
 //    @Test
 //    @Commit

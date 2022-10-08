@@ -16,7 +16,8 @@ h1 {
   border-radius: 0px;
   color: white;
   background-color: var(--classic-blue);
-  padding: 2% 0 2% 0;
+  padding: 1.5% 0 1.5% 0;
+  width: 100%;
   font-size: 2rem;
   font-weight: lighter;
   position: -webkit-sticky;
@@ -55,11 +56,11 @@ span {
   font-weight: 300;
   color: black;
 }
+
 label {
   font-size: 1.5rem;
   font-weight: 300;
   color: var(--classic-blue);
-  /* font-family: "Avenir"; */
 }
 
 button {
@@ -151,12 +152,19 @@ Classes
   display: inline-block;
   text-align: center;
   width: 30%;
+  margin-bottom: 5%;
 }
 
 .event {
   width: 25%;
-  margin: 5% 0 0 0;
+  padding: 2.5% 0 2.5% 0;
   text-align: center;
+  border-right: 1px solid white;
+  /* border-bottom: 1px solid white; */
+}
+
+.event:last-child {
+  border-right: none;
 }
 
 .eventName {
@@ -166,10 +174,18 @@ Classes
   text-align: center;
 }
 
+.event-row {
+  display: flex;
+}
+
+.event-row:last-child {
+  border-bottom: 1px solid white;
+}
+
 .description {
   width: 25%;
   font-size: 1.2rem;
-  margin: 0 0 3% 0;
+  margin: 1.5% 0 1.5% 0;
   text-align: center;
 }
 
@@ -184,15 +200,6 @@ Classes
   min-width: 80px;
 }
 
-.box {
-  border-radius: 1rem;
-  /* background-color: rgb(178, 216, 244); */
-  background-color: #3d6589c2;
-  height: fit-content;
-  margin: 5% 0;
-  min-width: 450px;
-}
-
 .type {
   font-size: 180%;
   margin: 0 0 3% 0;
@@ -200,20 +207,6 @@ Classes
 
 :any-link {
   text-decoration: none;
-}
-
-@media (width > 1000px) {
-  .big-box {
-    align-items: center;
-    display: inline-block;
-    width: 45%;
-    margin: 0 1% 0 1%;
-    vertical-align: middle;
-  }
-
-  .box {
-    height: 150vh;
-  }
 }
 
 .right-align {
@@ -247,15 +240,147 @@ Classes
   height: fit-content;
 }
 
-.caption {
+.users > .home-type > h4 {
   margin: 0;
+  padding: 10px 0px;
+}
+.user > img {
+  width: 50%;
+  background-color: transparent;
+}
+
+#caption-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 550;
+}
+
+#caption-spent {
+  margin: 0;
+  padding-top: 3%;
   font-size: 1rem;
+  font-weight: 200;
+}
+
+/* .home-type {
+  margin: 2% auto 5% 0;
+  width: 100;
+  border-top: solid var(--illuminating) 4px;
+}
+.home-type:last-child {
+  margin: 2% auto;
+  padding-top: 5%;
+  width: 100;
+  border-left: solid var(--illuminating) 4px;
+  border-top: solid var(--illuminating) 4px;
+} */
+
+.checkbox {
+  display: inline-block;
+  width: 1.5rem;
+  font-size: 1rem;
+  height: fit-content;
+  background-color: #939597;
+}
+.checkbox-text {
+  display: inline-block;
+  font-size: 1rem;
+  margin-top: 0;
+  height: fit-content;
+  min-width: 20%;
+  color: black;
+}
+
+select {
+  text-align: center;
+  display: block;
+  width: 400px;
+  height: 4vh;
+  margin: 1% auto 3% auto;
+  border: 3px solid;
+  border-radius: 10px;
+  border-color: var(--ultimate-gray);
+  font-size: 1rem;
+  font-family: sans-serif;
+  font-weight: 100;
+}
+
+/* .box {
+  display: inline-block;
+  background-color: #5986adc2;
+  margin: 5% 0;
+  width: 100%;
+}
+
+
+/* @media (orientation: landscape) {
+  #event-box {
+    width: 48%;
+    margin: 0 1% 0 1%;
+    height: 70vh;
+    overflow-y: scroll;
+  }
+
+  #user-box {
+    width: 48%;
+    margin: auto 1% auto 1%;
+    height: 70vh;
+    overflow-y: scroll;
+  }
+}
+
+*/
+
+.home-h2 {
+  width: 40%;
+  font-size: 2rem;
+  margin: 2% auto 2% auto;
+}
+
+.home-button {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.box {
+  border-radius: 1rem;
+  /* background-color: rgb(178, 216, 244); */
+  background-color: #3d6589c2;
+  height: fit-content;
+  margin-bottom: 5%;
+  min-width: 250px;
+}
+
+@media (orientation: landscape) {
+  .big-box {
+    align-items: center;
+    display: inline-block;
+    width: 45%;
+    margin: 0 1% 0 1%;
+    vertical-align: middle;
+  }
+
+  .box {
+    min-height: 100vh;
+    /* height: 60vh; */
+    /* overflow-y: scroll; */
+  }
 }
 
 .home-type {
-  margin: 0 auto;
-  width: 100;
-  border-width: 4px;
-  border-color: #6667ab;
-  border-style: solid;
+  margin: auto;
+  border-bottom: 1px solid white;
+  /* background-color: #3d6589c2; */
+}
+
+::-webkit-scrollbar {
+  /* background-color: #5986adc2; */
+  background-color: var(--ultimate-gray);
+  -webkit-appearance: none;
+}
+
+::-webkit-scrollbar-thumb {
+  /* background-color: var(--ultimate-gray); */
+  background-color: #0f4c81b2;
+  /* border-radius: 1rem; */
 }

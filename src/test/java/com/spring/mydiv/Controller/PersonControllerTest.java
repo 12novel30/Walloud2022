@@ -25,9 +25,9 @@ class PersonControllerTest {
         map.put("user_email", "star4007lg@gm.gist.ac.kr");
 
         //when
-        String answer = personController.createPerson2Travel(travelId, map);
+        personController.createPerson2Travel(travelId, map);
 
         //then
-        System.out.println(answer);
+        System.out.println("fin");
     }
 }

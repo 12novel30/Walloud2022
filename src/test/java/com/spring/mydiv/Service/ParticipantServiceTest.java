@@ -1,9 +1,8 @@
 package com.spring.mydiv.Service;
 
-import com.spring.mydiv.Dto.EventCreateDto;
-import com.spring.mydiv.Dto.ParticipantCreateDto;
-import com.spring.mydiv.Dto.ParticipantDto;
+import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
+import com.spring.mydiv.Entity.Person;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +31,14 @@ class ParticipantServiceTest {
         //given
         Long person_id = Long.valueOf(50); //이하은
         Long event_id = Long.valueOf(2); //대치동
-        ParticipantCreateDto.Request partiRequest = ParticipantCreateDto.Request.builder()
-                .person(personService.getPersonEntityByPersonId(person_id).get())
-                .event(eventService.getEventEntityByEventId(event_id).get())
+        ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
+                .person(personService.getPersonEntityByPersonId(person_id))
+                .event(eventService.getEventEntityByEventId(event_id))
                 .role(false)
                 .build();
 
         //when
-        ParticipantDto dto = participantService.createParticipant(partiRequest);
+        ParticipantDto.basic dto = participantService.createParticipant(partiRequest);
 
         //then
         System.out.println("status: " + ResponseEntity.ok(dto).toString());
@@ -53,9 +52,9 @@ class ParticipantServiceTest {
         //given
         int person_id = 50; //이하은
         //when
-        List<EventCreateDto.PersonView> result = participantService.getEventListThatPersonJoin(person_id);
+        List<EventDto.PersonView> result = participantService.getEventListThatPersonJoin(person_id);
         //then
-        for (EventCreateDto.PersonView e : result){
+        for (EventDto.PersonView e : result){
             System.out.println(">> event:");
             System.out.println("event id: " + e.getEventId());
             System.out.println("event name: " + e.getEventName());
@@ -63,19 +62,22 @@ class ParticipantServiceTest {
             System.out.println("total price: " + e.getPrice());
             System.out.println("payer id: " + e.getPayerId());
             System.out.println("payer name: " + e.getPayerName());
-            System.out.println("price/person: " + e.getDividePrice());
             System.out.println();
         }
     }
 
-//    @Test
-//    @Commit
-//    @DisplayName("참가자 생성")
-//    void createParticipant() {
-//        //given
-//
-//        //when
-//
-//        //then
-//    }
+    @Test
+    @Commit
+    @DisplayName("이벤트에 참가한 참여자 디테일 보기")
+    void findParticipantDetail() {
+        //given
+        int event_id = 90;
+        //when
+        List<ParticipantDto.detailView> result = participantService.getParticipantInEvent(event_id);
+        //then
+        for (ParticipantDto.detailView detail : result){
+            System.out.println(detail.getName());
+            System.out.println(detail.isEventRole());
+        }
+    } // checked
 }

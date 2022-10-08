@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,9 @@ import com.spring.mydiv.Service.TravelService;
 import com.spring.mydiv.Service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.spring.mydiv.Code.ErrorCode.*;
+import static java.lang.Boolean.TRUE;
 
 /**
  * @author 12nov
@@ -32,55 +36,59 @@ public class UserController {
     }
 
     @PostMapping(value = "/Register")
-    public ResponseEntity<UserCreateDto.Response> createUser(@RequestBody Map map) {
-        UserCreateDto.Request request = new UserCreateDto.Request(map.get("user_name").toString(),
-                map.get("user_email").toString(),
-                map.get("user_password").toString(),
-                map.get("user_account").toString());
-        return ResponseEntity.ok(userservice.createUser(request));
+    public ResponseEntity<UserDto.Response> createUser(@RequestBody Map map) {
+        if (!userservice.checkIsEmailRegistered(map.get("user_email").toString())) {
+            UserDto.Request request = new UserDto.Request(
+                    map.get("user_name").toString(),
+                    map.get("user_email").toString(),
+                    map.get("user_password").toString(),
+                    map.get("user_account").toString());
+            return ResponseEntity.ok(userservice.createUser(request));
+        } else throw new DefaultException(ALREADY_REGISTERED);
     }
 
     @PostMapping(value = "/login")
     public int login(@RequestBody Map map) {
-        UserCreateDto.Login loginUser = new UserCreateDto.Login(map.get("input_id").toString(),
+        UserDto.Login loginUser = new UserDto.Login(
+                map.get("input_id").toString(),
                 map.get("input_password").toString());
         return userservice.login(loginUser);
-        /**success -> return [user id]
-         * wrong email -> -2
-         * wrong pw -> -1
-         */
+//        /**success -> return [user id]
+//         * wrong email -> -2
+//         * wrong pw -> -1
+//         */
     }
 
-    // front; user info_travellist == null -> return "Create travel!"
-    @GetMapping("/{no}")
-    public UserDetailDto.WithTravel getUserInfo(@PathVariable int no){
-        return userservice.getUserInfoWithTravel(no);
+    @GetMapping("/{userId}")
+    public UserDto.WithTravel getUserInfo(@PathVariable int userId){
+        return userservice.getUserInfoWithTravel(userId);
     }
 
-    @PostMapping("/{no}/createTravel")
-    public ResponseEntity<PersonDto> joinTravel(@PathVariable int no, @RequestBody Map map){
-        String travel_name = map.get("travel_name").toString();
-//        TravelCreateDto.Request travelInfo = new TravelCreateDto.Request(map.get("travel_name").toString());
-        TravelCreateDto.Request travelInfo = new TravelCreateDto.Request(travel_name);
-        PersonCreateDto.Request request = new PersonCreateDto.Request(
-                userservice.getUserInfo(no),
-                travelservice.createTravel(travelInfo));
-        return ResponseEntity.ok(personservice.createPerson(request));
-    }
-
-    /**user가 참가한 여행을 삭제하는 메소드
-     * -> 여행 자체를 삭제하는 것 or
-     * -> 여행에서 참가하지 않는 것?
-     * 일단은 후자로 작성했음.
-     * */
-    @DeleteMapping("/{user_id}/{travel_id}/deleteTravel")
-    public void deleteJoinTravel(@PathVariable int user_id, @PathVariable int travel_id) {
-        personservice.deleteJoinTravel(user_id, travel_id);
+    @PostMapping("/{userId}/createTravel")
+    public int joinTravel(@PathVariable int userId, @RequestBody Map map){
+        TravelDto.Request travelRequest = new TravelDto.Request(map.get("travel_name").toString());
+        PersonDto.Request personRequest = new PersonDto.Request(
+                userservice.getUserInfo(userId),
+                travelservice.createTravel(travelRequest));
+        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
+            return personRequest.getTravel().getTravelId().intValue();
+        else throw new DefaultException(CREATE_FAIL);
     }
 
     // 여행을 생성한 user가 여행 자체를 삭제하는 메소드
-    @DeleteMapping("/{user_id}/{travel_id}/delete")
-    public void deleteTravel(@PathVariable int travel_id) {
-        travelservice.deleteTravel(travel_id);
+    @DeleteMapping("/{userId}/{travelId}/delete")
+    public void deleteTravel(@PathVariable int travelId) {
+        travelservice.deleteTravel(travelId);
+    }
+
+    @PutMapping("/{userId}/updateUserInfo")
+    public ResponseEntity<UserDto.Response> updateUser(@PathVariable int userId, @RequestBody Map map) {
+        UserDto.Request updateRequest = new UserDto.Request(
+                map.get("user_name").toString(),
+                map.get("user_email").toString(),
+                map.get("user_password").toString(),
+                map.get("user_account").toString());
+        return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
+        );
     }
 }

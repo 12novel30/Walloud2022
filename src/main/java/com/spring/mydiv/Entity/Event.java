@@ -34,13 +34,10 @@ public class Event implements Serializable {
 	@Column(name = "event_price", length = 11)
 	private int price;
 	
-	@Column(name = "event_divideprice")
-	private Double dividePrice;
-	
-	@Column(name = "event_getprice")
-	private Double takePrice;
-	
 	@Column(name = "event_image")
 	private String image;
+
+	@Column(name = "payer_personid")
+	private Long payerPersonid;
 
 }

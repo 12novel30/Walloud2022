@@ -1,13 +1,11 @@
 package com.spring.mydiv.Controller;
 
-import com.spring.mydiv.Dto.TravelCreateDto;
+import com.spring.mydiv.Dto.TravelDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class TravelControllerTest {
@@ -24,7 +22,7 @@ class TravelControllerTest {
         String travelName = "서울 여행";
 
         //when
-        TravelCreateDto.HomeView homeView = travelController.getTravelToMainView(travelId);
+        TravelDto.HomeView homeView = travelController.getTravelToMainView(travelId);
 
         //then
         System.out.println(homeView.getPeriod());

@@ -1,46 +1,94 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { users } from "./Var";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
-  const { user, travel, travelName, username } = useParams();
-  console.log(useParams());
-  const profile = users.filter((user) => user.name === username)[0];
-  const displayEvents = () => {
-    const events = profile.events;
+  const { user, travel, travelName } = useParams();
+  const personId = useLocation().state.personId;
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
+  const [person_in_List, seteventList] = useState([]);
 
-    return (
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getProfile = async () => {
+    await axios
+      .get(`/api/${user}/${travel}/${personId}/personDetail`)
+      .then((res) => {
+        console.log(res.data);
+        setProfile(res.data);
+        seteventList(res.data.eventList);
+        console.log(person_in_List);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const delPerson = async () => {
+    if (
+      window.confirm(
+        "Username " +
+          profile.userName +
+          "should be not in any events\nAre you sure you want to delete?"
+      )
+    ) {
+      await axios
+        .delete(`/api/${user}/${travel}/deleteUser`, {
+          person_id: personId,
+        })
+        .then((res) => {
+          switch (res.data) {
+            case 200:
+              window.alert("Succesfully Delete");
+              navigate(`/${user}/${travel}/${travelName}`, {
+                state: { created: false },
+              });
+              break;
+            case -1:
+              window.alert(
+                "User has joined some events. Delete user from events"
+              );
+              break;
+            default:
+              throw "Network Error";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  return (
+    <div>
+      <Link to={`/${user}/${travel}/${travelName}`} state={{ created: false }}>
+        <h1 className="home">{travelName}</h1>
+      </Link>
+      <h2>{profile.userName}</h2>
+      <h3>Account : {profile.userAccount}</h3>
+      {profile.travelRole ? <h3>Manager</h3> : <></>}
+      <h3 style={{ color: profile.difference > 0 ? "red" : "blue" }}>
+        Spent: {profile.difference}₩
+      </h3>
+      <h3 id="headers">Participated Events: </h3>
       <div style={{ display: "flex" }}>
-        {events.map((event, index) => (
+        {person_in_List.map((event, index) => (
           <div>
             <Link
-              to={`/${user}/${travel}/${travelName}/${event}`}
+              to={`/${user}/${travel}/${travelName}/${event.eventName}`}
               state={{ event: event }}
             >
               <h3 className="link-text" key={index}>
-                {event}
+                {event.eventName}
               </h3>
             </Link>
           </div>
         ))}
       </div>
-    );
-  };
-  return (
-    <div>
-      <Link
-        to={`/${user}/${travel}/${travelName}`}
-        state={{ user: user, travel: travel, travelName: travelName }}
-      >
-        <h1 className="home">Divide by N</h1>
-      </Link>
-      <h2>{profile.name}</h2>
-      <h3>Account : {profile.account}</h3>
-      <h3 style={{ color: profile.type === "Depositors" ? "red" : "blue" }}>
-        Spent: {profile.spent}₩
-      </h3>
-      <h3 id="headers">Participated Events: </h3>
-      {displayEvents()}
+      <button onClick={delPerson}>Delete person</button>
       <br />
     </div>
   );

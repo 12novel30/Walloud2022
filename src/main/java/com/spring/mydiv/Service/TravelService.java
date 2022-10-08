@@ -2,9 +2,12 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
-import com.spring.mydiv.Dto.TravelCreateDto;
+import com.spring.mydiv.Dto.TravelDto;
+import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Entity.User;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.PersonRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.spring.mydiv.Code.ErrorCode.*;
 
 /**
  * @author 12nov
@@ -29,23 +34,26 @@ public class TravelService {
     private final PersonRepository personRepository;
 
     @Transactional
-    public TravelCreateDto.Response createTravel(TravelCreateDto.Request request) {
+    public TravelDto.Response createTravel(TravelDto.Request request) {
         Travel travel = Travel.builder()
                 .name(request.getName())
                 .build();
         travelRepository.save(travel);
-        return TravelCreateDto.Response.fromEntity(travel);
+        return TravelDto.Response.fromEntity(travel);
+    } //fin
+
+    public TravelDto.Response getTravelInfo(int no){
+        return travelRepository.findById(Long.valueOf(no))
+                .map(TravelDto.Response::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_TRAVEL));
     }
 
-    public TravelCreateDto.Response getTravelInfo(int no){
-        Optional<Travel> info = travelRepository.findById(Long.valueOf(no));
-        return TravelCreateDto.Response.fromEntity(info.get());
-    }
+    public TravelDto.HomeView getTravelToMainView(int travelId){
+        return travelRepository.findById(Long.valueOf(travelId))
+                .map(TravelDto.HomeView::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_TRAVEL));
+    } //fin
 
-    public TravelCreateDto.HomeView getTravelToMainView(int travelId){
-        Optional<Travel> info = travelRepository.findById(Long.valueOf(travelId));
-        return TravelCreateDto.HomeView.fromEntity(info.get());
-    }
     @Transactional
     public void deleteTravel(int travelId){
         List<Event> eventList = eventRepository.findByTravel_Id(Long.valueOf(travelId));
@@ -57,5 +65,15 @@ public class TravelService {
             personRepository.delete(person);
         }
         travelRepository.deleteById(Long.valueOf(travelId));
+    }
+
+    @Transactional
+    public TravelDto.Response updateTravelInfo(int travelId, TravelDto.Request updateRequest){
+        Travel travel = travelRepository.findById(Long.valueOf(travelId))
+                .orElseThrow(() -> new DefaultException(NO_TRAVEL));
+
+        if (updateRequest.getName() != null) travel.setName(updateRequest.getName());
+
+        return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
 }
