@@ -126,7 +126,7 @@ public class EventController {
 
         List<Map> partiDtoList = (List)map.get("parti_list");
         for(Map partiDto : partiDtoList){
-            Long currPersonId = Long.valueOf(partiDto.get("id").toString());
+            Long currPersonId = Long.valueOf(partiDto.get("personId").toString());
             Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
             Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
             Boolean eventRole = Boolean.parseBoolean(partiDto.get("role").toString());

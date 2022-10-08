@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 ReactDOM.render(
   <BrowserRouter>
     <App />
-    <div className="footer">Developed by &copy; Divide by N</div>
+    <div className="footer">Developed by &copy; Walloud</div>
   </BrowserRouter>,
   document.getElementById("root")
 );

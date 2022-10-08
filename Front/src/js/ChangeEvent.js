@@ -7,6 +7,7 @@ import personSrc from "../img/person.png";
 function ChangeEvent() {
   const description = useLocation().state.description;
   const users = useLocation().state.users;
+  const eventId = useLocation().state.eventId;
   const { user, travel, travelName } = useParams();
 
   const parti_list_id = useLocation().state.parti_list.map((e) => e.personId);
@@ -70,7 +71,7 @@ function ChangeEvent() {
 
     // ========= 수정 필요!!! =======
     await axios
-      .post(`/api/${user}/${travel}/changeEvent`, {
+      .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
         parti_list: temp_list,
         event_name: place,
         event_date: date,
