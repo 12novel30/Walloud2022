@@ -49,12 +49,19 @@ public class EventService {
                 Long.valueOf(eventId));
     }
 
-    public boolean checkPayerInParticipant(List<Map> partiList, Long payerId){
+    public List<Map> checkPayerInParticipant(List<Map> partiList, Long payerId){
         List<Long> partiIds = new ArrayList<>();
         for (Map parti : partiList){
             partiIds.add(Long.valueOf(parti.get("personId").toString()));
         }
-        return partiIds.contains(payerId);
+        if(!partiIds.contains(payerId)){
+            Map<String, String> payerMap = new HashMap<>();
+            payerMap.put("role", "true");
+            payerMap.put("personId", String.valueOf(payerId));
+            payerMap.put("spent", "0");
+            partiList.add(payerMap);
+        }
+        return partiList;
     }
 
     public List<EventDto.HomeView> getEventInfoInTravel(int travelId){

@@ -45,9 +45,8 @@ public class PersonController {
         }
     }
 
-    @PostMapping("/{userId}/{travelId}/deleteUser")
-    public void deletePerson2Travel(@RequestBody Map map){ //@PathVariable int travelId,
-        int person_id = Integer.parseInt(map.get("person_id").toString());
+    @DeleteMapping("/{userId}/{travelId}/{personId}/deleteUser")
+    public void deletePerson2Travel(@PathVariable("personId") int person_id){ //@PathVariable int travelId,
         if (participantService.getSizeOfJoinedEventList(person_id) == 0){
             personService.deleteJoinTravel(person_id);
         }

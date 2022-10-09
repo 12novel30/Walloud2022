@@ -35,11 +35,9 @@ public class EventController {
     public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
         // setting
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        List<Map> partiDtoList = (List)map.get("parti_list");
-        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
-        Boolean isPayerInParticipant = eventService.checkPayerInParticipant(partiDtoList, payerId);
-        int partiCount = partiDtoList.size();
         int eventPrice = Integer.parseInt(map.get("price").toString());
+        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
+        List<Map> partiDtoList = (List)map.get("parti_list");
 
         // create event
         EventDto.Request request = EventDto.Request.builder()
@@ -52,6 +50,7 @@ public class EventController {
         EventDto.Response eventDto = eventService.createEvent(request);
 
         if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
+            partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
             for (Map partiDto : partiDtoList){
                 Person person = personService.getPersonEntityByPersonId(Long.valueOf(partiDto.get("personId").toString()));
                 Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
@@ -66,17 +65,6 @@ public class EventController {
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
                     throw new DefaultException(CREATE_PARTICIPANT_FAIL);
                 personService.updatePersonMoneyByCreating(person, eventPrice, chargedPrice, p_role);
-            }
-            if (!isPayerInParticipant){
-                Person person = personService.getPersonEntityByPersonId(payerId);
-                ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
-                        .person(personService.getPersonEntityByPersonId(payerId))
-                        .event(eventService.getEventEntityByEventId(Long.valueOf(eventDto.getEventId().toString())))
-                        .role(true)
-                        .chargedPrice(0.0)
-                        .build();
-                participantService.createParticipant(partiRequest);
-                personService.updatePersonMoneyByCreating(person, eventPrice, 0.0, true);
             }
             personService.updatePersonRole(travelId);
         } else throw new DefaultException(CREATE_EVENT_FAIL);
@@ -125,6 +113,7 @@ public class EventController {
         }
 
         List<Map> partiDtoList = (List)map.get("parti_list");
+        partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
         for(Map partiDto : partiDtoList){
             Long currPersonId = Long.valueOf(partiDto.get("personId").toString());
             Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
@@ -146,28 +135,6 @@ public class EventController {
                         .build();
                 participantService.createParticipant(partiRequest);
                 personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
-            }
-        }
-        if (!eventService.checkPayerInParticipant(partiDtoList, payerId)){
-            Person payer = personService.getPersonEntityByPersonId(payerId);
-            Boolean eventRole = true;
-
-            if (updateRequests.containsKey(payerId)){
-                PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(payerId);
-                currRequest.setCurrEventRole(eventRole);
-                currRequest.setCurrChargedPrice(0.0);
-                participantService.updateParticipant(eventRole, 0.0, payer);
-                personService.updatePersonMoney(payer, currRequest);
-            }
-            else {
-                ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
-                        .person(payer)
-                        .event(eventService.getEventEntityByEventId(Long.valueOf(event_id)))
-                        .role(eventRole)
-                        .chargedPrice(0.0)
-                        .build();
-                participantService.createParticipant(partiRequest);
-                personService.updatePersonMoneyByCreating(payer, eventPrice, 0.0, eventRole);
             }
         }
 
