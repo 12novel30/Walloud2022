@@ -97,11 +97,13 @@ public class EventController {
 
     @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
     public void updateEvent(@PathVariable("travelid") int travel_id, @PathVariable("eventid") int event_id, @RequestBody Map map) throws ParseException{
+        //setting for event update
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         int prevPrice = eventService.getEventPriceById(event_id);
         int eventPrice = Integer.parseInt(map.get("price").toString());
         Long payerId = Long.valueOf(map.get("payer_person_id").toString());
 
+        //update eventDB
         EventDto.Request request = EventDto.Request.builder()
                 .Name(map.get("event_name").toString())
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
@@ -110,6 +112,7 @@ public class EventController {
                 .build();
         eventService.updateEvent(event_id, request);
 
+        //setting for participant update
         List<ParticipantDto.detailView> prevParticipants = participantService.getParticipantInEvent(event_id);
         Map<Long, PersonDto.MoneyUpdateRequest> updateRequests = new HashMap<Long, PersonDto.MoneyUpdateRequest>();
 

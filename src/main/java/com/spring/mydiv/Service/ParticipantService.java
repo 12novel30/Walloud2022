@@ -4,6 +4,7 @@ import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -14,6 +15,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.spring.mydiv.Code.ErrorCode.NO_EVENT;
 
 /**
  * @author 12nov

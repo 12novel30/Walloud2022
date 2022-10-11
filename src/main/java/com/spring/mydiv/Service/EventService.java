@@ -1,10 +1,7 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Participant;
-import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.Travel;
+import com.spring.mydiv.Entity.*;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
@@ -42,6 +39,9 @@ public class EventService {
     }
 
     public void updateEvent(int eventId, EventDto.Request request){
+        Event event = eventRepository.findById(Long.valueOf(eventId))
+                .orElseThrow(() -> new DefaultException(NO_EVENT));
+
         eventRepository.updateNameAndDateAndPriceAndPayerPersonidById(request.getName(),
                 request.getDate(),
                 request.getPrice(),
@@ -75,7 +75,9 @@ public class EventService {
     } //fin
 
     public int getEventPriceById(int eventId){
-        return eventRepository.findById(Long.valueOf(eventId)).get().getPrice();
+        return eventRepository.findById(Long.valueOf(eventId))
+                .orElseThrow(() -> new DefaultException(NO_PRICE))
+                .getPrice();
     }
 
     public String getTravelPeriod(int travelId, int eventCount){
