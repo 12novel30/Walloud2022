@@ -1,10 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
-  const { user, travel, travelName } = useParams();
-  const personId = useLocation().state.personId;
+  const { user, travel, travelName, personId } = useParams();
   const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const [person_in_List, seteventList] = useState([]);
@@ -40,21 +39,8 @@ const Profile = () => {
           person_id: personId,
         })
         .then((res) => {
-          switch (res.data) {
-            case 200:
-              window.alert("Succesfully Delete");
-              navigate(`/${user}/${travel}/${travelName}`, {
-                state: { created: false },
-              });
-              break;
-            case -1:
-              window.alert(
-                "User has joined some events. Delete user from events"
-              );
-              break;
-            default:
-              throw "Network Error";
-          }
+          console.log(res.data);
+          navigate(`/${user}/${travel}/${travelName}`, {state : { created: false }})
         })
         .catch((error) => {
           console.log(error);

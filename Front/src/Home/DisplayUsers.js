@@ -8,8 +8,7 @@ function DisplayUsers({ users, preferences }) {
   function CreateUser({ username, personId, spent }) {
     return (
       <Link
-        to={`/${user}/${travel}/${travelName}/profile/${username}`}
-        state={{ personId: personId }}
+        to={`/${user}/${travel}/${travelName}/profile/${personId}`}
       >
         <div className="user">
           {preferences.displayIcon ? (

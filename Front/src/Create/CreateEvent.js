@@ -10,7 +10,7 @@ function CreateEvent() {
   const { user, travel, travelName } = useParams();
   const [payer, setPayer] = useState(users[0].personId)
 
-  var participants = [...users];
+  const [participants, setparti] = useState([...users]);
   const navigate = useNavigate();
 
   const [inputs, setInputs] = useState({
@@ -31,9 +31,12 @@ function CreateEvent() {
   const checkHandler = (checked, elem) => {
     console.log(elem)
     if (checked) {
-      participants.push(elem);
+      // participants.push(elem);
+      setparti([...participants,elem]);
     } else {
-      participants = participants.filter((e) => e.personId !== elem.personId);
+      // participants.filter((e) => e.personId !== elem.personId);
+      var temp = [...participants].filter((e)=> e.personId !== elem.personId);
+      setparti(temp);
     }
   };
 
@@ -49,7 +52,6 @@ function CreateEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    console.log(e.target.value);
     setPayer(e.target.value)
   };
 
