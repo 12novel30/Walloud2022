@@ -10,6 +10,7 @@ function CreateEvent() {
   const { user, travel, travelName } = useParams();
   const [payer, setPayer] = useState(users[0].personId);
 
+  const [participants, setparti] = useState([...users]);
   const navigate = useNavigate();
 
   const [price, setPrice] = useState(0);
@@ -66,8 +67,7 @@ function CreateEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    console.log(e.target.value);
-    setPayer(e.target.value);
+    setPayer(e.target.value)
   };
 
   const event_info = async () => {

@@ -5,10 +5,8 @@ import axios from "axios";
 
 const EventDescription = () => {
   const users = useLocation().state.users;
-  console.log("event description", users);
   const description = useLocation().state.event;
   const navigate = useNavigate();
-  console.log("event : ", description);
   const { user, travel, travelName } = useParams();
   const [parti_list, setParti] = useState([]);
 
@@ -24,19 +22,28 @@ const EventDescription = () => {
           });
         })
         .catch((error) => {
-          console.log(error);
+          if (error.response.data.status === 500) {
+            alert(error.response.data.message);
+          }
+          else {
+            alert("Check The network");
+          }
           window.location.reload();
         });
     }
   };
 
+  const getEventparti = async() => {
+    await axios
+    .get(`/api/${user}/${travel}/${description.eventId}/detail`)
+    .then((res) => {
+      setParti([...res.data]);
+      console.log("users : ",res.data);
+    });
+  }
+
   useEffect(() => {
-    axios
-      .get(`/api/${user}/${travel}/${description.eventId}/detail`)
-      .then((res) => {
-        console.log(res.data);
-        setParti(res.data);
-      });
+    getEventparti();
   }, []);
 
   const ModifiablePrice = ({ value }) => {
@@ -153,8 +160,7 @@ const EventDescription = () => {
         {parti_list.map((parti, index) => (
           <div>
             <Link
-              to={`/${user}/${travel}/${travelName}/profile/${parti.name}`}
-              state={{ personId: parti.personId }}
+              to={`/${user}/${travel}/${travelName}/profile/${parti.personId}`}
             >
               <h3 className="link-text" key={index}>
                 {parti.name}

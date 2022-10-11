@@ -30,7 +30,6 @@ const LogIn = () => {
         navigate("/selectTravel", { state: { id: response.data } });
       })
       .catch((error) => {
-
         if (error.response.data.status === 500) {
           alert(error.response.data.message);
         }
