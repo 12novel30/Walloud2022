@@ -42,7 +42,8 @@ public class UserController {
                     map.get("user_name").toString(),
                     map.get("user_email").toString(),
                     map.get("user_password").toString(),
-                    map.get("user_account").toString());
+                    map.get("user_account").toString(),
+                    map.get("user_bank").toString());
             return ResponseEntity.ok(userservice.createUser(request));
         } else throw new DefaultException(ALREADY_REGISTERED);
     }
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/createTravel")
-    public int joinTravel(@PathVariable int userId, @RequestBody Map map){
+    public int createTravel(@PathVariable int userId, @RequestBody Map map){
         TravelDto.Request travelRequest = new TravelDto.Request(map.get("travel_name").toString());
         PersonDto.Request personRequest = new PersonDto.Request(
                 userservice.getUserInfo(userId),
@@ -87,7 +88,8 @@ public class UserController {
                 map.get("user_name").toString(),
                 map.get("user_email").toString(),
                 map.get("user_password").toString(),
-                map.get("user_account").toString());
+                map.get("user_account").toString(),
+                map.get("user_bank").toString());
         return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
         );
     }

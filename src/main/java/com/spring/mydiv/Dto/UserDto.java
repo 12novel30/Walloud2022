@@ -40,6 +40,8 @@ public class UserDto {
 		private String Password;
 		@NotNull
 		private String Account;
+		@NotNull
+		private String Bank;
 	}
 
 	@Getter
@@ -58,6 +60,8 @@ public class UserDto {
 		private String Password;
 		@NotNull
 		private String Account;
+		@NotNull
+		private String Bank;
 
 		public static Response fromEntity(User user) {
 			return Response.builder()
@@ -66,6 +70,7 @@ public class UserDto {
 					.Email(user.getEmail())
 					.Password(user.getPassword())
 					.Account(user.getAccount())
+					.Bank(user.getBank())
 					.build();
 		}
 	}
@@ -86,6 +91,8 @@ public class UserDto {
 		private String Password;
 		@NotNull
 		private String Account;
+		@NotNull
+		private String Bank;
 
 		private List<TravelDto.Response> TravelList;
 
@@ -96,6 +103,7 @@ public class UserDto {
 					.Email(user.getEmail())
 					.Password(user.getPassword())
 					.Account(user.getAccount())
+					.Bank(user.getBank())
 					.build();
 		}
 	}

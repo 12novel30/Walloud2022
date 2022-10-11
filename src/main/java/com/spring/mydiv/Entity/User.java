@@ -44,4 +44,7 @@ public class User implements Serializable {
 	@Column(name = "user_account", length = 20, nullable = false)
 	private String account;
 
+	@Column(name = "user_bank", length = 50, nullable = false)
+	private String bank;
+
 }

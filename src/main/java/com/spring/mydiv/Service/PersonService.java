@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spring.mydiv.Code.ErrorCode.NO_USER;
+import static com.spring.mydiv.Code.ErrorCode.*;
 import static java.lang.Boolean.*;
 
 /**
@@ -101,7 +101,7 @@ public class PersonService {
     public PersonDto.HomeView getPayerInTravel(int travelId){
         return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
                 .map(PersonDto.HomeView::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER));
+                .orElseThrow(()-> new DefaultException(NO_PAYER));
     }
 
     public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){

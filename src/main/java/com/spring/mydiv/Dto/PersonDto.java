@@ -110,6 +110,7 @@ public class PersonDto {
 		private String UserName;
 		private String UserEmail;
 		private String UserAccount;
+		private String UserBank;
 
 		private List<EventDto.PersonView> EventList;
 		private List<HomeView> PersonInTravelList;
@@ -124,6 +125,7 @@ public class PersonDto {
 					.UserName(person.getUser().getName())
 					.UserEmail(person.getUser().getEmail())
 					.UserAccount(person.getUser().getAccount())
+					.UserBank(person.getUser().getBank())
 					.build();
 		}
 	}

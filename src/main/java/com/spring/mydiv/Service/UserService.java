@@ -41,6 +41,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .account(request.getAccount())
+                .bank(request.getBank())
                 .build();
         userRepository.save(user);
         return UserDto.Response.fromEntity(user);
@@ -51,16 +52,6 @@ public class UserService {
     }
     public int login(UserDto.Login loginUser) {
         int result = 0;
-
-//        Optional<User> info1 = userRepository.findByEmail(loginUser.getEmail());
-//        info1.ifPresentOrElse(
-//            user -> //"Wrong Password!"
-//                {if (loginUser.getPassword().toString().equals(user.getPassword().toString())) {
-//                    result = user.getId().intValue();}
-//                else{result = -1;}},
-//            ()-> {if(loginUser.getEmail()!=null){result = -2;}} //"Wrong Email!"
-//        );
-
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
         if (loginUser.getPassword().equals(entity.getPassword()))
@@ -106,6 +97,7 @@ public class UserService {
                 .Email(user.get().getEmail())
                 .Account(user.get().getAccount())
                 .Password(user.get().getPassword())
+                .Bank(user.get().getBank())
                 .build();
         return dto;
     }
@@ -119,6 +111,7 @@ public class UserService {
         if (updateRequest.getEmail() != null) user.setEmail(updateRequest.getEmail());
         if (updateRequest.getPassword() != null) user.setPassword(updateRequest.getPassword());
         if (updateRequest.getAccount() != null) user.setAccount(updateRequest.getAccount());
+        if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
     }
