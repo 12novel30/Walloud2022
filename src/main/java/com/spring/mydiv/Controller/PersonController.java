@@ -58,16 +58,19 @@ public class PersonController {
     public PersonDto.Detail getPersonToDetailView(@PathVariable("travelid") int travelid,
                                                         @PathVariable("personid") int personid){
         PersonDto.Detail detailView = personService.getPersonToDetailView(personid);
-        detailView.setEventList(participantService.getEventListThatPersonJoin(personid));
-        //이 여행에서 해야하는 order 프린트를 위한 list(travelrole, diff에 따라)
-        if (detailView.getTravelRole()){ // =총무 -> (여행 참여 전원) id, name, 이사람에게(받을/줄)돈
-            detailView.setPersonInTravelList(personService.getPersonInfoInTravel(travelid));
-        } else { // ~총무 -> 총무id, 총무name, 내가총무에게(받을/줄)돈
-            List<PersonDto.HomeView> PersonInTravelList = new ArrayList<>();
-            PersonDto.HomeView tmp = personService.getPayerInTravel(travelid);
-            tmp.setDifference(detailView.getDifference());
-            PersonInTravelList.add(tmp);
-            detailView.setPersonInTravelList(PersonInTravelList);
+        List<EventDto.PersonView> EventList = participantService.getEventListThatPersonJoin(personid);
+        detailView.setEventList(EventList);
+        if (EventList.size()!=0) {
+            //이 여행에서 해야하는 order 프린트를 위한 list(travelrole, diff에 따라)
+            if (detailView.getTravelRole()) { // =총무 -> (여행 참여 전원) id, name, 이사람에게(받을/줄)돈
+                detailView.setPersonInTravelList(personService.getPersonInfoInTravel(travelid));
+            } else { // ~총무 -> 총무id, 총무name, 내가총무에게(받을/줄)돈
+                List<PersonDto.HomeView> PersonInTravelList = new ArrayList<>();
+                PersonDto.HomeView tmp = personService.getPayerInTravel(travelid);
+                tmp.setDifference(detailView.getDifference());
+                PersonInTravelList.add(tmp);
+                detailView.setPersonInTravelList(PersonInTravelList);
+            }
         }
         return detailView;
     }
