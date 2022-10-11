@@ -104,6 +104,10 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_PAYER));
     }
 
+    public boolean isPersonSuperuser(int personId){
+        return personRepository.findById(Long.valueOf(personId)).get().getIsSuper();
+    }
+
     public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
         if(p_role){
             Double takePrice = eventPrice - chargedPrice;

@@ -47,7 +47,8 @@ public class PersonController {
 
     @DeleteMapping("/{userId}/{travelId}/{personId}/deleteUser")
     public void deletePerson2Travel(@PathVariable("personId") int person_id){ //@PathVariable int travelId,
-        if (participantService.getSizeOfJoinedEventList(person_id) == 0){
+        if (participantService.getSizeOfJoinedEventList(person_id) == 0 &&
+                !personService.isPersonSuperuser(person_id)){
             personService.deleteJoinTravel(person_id);
         }
         else throw new DefaultException(DELETE_FAIL);

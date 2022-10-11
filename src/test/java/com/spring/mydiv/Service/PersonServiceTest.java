@@ -102,8 +102,9 @@ class PersonServiceTest {
 
     @Test
     @Commit
-    @DisplayName("이벤트 삭제로 person 정보 업데이트")
-    void updatePersonWithEventDelete() {
+    @DisplayName("슈퍼 유저인지 확인하기")
+    void isSuperUser() {
+        System.out.println(personService.isPersonSuperuser(292));
     }
 
     @Test
@@ -148,8 +149,6 @@ class PersonServiceTest {
         //then
         System.out.println("CheckOUT DB");
     }
-
-
 
 
 //    @Test

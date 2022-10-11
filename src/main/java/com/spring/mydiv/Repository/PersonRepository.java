@@ -25,6 +25,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	List<Person> findByTravel_Id(Long id);
 
+	@Override
+	Optional<Person> findById(Long aLong);
+
 	void deleteById(Long id);
 
 	void delete(Person person);
