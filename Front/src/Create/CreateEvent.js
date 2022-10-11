@@ -9,8 +9,6 @@ function CreateEvent() {
   const userPersonId = useLocation().state.userPersonId;
   const { user, travel, travelName } = useParams();
   const [payer, setPayer] = useState(users[0].personId);
-
-  const [participants, setparti] = useState([...users]);
   const navigate = useNavigate();
 
   const [price, setPrice] = useState(0);
