@@ -165,6 +165,9 @@ const EventDescription = () => {
               <h3 className="link-text" key={index}>
                 {parti.name}
               </h3>
+              <h4>
+                {parti.chargedPrice}
+              </h4>
             </Link>
           </div>
         ))}
@@ -176,6 +179,7 @@ const EventDescription = () => {
           description: description,
           users: users,
           parti_list: parti_list,
+          eventId : description.eventId,
         }}
       >
         <button>Change</button>

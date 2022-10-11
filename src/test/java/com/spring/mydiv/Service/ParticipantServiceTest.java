@@ -62,26 +62,9 @@ class ParticipantServiceTest {
             System.out.println("total price: " + e.getPrice());
             System.out.println("payer id: " + e.getPayerId());
             System.out.println("payer name: " + e.getPayerName());
-            System.out.println("price/person: " + e.getDividePrice());
             System.out.println();
         }
     }
-
-    @Test
-    @Commit
-    @DisplayName("이벤트에 참가한 참여자 확인")
-    void findParticipantfromEvent() {
-        //given
-        int event_id = 78;
-        //when
-        ParticipantDto.peopleList result = participantService.getJoinedPeopleInEvent(event_id);
-        //then
-        for (Person p : result.getJoinedPerson()){
-            System.out.println(p.getUser().getName());
-        }
-
-        System.out.println(result.getPayer().getId());
-    } // checked
 
     @Test
     @Commit

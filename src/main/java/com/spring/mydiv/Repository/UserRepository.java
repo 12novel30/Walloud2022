@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author 12nov
  */
 public interface UserRepository extends JpaRepository<User, Long>{
+    boolean existsByEmail(String email);
     Optional<User> findByEmail(String Email);
     Optional<User> findById(Long no);
 //

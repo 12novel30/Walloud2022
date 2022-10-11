@@ -102,26 +102,9 @@ class PersonServiceTest {
 
     @Test
     @Commit
-    @DisplayName("이벤트 삭제로 person 정보 업데이트")
-    void updatePersonWithEventDelete() {
-        //given
-        List<Person> personList = new ArrayList<>();
-        Person person1 = personService.getPersonEntityByPersonId(Long.valueOf(92));
-        personList.add(person1);
-        Person person2 = personService.getPersonEntityByPersonId(Long.valueOf(93));
-        personList.add(person2);
-        Person person3 = personService.getPersonEntityByPersonId(Long.valueOf(94));
-        personList.add(person3);
-        Long payer_person_id = Long.valueOf(94);
-        Double dividePrice = 70000.0;
-        Double takePrice = 140000.0;
-
-        //when
-        personService.updatePersonMoneyByDeleting(personList, payer_person_id, dividePrice, takePrice);
-        personService.updatePersonRole(91);
-
-        //then
-        System.out.println("check DB");
+    @DisplayName("슈퍼 유저인지 확인하기")
+    void isSuperUser() {
+        System.out.println(personService.isPersonSuperuser(292));
     }
 
     @Test
@@ -166,8 +149,6 @@ class PersonServiceTest {
         //then
         System.out.println("CheckOUT DB");
     }
-
-
 
 
 //    @Test

@@ -35,7 +35,7 @@ const Profile = () => {
       )
     ) {
       await axios
-        .delete(`/api/${user}/${travel}/deleteUser`, {
+        .delete(`/api/${user}/${travel}/${personId}/deleteUser`, {
           person_id: personId,
         })
         .then((res) => {

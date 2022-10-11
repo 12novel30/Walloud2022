@@ -1,10 +1,7 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Participant;
-import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.Travel;
+import com.spring.mydiv.Entity.*;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
@@ -26,8 +23,7 @@ public class EventService {
     private final PersonRepository personRepository;
     private final ParticipantService participantService;
 
-    public EventDto.Response createEvent(EventDto.Request request){
-
+    public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
                 .name(request.getName())
                 .date(request.getDate())
@@ -42,12 +38,30 @@ public class EventService {
         return EventDto.Response.fromEntity(event);
     }
 
-    public boolean checkPayerInParticipant(List<Map> partiList, Long payerId){
+    public void updateEvent(int eventId, EventDto.Request request){
+        Event event = eventRepository.findById(Long.valueOf(eventId))
+                .orElseThrow(() -> new DefaultException(NO_EVENT));
+
+        eventRepository.updateNameAndDateAndPriceAndPayerPersonidById(request.getName(),
+                request.getDate(),
+                request.getPrice(),
+                request.getPayerPersonId(),
+                Long.valueOf(eventId));
+    }
+
+    public List<Map> checkPayerInParticipant(List<Map> partiList, Long payerId){
         List<Long> partiIds = new ArrayList<>();
         for (Map parti : partiList){
-            partiIds.add(Long.valueOf(parti.get("id").toString()));
+            partiIds.add(Long.valueOf(parti.get("personId").toString()));
         }
-        return partiIds.contains(payerId);
+        if(!partiIds.contains(payerId)){
+            Map<String, String> payerMap = new HashMap<>();
+            payerMap.put("role", "true");
+            payerMap.put("personId", String.valueOf(payerId));
+            payerMap.put("spent", "0");
+            partiList.add(payerMap);
+        }
+        return partiList;
     }
 
     public List<EventDto.HomeView> getEventInfoInTravel(int travelId){
@@ -66,6 +80,12 @@ public class EventService {
     public int getEventCountInTravel(int travelId){
         return eventRepository.countByTravel_Id(Long.valueOf(travelId));
     } //fin
+
+    public int getEventPriceById(int eventId){
+        return eventRepository.findById(Long.valueOf(eventId))
+                .orElseThrow(() -> new DefaultException(NO_PRICE))
+                .getPrice();
+    }
 
     public String getTravelPeriod(int travelId, int eventCount){
         if (eventCount == 0) return null;
@@ -88,21 +108,11 @@ public class EventService {
                 .orElseThrow(()-> new DefaultException(NO_EVENT));
     }
 
-    /*
-    public EventDto.deleteRequest getEventDetailforDelete(int eventId){
-        ParticipantDto.peopleList peopleList = participantService.getJoinedPeopleInEvent(eventId);
-        Event event = eventRepository.findById(Long.valueOf(eventId))
-                .orElseThrow(()-> new DefaultException(NO_EVENT));
-
-        return EventDto.deleteRequest.builder()
-                .joinedPerson(peopleList.getJoinedPerson())
-                .payerId(peopleList.getPayer().getId())
-                .DividePrice(event.getDividePrice())
-                .TakePrice(event.getTakePrice()).build();
+    public Long getSuperUser(int travelId){
+        return personRepository.findByTravel_IdAndIsSuper(Long.valueOf(travelId), true)
+                .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
+                .getId();
     }
-
-     */
-
     public void deleteEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
         for(Participant participant : participantList){

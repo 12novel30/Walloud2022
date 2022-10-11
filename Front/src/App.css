@@ -152,6 +152,7 @@ Classes
   display: inline-block;
   text-align: center;
   width: 30%;
+  margin-bottom: 5%;
 }
 
 .event {
@@ -239,9 +240,26 @@ Classes
   height: fit-content;
 }
 
-.caption {
+.users > .home-type > h4 {
   margin: 0;
+  padding: 10px 0px;
+}
+.user > img {
+  width: 50%;
+  background-color: transparent;
+}
+
+#caption-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 550;
+}
+
+#caption-spent {
+  margin: 0;
+  padding-top: 3%;
   font-size: 1rem;
+  font-weight: 200;
 }
 
 /* .home-type {
@@ -316,8 +334,7 @@ select {
 .home-h2 {
   width: 40%;
   font-size: 2rem;
-  padding: 0.5% 0 0.5% 0;
-  margin: 2% auto 0 auto;
+  margin: 2% auto 2% auto;
 }
 
 .home-button {
@@ -330,7 +347,7 @@ select {
   /* background-color: rgb(178, 216, 244); */
   background-color: #3d6589c2;
   height: fit-content;
-  margin: 5% 0;
+  margin-bottom: 5%;
   min-width: 250px;
 }
 

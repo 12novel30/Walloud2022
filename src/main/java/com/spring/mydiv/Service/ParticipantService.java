@@ -1,8 +1,10 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -13,6 +15,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.spring.mydiv.Code.ErrorCode.NO_EVENT;
 
 /**
  * @author 12nov
@@ -59,7 +63,7 @@ public class ParticipantService {
                         .get().getUser().getName());
             } else {
                 //      -> event id & event role==1 을 조건으로
-                Participant payer = participantRepository.findByEvent_IdAndEventRole(eventId, true).get();
+                Participant payer = participantRepository.findByEvent_IdAndEventRole(eventId, true).get(); // 에러 발생
                 //          -> in parti db) 결제자의 person id
                 tmpEvent.setPayerId(payer.getId());
                 //          -> in person db) 결제자의 name
@@ -73,20 +77,6 @@ public class ParticipantService {
 
     public int getSizeOfJoinedEventList(int personId){
         return participantRepository.findByPerson_Id(Long.valueOf(personId)).size();
-    }
-
-    public ParticipantDto.peopleList getJoinedPeopleInEvent(int eventId){
-        List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
-        List<Person> joinedPeople = new ArrayList<Person>();
-        Person Payer = new Person();
-        for(Participant participant : participantList){
-            joinedPeople.add(participant.getPerson());
-            if (participant.getEventRole() == Boolean.TRUE){
-                Payer = participant.getPerson();
-            }
-        }
-        ParticipantDto.peopleList peopleList = new ParticipantDto.peopleList(joinedPeople, Payer);
-        return peopleList;
     }
 
     public List<ParticipantDto.detailView> getParticipantInEvent(int eventId){
@@ -103,5 +93,13 @@ public class ParticipantService {
         }
 
         return participantDetailList;
+    }
+
+    public void updateParticipant(Boolean eventRole, Double chargedPrice, Person person){
+        participantRepository.updateEventRoleAndChargedPriceByPerson(eventRole, chargedPrice, person);
+    }
+
+    public void deleteParticipant(Person p, Event e){
+        participantRepository.deleteByPersonAndEvent(p, e);
     }
 }

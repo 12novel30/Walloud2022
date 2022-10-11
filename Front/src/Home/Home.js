@@ -3,9 +3,10 @@ import NavigationBar from "../js/NavigationBar";
 import DisplayUsers from "./DisplayUsers";
 import Events from "./Events";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import plusSrc from "../img/plus.jpg";
+import plusSrc from "../img/plus.png";
 import axios from "axios";
 import { min } from "moment";
+import './topBar.css'
 
 const Home = () => {
   // const user = useLocation().state.user_id;
@@ -55,7 +56,6 @@ const Home = () => {
       .catch((error) => {
         console.log(error);
       });
-    console.log(userList);
   };
 
   /////////////////////////////////
@@ -72,12 +72,14 @@ const Home = () => {
 
   return (
     <div>
-      <h1 onClick={goHome}>
-        {travelName}
-        {period === null ? <div></div> : <div>{" " + period}</div>}
-      </h1>
+      <div className="topBar">
+        <h1 onClick={goHome}>
+          {travelName}
+        </h1>
+        {period === null ? <div></div> : <div className="period">{" " + period}</div>}
+      </div>
       <div className="big-box">
-        <h2 className="home-h2">Events</h2>
+        <h2 className="home-h2">Event</h2>
         {/* <Link to="createEvent" key={(user, travel)}>
               <img className="plus-icon" src={plusSrc} alt="add event" />
             </Link> */}
@@ -90,8 +92,8 @@ const Home = () => {
             }}
           >
             <h4 className="description">Event</h4>
-            <h4 className="description">Payer</h4>
             <h4 className="description">Price</h4>
+            <h4 className="description">Payer</h4>
             <h4 className="description">Date</h4>
           </div>
           {eventList.map((event) => (
@@ -107,7 +109,7 @@ const Home = () => {
       </div>
 
       <div className="big-box">
-        <h2 className="home-h2">Participants</h2>
+        <h2 className="home-h2">People</h2>
         {/* <Link to="createUser">
               <img className="plus-icon" src={plusSrc} alt="plus-icon" />
             </Link> */}

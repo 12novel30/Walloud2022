@@ -7,44 +7,33 @@ import personSrc from "../img/person.png";
 function ChangeEvent() {
   const description = useLocation().state.description;
   const users = useLocation().state.users;
+  const eventId = useLocation().state.eventId;
   const { user, travel, travelName } = useParams();
 
   const parti_list_id = useLocation().state.parti_list.map((e) => e.personId);
-
+  console.log("parti", parti_list_id);
   var participants = users.filter((e) => parti_list_id.includes(e.personId));
-  var payer = users.filter((e) => e.name === description.payerName)[0].id;
+  console.log("init", participants);
+  var payer = users.filter((e) => e.name === description.payerName)[0].personId;
   const navigate = useNavigate();
-
-  const [inputs, setInputs] = useState({
-    place: description.name,
-    price: description.price,
-    date: description.date.substring(0, 10),
-  });
-  const { place, price, date } = inputs;
-
-  const onChange = (e) => {
-    const { value, name } = e.target;
-    console.log(value, name);
-    setInputs({
-      ...inputs,
-      [name]: value,
-    });
-  };
+  var place = description.name;
+  var price = description.price;
+  var date = description.date.substring(0, 10);
 
   const checkHandler = (checked, elem) => {
     if (checked) {
       participants.push(elem);
       console.log(elem, "push", participants);
     } else {
-      participants = participants.filter((e) => e.id !== elem.id);
+      participants = participants.filter((e) => e.personId !== elem.personId);
     }
     console.log(participants);
   };
 
   const onSubmit = (e) => {
-    console.log("participants : ", participants);
-    console.log("payer : ", payer);
-
+    place = document.querySelector("#place").value;
+    price = document.querySelector("#price").value;
+    date = document.querySelector("#date").value.substring(0, 10);
     if (place === "") {
       alert("Set place\n");
     } else if (price === "") {
@@ -57,7 +46,6 @@ function ChangeEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    console.log(participants);
     payer = e.target.value;
     console.log(payer);
   };
@@ -67,6 +55,7 @@ function ChangeEvent() {
       delete row.name;
       delete row.difference;
       delete row.userId;
+      row.spent = document.getElementById(`${row.personId}-spent`).value;
 
       return row;
     });
@@ -81,7 +70,7 @@ function ChangeEvent() {
 
     // ========= 수정 필요!!! =======
     await axios
-      .post(`/api/${user}/${travel}/changeEvent`, {
+      .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
         parti_list: temp_list,
         event_name: place,
         event_date: date,
@@ -127,7 +116,6 @@ function ChangeEvent() {
           id="place"
           name="place"
           defaultValue={description.name}
-          onChange={onChange}
           size="5"
         />
         <label htmlFor="price">Price</label>
@@ -136,7 +124,6 @@ function ChangeEvent() {
           id="price"
           name="price"
           defaultValue={description.price}
-          onChange={onChange}
           size="5"
         />
         <label htmlFor="date">Date</label>
@@ -144,7 +131,6 @@ function ChangeEvent() {
           type="date"
           id="date"
           name="date"
-          onChange={onChange}
           size="5"
           defaultValue={description.date.substring(0, 10)}
         />
@@ -154,11 +140,11 @@ function ChangeEvent() {
         <select id="participants" onChange={setSelectedPayer}>
           {users.map((userInfo, id) =>
             userInfo.name === description.payerName ? (
-              <option value={userInfo.id} key={id} selected>
+              <option value={userInfo.personId} key={id} selected>
                 {userInfo.name}
               </option>
             ) : (
-              <option value={userInfo.id} key={id}>
+              <option value={userInfo.personId} key={id}>
                 {userInfo.name}
               </option>
             )
@@ -177,8 +163,7 @@ function ChangeEvent() {
         {users.map((userInfo, id) => (
           <div
             style={{
-              display: "inline-block",
-              minWidth: "33%",
+              width: "100%",
               alignItems: "center",
               marginBottom: "3%",
             }}
@@ -188,12 +173,20 @@ function ChangeEvent() {
               className="checkbox"
               defaultChecked={parti_list_id.includes(userInfo.personId)}
               type="checkbox"
-              id={userInfo.personid}
+              id={userInfo.personId}
               onChange={(e) => checkHandler(e.target.checked, userInfo)}
             />
-            <label className="checkbox-text" htmlFor={userInfo.id}>
+            <label
+              className="checkbox-text"
+              htmlFor={userInfo.personId}
+              style={{ width: "30%" }}
+            >
               {userInfo.name}
             </label>
+            <input
+              id={`${userInfo.personId}-spent`}
+              style={{ display: "inline-block", width: "40%" }}
+            />
           </div>
         ))}
       </div>

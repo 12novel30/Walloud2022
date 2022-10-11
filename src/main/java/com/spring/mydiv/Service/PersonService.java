@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spring.mydiv.Code.ErrorCode.NO_USER;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import static com.spring.mydiv.Code.ErrorCode.*;
+import static java.lang.Boolean.*;
 
 /**
  * @author 12nov
@@ -102,7 +101,11 @@ public class PersonService {
     public PersonDto.HomeView getPayerInTravel(int travelId){
         return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
                 .map(PersonDto.HomeView::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER));
+                .orElseThrow(()-> new DefaultException(NO_PAYER));
+    }
+
+    public boolean isPersonSuperuser(int personId){
+        return personRepository.findById(Long.valueOf(personId)).get().getIsSuper();
     }
 
     public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
@@ -119,18 +122,43 @@ public class PersonService {
         }
     }
 
-    public void updatePersonMoneyByDeleting(List<Person> personList, Long payer_personId,
-                                            Double dividePrice, Double takePrice){
-        for (Person p : personList){
-            if (p.getId().equals(payer_personId)){ // payer
-                p.setSumGet(p.getSumGet() - takePrice);
-                p.setDifference(p.getDifference() - takePrice);
-                personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
-            } else { // ~payer
-                p.setSumSend(p.getSumSend() - dividePrice);
-                p.setDifference(p.getDifference() + dividePrice);
-                personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
-            }
+    public void updatePersonMoneyByDeleting(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
+        if(p_role){
+            Double takePrice = eventPrice - chargedPrice;
+            p.setSumGet(p.getSumGet() - takePrice);
+            p.setDifference(p.getDifference() - takePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
+        else{
+            p.setSumSend(p.getSumSend() - chargedPrice);
+            p.setDifference(p.getDifference() + chargedPrice);
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
+        }
+    }
+
+    public void updatePersonMoney(Person p, PersonDto.MoneyUpdateRequest request){
+        if(request.isPervEventRole()){
+            Double prevTakePrice = request.getPrevPrice() - request.getPrevChargedPrice();
+            p.setSumGet(p.getSumGet() - prevTakePrice);
+            p.setDifference(p.getDifference() - prevTakePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
+        else{
+            p.setSumSend(p.getSumSend() - request.getPrevChargedPrice());
+            p.setDifference(p.getDifference() + request.getPrevChargedPrice());
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
+        }
+
+        if(request.isCurrEventRole()){
+            Double currTakePrice = request.getCurrPrice() - request.getCurrChargedPrice();
+            p.setSumGet(p.getSumGet() + currTakePrice);
+            p.setDifference(p.getDifference() + currTakePrice);
+            personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
+        }
+        else{
+            p.setSumSend(p.getSumSend() + request.getCurrChargedPrice());
+            p.setDifference(p.getDifference() - request.getCurrChargedPrice());
+            personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
 

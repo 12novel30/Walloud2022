@@ -37,12 +37,15 @@ public class UserController {
 
     @PostMapping(value = "/Register")
     public ResponseEntity<UserDto.Response> createUser(@RequestBody Map map) {
-        UserDto.Request request = new UserDto.Request(
-                map.get("user_name").toString(),
-                map.get("user_email").toString(),
-                map.get("user_password").toString(),
-                map.get("user_account").toString());
-        return ResponseEntity.ok(userservice.createUser(request));
+        if (!userservice.checkIsEmailRegistered(map.get("user_email").toString())) {
+            UserDto.Request request = new UserDto.Request(
+                    map.get("user_name").toString(),
+                    map.get("user_email").toString(),
+                    map.get("user_password").toString(),
+                    map.get("user_account").toString(),
+                    map.get("user_bank").toString());
+            return ResponseEntity.ok(userservice.createUser(request));
+        } else throw new DefaultException(ALREADY_REGISTERED);
     }
 
     @PostMapping(value = "/login")
@@ -63,7 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/createTravel")
-    public int joinTravel(@PathVariable int userId, @RequestBody Map map){
+    public int createTravel(@PathVariable int userId, @RequestBody Map map){
         TravelDto.Request travelRequest = new TravelDto.Request(map.get("travel_name").toString());
         PersonDto.Request personRequest = new PersonDto.Request(
                 userservice.getUserInfo(userId),
@@ -85,7 +88,8 @@ public class UserController {
                 map.get("user_name").toString(),
                 map.get("user_email").toString(),
                 map.get("user_password").toString(),
-                map.get("user_account").toString());
+                map.get("user_account").toString(),
+                map.get("user_bank").toString());
         return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
         );
     }

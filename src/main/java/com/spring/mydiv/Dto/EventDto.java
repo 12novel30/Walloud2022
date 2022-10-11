@@ -51,15 +51,12 @@ public class EventDto {
     public static class Request {
         @NotNull
         private String Name;
-        @NotNull
         private TravelDto.Response Travel;
         @NotNull
         private java.util.Date Date;
         @NotNull
         private int Price;
-        private int PartiCount;
         private String Image;
-        private boolean isPayerInParticipant;
         @NotNull
         private Long PayerPersonId;
     }

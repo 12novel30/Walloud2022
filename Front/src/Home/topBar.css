@@ -1,0 +1,26 @@
+.topBar {
+    height: 90px;
+    background-color: var(--classic-blue);
+}
+.topBar *{
+    display: inline-flex;
+}
+.topBar > h1 {
+    padding: 25px 0px;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: transparent;
+    width: auto;
+}
+
+@media only screen and (max-width: 400px) {
+    .period {
+        display: none;
+    }
+}
+
+.topBar > .period {
+    padding: 10px 10px;
+    color: var(--ultimate-gray);
+    font-style: italic;
+}

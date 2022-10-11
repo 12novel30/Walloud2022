@@ -1,6 +1,7 @@
 package com.spring.mydiv.Controller;
 
 import com.spring.mydiv.Dto.*;
+import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.EventService;
@@ -30,20 +31,13 @@ public class EventController {
     private final TravelService travelService;
     private final ParticipantService participantService;
 
-//    @GetMapping("/{userid}/{travelid}/createEvent") //don't use this
-//    public List<PersonDto.Simple> getPersonNameInTravel(@PathVariable("travelid") int travelid){
-//        return personService.getPersonNameInTravel(travelid);
-//    }
-
     @PostMapping("/{userId}/{travelId}/CreateEvent")
     public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
         // setting
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        List<Map> partiDtoList = (List)map.get("parti_list");
-        Boolean isPayerInParticipant = eventService.checkPayerInParticipant(partiDtoList, Long.valueOf(map.get("payer_person_id").toString()));
-        int partiCount = partiDtoList.size();
         int eventPrice = Integer.parseInt(map.get("price").toString());
         Long payerId = Long.valueOf(map.get("payer_person_id").toString());
+        List<Map> partiDtoList = (List)map.get("parti_list");
 
         // create event
         EventDto.Request request = EventDto.Request.builder()
@@ -51,33 +45,16 @@ public class EventController {
                 .Travel(travelService.getTravelInfo(travelId)) //orElseThrow
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
                 .Price(eventPrice)
-                .PartiCount(partiCount)
-                .isPayerInParticipant(isPayerInParticipant)
                 .PayerPersonId(payerId)
                 .build();
         EventDto.Response eventDto = eventService.createEvent(request);
 
         if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
-            List<Long> peopleId = new ArrayList<>();
+            partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
             for (Map partiDto : partiDtoList){
-               peopleId.add(Long.valueOf(partiDto.get("id").toString()));
-            }
-            if (!isPayerInParticipant){
-                peopleId.add(payerId);
-            }
-
-            for(Long personId : peopleId){
-                System.out.println(personId);
-                System.out.println(payerId);
-                Person person = personService.getPersonEntityByPersonId(personId);
-                Double chargedPrice = participantService.calculateChargedPrice(eventPrice, partiCount);
-                Boolean p_role = false;
-                if (personId.equals(payerId)){
-                    p_role = true;
-                    if(!isPayerInParticipant){
-                        chargedPrice = 0.0;
-                    }
-                }
+                Person person = personService.getPersonEntityByPersonId(Long.valueOf(partiDto.get("personId").toString()));
+                Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
+                Boolean p_role = Boolean.valueOf(partiDto.get("role").toString());
 
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
                         .person(person)
@@ -87,25 +64,97 @@ public class EventController {
                         .build();
                 if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
                     throw new DefaultException(CREATE_PARTICIPANT_FAIL);
-
                 personService.updatePersonMoneyByCreating(person, eventPrice, chargedPrice, p_role);
             }
             personService.updatePersonRole(travelId);
         } else throw new DefaultException(CREATE_EVENT_FAIL);
     }
 
-    /*
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
-    public void deleteEvent(@PathVariable("eventid") int event_id)
+    public void deleteEvent(@PathVariable("travelid") int travelId, @PathVariable("eventid") int event_id)
     {
-        EventDto.deleteRequest DeleteRequest = eventService.getEventDetailforDelete(event_id);
-        personService.updatePersonMoneyByDeleting(DeleteRequest.getJoinedPerson(),
-                DeleteRequest.getPayerId(),
-                DeleteRequest.getDividePrice(),
-                DeleteRequest.getTakePrice());
+        for(ParticipantDto.detailView DetailView : participantService.getParticipantInEvent(event_id)){
+            personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(DetailView.getPersonId()),
+                    eventService.getEventPriceById(event_id),
+                    DetailView.getChargedPrice(),
+                    DetailView.isEventRole());
+        }
+        personService.updatePersonRole(travelId);
         eventService.deleteEvent(event_id);
     }
-    */
+
+    @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
+    public void updateEvent(@PathVariable("travelid") int travel_id, @PathVariable("eventid") int event_id, @RequestBody Map map) throws ParseException{
+        //setting for event update
+        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        int prevPrice = eventService.getEventPriceById(event_id);
+        int eventPrice = Integer.parseInt(map.get("price").toString());
+        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
+
+        //update eventDB
+        EventDto.Request request = EventDto.Request.builder()
+                .Name(map.get("event_name").toString())
+                .Date(simpleDateFormat.parse(map.get("event_date").toString()))
+                .Price(eventPrice)
+                .PayerPersonId(payerId)
+                .build();
+        eventService.updateEvent(event_id, request);
+
+        //setting for participant update
+        List<ParticipantDto.detailView> prevParticipants = participantService.getParticipantInEvent(event_id);
+        Map<Long, PersonDto.MoneyUpdateRequest> updateRequests = new HashMap<Long, PersonDto.MoneyUpdateRequest>();
+
+        for(ParticipantDto.detailView prevParticipant : prevParticipants) {
+            updateRequests.put(prevParticipant.getPersonId(),
+                    PersonDto.MoneyUpdateRequest.builder()
+                            .pervEventRole(prevParticipant.isEventRole())
+                            .currEventRole(false)
+                            .prevPrice(prevPrice)
+                            .currPrice(eventPrice)
+                            .prevChargedPrice(prevParticipant.getChargedPrice())
+                            .currChargedPrice(-1.0).build());
+        }
+
+        List<Map> partiDtoList = (List)map.get("parti_list");
+        partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
+        for(Map partiDto : partiDtoList){
+            Long currPersonId = Long.valueOf(partiDto.get("personId").toString());
+            Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
+            Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
+            Boolean eventRole = Boolean.parseBoolean(partiDto.get("role").toString());
+            if (updateRequests.containsKey(currPersonId)){
+                PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(currPersonId);
+                currRequest.setCurrEventRole(eventRole);
+                currRequest.setCurrChargedPrice(chargedPrice);
+                participantService.updateParticipant(eventRole, chargedPrice, curr_p);
+                personService.updatePersonMoney(curr_p, currRequest);
+            }
+            else{
+                ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
+                        .person(curr_p)
+                        .event(eventService.getEventEntityByEventId(Long.valueOf(event_id)))
+                        .role(eventRole)
+                        .chargedPrice(chargedPrice)
+                        .build();
+                participantService.createParticipant(partiRequest);
+                personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
+            }
+        }
+
+        Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
+        for(Long personId : updateRequests.keySet()){
+            PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(personId);
+            if(currRequest.getCurrChargedPrice().equals(-1.0)){
+                personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(personId),
+                        eventService.getEventPriceById(event_id),
+                        currRequest.getPrevChargedPrice(),
+                        currRequest.isPervEventRole());
+                Person p = personService.getPersonEntityByPersonId(personId);
+                participantService.deleteParticipant(p, e);
+            }
+        }
+        personService.updatePersonRole(travel_id);
+    }
 
     @GetMapping("/{userid}/{travelid}/{eventid}/detail")
     public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable("eventid") int eventid){
