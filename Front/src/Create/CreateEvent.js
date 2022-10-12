@@ -55,6 +55,7 @@ function CreateEvent() {
 
   const onSubmit = (e) => {
     place = document.querySelector("#place").value;
+    date = document.querySelector("#date").value;
     if (place === "") {
       alert("Set place\n");
     } else if (parseInt(price) === 0) {
@@ -65,25 +66,25 @@ function CreateEvent() {
   };
 
   const setSelectedPayer = (e) => {
-    setPayer(e.target.value)
+    setPayer(e.target.value);
   };
 
   const event_info = async () => {
-    let total_sum = 0;    
+    let total_sum = 0;
     let temp_list = [...participants].map(function (row) {
       delete row.name;
       delete row.difference;
       delete row.userId;
       row.spent = document.getElementById(`${row.personId}-spent`).value;
-      row.role = (row.personId === parseInt(payer));
+      row.role = row.personId === parseInt(payer);
 
-      total_sum = total_sum+parseInt(row.spent);
+      total_sum = total_sum + parseInt(row.spent);
       return row;
     });
 
     console.log(total_sum);
 
-    if(total_sum !== parseInt(price) && total_sum+1 !== parseInt(price)) {
+    if (total_sum !== parseInt(price) && total_sum + 1 !== parseInt(price)) {
       alert("Participant's sum is not same as price");
       return;
     }

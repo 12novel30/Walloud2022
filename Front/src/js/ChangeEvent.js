@@ -15,9 +15,6 @@ function ChangeEvent() {
   var participants = users.filter((e) => parti_list_id.includes(e.personId));
   console.log("init", participants);
 
-  // participants.map(
-  //   document
-  // )
   var payer = users.filter((e) => e.name === description.payerName)[0].personId;
   const navigate = useNavigate();
   var place = description.name;
