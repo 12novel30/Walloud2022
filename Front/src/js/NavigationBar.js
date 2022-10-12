@@ -54,22 +54,12 @@ function NavigationBar({ preferences, setPreferences }) {
           Log Out
         </button>
       </Link>
-      <Link to="/selectTravel" state = {{id : user }}>
+      <Link to="/selectTravel" state={{ id: user }}>
         <button id="selectTravel" onClick={onLogOutClick}>
           Travels
-        </button></Link>
-      <img
-        className="barIcon"
-        src={gearSrc}
-        onClick={onClickPreference}
-        alt="gear"
-      />
+        </button>
+      </Link>
       <PreferenceTab />
-      {/* <img className="barIcon" src={bracketSrc} alt="leftBracket" />
-      <img className="barIconReversed" src={bracketSrc} alt="rightBracket" />
-      <Link to="/calendar">
-        <img className="barIcon" src={calendarSrc} alt="calendar" />
-      </Link> */}
     </div>
   );
 }

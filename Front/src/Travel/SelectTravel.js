@@ -46,8 +46,10 @@ const SelectTravel = () => {
   };
 
   const modify_info = () => {
-    navigate(`/${user}/modify`, {state : {user_info : user_info, user : user}});
-  }
+    navigate(`/${user}/modify`, {
+      state: { user_info: user_info, user: user },
+    });
+  };
 
   // Delete
 
@@ -119,13 +121,17 @@ const SelectTravel = () => {
     <div>
       <h1>Divide by N</h1>
       <h2>My Travel List</h2>
-      <div style={{ display: "flex" }}>
-        <div style={{ width: "50%", borderRight: "3px solid black" }}>
+      <div id="select-travel">
+        <div
+          style={{
+            width: "50%",
+          }}
+        >
           <img src={personPng} alt="me" />
           <h3>{user_info.name}</h3>
           <h4>Email: {user_info.email}</h4>
           <h4> Account : {user_info.account}</h4>
-          <div style={{ display: "flex" }}>
+          <div>
             <button onClick={Logout}>Log Out</button>
             <button onClick={modify_info}>Modify</button>
           </div>
