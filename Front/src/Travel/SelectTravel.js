@@ -31,7 +31,7 @@ const SelectTravel = () => {
           account: response.data.account,
           email: response.data.email,
           name: response.data.name,
-          bank: response.data.bank
+          bank: response.data.bank,
         });
         console.log(response.data);
       })
@@ -59,7 +59,7 @@ const SelectTravel = () => {
       if (checkedItems.length !== 0) {
         if (
           window.confirm(
-            checkedItems + " 이 선택되었습니다.\n 삭제하시겠습니까?"
+            checkedTravel + " 이 선택되었습니다.\n 삭제하시겠습니까?"
           )
         ) {
           checkedItems.map((travel_id) => {
@@ -126,6 +126,7 @@ const SelectTravel = () => {
         <div
           style={{
             width: "50%",
+            minWidth: "400px",
           }}
         >
           <img src={personPng} alt="me" />
