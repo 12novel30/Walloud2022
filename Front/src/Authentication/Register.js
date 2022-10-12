@@ -56,7 +56,7 @@ const Register = () => {
   const onSubmit = (event) => {
     if (user_email == null) {
       event.preventDefault();
-      alert("Given ID already exists");
+      alert("ID is empty");
     } else if (user_password !== confirmPassword) {
       event.preventDefault();
       alert("Passwords do not match");

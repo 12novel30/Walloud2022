@@ -31,6 +31,7 @@ const SelectTravel = () => {
           account: response.data.account,
           email: response.data.email,
           name: response.data.name,
+          bank: response.data.bank
         });
         console.log(response.data);
       })
@@ -124,6 +125,7 @@ const SelectTravel = () => {
           <img src={personPng} alt="me" />
           <h3>{user_info.name}</h3>
           <h4>Email: {user_info.email}</h4>
+          <h4>Bank : {user_info.bank}</h4>
           <h4> Account : {user_info.account}</h4>
           <div style={{ display: "flex" }}>
             <button onClick={Logout}>Log Out</button>

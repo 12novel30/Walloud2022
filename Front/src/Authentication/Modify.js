@@ -3,16 +3,14 @@ import { React, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Modify = () => {
-  // const userinfo = useLocation().state.user_info;
-  const user = useParams();
+  const userinfo = useLocation().state.user_info;
+  const {user} = useParams();
   const navigate = useNavigate();
-  // const [user_name, setname] = useState(userinfo.name);
-  // const [user_account, setaccout] = useState(userinfo.account);
-  // const [user_email, setEmail] = useState(userinfo.email);
-  const [user_name, setname] = useState("");
-  const [user_account, setaccout] = useState("");
-  const [user_email, setEmail] = useState("star4007lg@gmail.com");
+  const [user_name, setname] = useState(userinfo.name);
+  const [user_account, setaccout] = useState(userinfo.account);
+  const [user_email, setEmail] = useState(userinfo.email);
   const [user_password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const onUserHandler = (event) => {
     setname(event.currentTarget.value);
@@ -27,18 +25,21 @@ const Modify = () => {
     setPassword(event.currentTarget.value);
   };
 
+  const onConfirmPasswordHandler = (event) => {
+    setConfirmPassword(event.currentTarget.value);
+  };
+
   const CreateUser = async () => {
-    console.log("Debug");
     await axios
-      .put(`/${user}/updateUserInfo`, {
+      .put(`/api/${user}/updateUserInfo`, {
         user_name: user_name,
         user_email: user_email,
         user_password: user_password,
         user_account: user_account,
         user_bank:"신한"
       })
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        navigate('/selectTravel', {state : {id: user}})
       })
       .catch((error) => {
         if (error.response.data.status === 500) {
@@ -52,7 +53,13 @@ const Modify = () => {
     if (user_email == null) {
       event.preventDefault();
       alert("Given ID already exists");
-    } else {
+    } else if (user_password !== confirmPassword) {
+      event.preventDefault();
+      alert("Passwords do not match");
+    } else if (user_password.length < 5) {
+      event.preventDefault();
+      alert("Password is too short");
+    }else {
       event.preventDefault();
       CreateUser();
     }
@@ -109,6 +116,18 @@ const Modify = () => {
             id="password"
             value={user_password}
             onChange={onPasswordHandler}
+            required
+          />
+        </div>
+        <div>
+        <label htmlFor="confirm-password" onKeyDown={enterkey}>
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            id="confirm-password"
+            value={confirmPassword}
+            onChange={onConfirmPasswordHandler}
             required
           />
         </div>
