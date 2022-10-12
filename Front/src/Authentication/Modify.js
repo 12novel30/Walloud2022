@@ -1,4 +1,5 @@
 import axios from "axios";
+import Bank from "./Bank";
 import { React, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -36,7 +37,7 @@ const Modify = () => {
         user_email: user_email,
         user_password: user_password,
         user_account: user_account,
-        user_bank:"신한"
+        user_bank:document.getElementById("Bank").value
       })
       .then(() => {
         navigate('/selectTravel', {state : {id: user}})
@@ -45,7 +46,9 @@ const Modify = () => {
         if (error.response.data.status === 500) {
           alert(error.response.data.message);
         }
-        console.log(error);
+        else {
+          alert("Check The network");
+        }
       });
   };
 
@@ -99,6 +102,7 @@ const Modify = () => {
             required
           />
         </div>
+        <Bank/>
         <div>
           <label htmlFor="account">Account</label>
           <input

@@ -79,7 +79,10 @@ const CreateUser = () => {
         }
       }).catch((error) => {
         if (error.response.data.status === 500) {
-          alert(invite_elem.email+error.response.data.message);
+          alert(error.response.data.message);
+        }
+        else {
+          alert("Check The network");
         }
       })
     })

@@ -72,9 +72,6 @@ function CreateEvent() {
   const event_info = async () => {
     let total_sum = 0;
     let temp_list = [...participants].map(function (row) {
-      delete row.name;
-      delete row.difference;
-      delete row.userId;
       row.spent = document.getElementById(`${row.personId}-spent`).value;
       row.role = row.personId === parseInt(payer);
 
@@ -97,6 +94,14 @@ function CreateEvent() {
       payer_person_id: payer,
     });
 
+    temp_list = temp_list.map(function(row) {
+      delete row.name;
+      delete row.difference;
+      delete row.userId;
+
+      return row;
+    })
+
     await axios
       .post(`/api/${user}/${travel}/CreateEvent`, {
         parti_list: temp_list,
@@ -113,6 +118,9 @@ function CreateEvent() {
       .catch((error) => {
         if (error.response.data.status === 500) {
           alert(error.response.data.message);
+        }
+        else {
+          alert("Check The network");
         }
       });
   };
