@@ -1,6 +1,7 @@
 import axios from "axios";
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
+import Bank from "./Bank";
 
 const Register = () => {
   const [user_name, setname] = useState("");
@@ -36,6 +37,7 @@ const Register = () => {
         user_email: user_email,
         user_password: user_password,
         user_account: user_account,
+        user_bank: document.getElementById("Bank").value
       })
       .then((response) => {
         console.log(response);
@@ -49,7 +51,9 @@ const Register = () => {
         if (error.response.data.status === 500) {
           alert(error.response.data.message);
         }
-        console.log(error);
+        else {
+          alert("Check The network");
+        }
       });
   };
 
@@ -101,6 +105,7 @@ const Register = () => {
             required
           />
         </div>
+        <Bank />
         <div>
           <label htmlFor="account">Account</label>
           <input
