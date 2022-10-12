@@ -69,14 +69,24 @@ function CreateEvent() {
   };
 
   const event_info = async () => {
+    let total_sum = 0;    
     let temp_list = [...participants].map(function (row) {
       delete row.name;
       delete row.difference;
       delete row.userId;
       row.spent = document.getElementById(`${row.personId}-spent`).value;
+      row.role = row.personId === payer;
 
+      total_sum = total_sum+parseInt(row.spent);
       return row;
     });
+
+    console.log(total_sum);
+
+    if(total_sum !== parseInt(price) && total_sum+1 !== parseInt(price)) {
+      alert("Participant's sum is not same as price");
+      return;
+    }
 
     console.log("event json", {
       parti_list: temp_list,

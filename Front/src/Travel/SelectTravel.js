@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CreateTravel from "./CreateTravel";
 import personPng from "../img/person.png";
@@ -16,6 +16,7 @@ const SelectTravel = () => {
   const [checkAllButton, setCheckAllButton] = useState("전체 선택");
   const [checkedItems, setCheckedItems] = useState([]);
   const [checkedTravel, setCheckedTravel] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getInfor();
@@ -43,6 +44,10 @@ const SelectTravel = () => {
   const Logout = () => {
     document.location.href = "/login";
   };
+
+  const modify_info = () => {
+    navigate(`/${user}/modify`, {state : {user_info : user_info, user : user}});
+  }
 
   // Delete
 
@@ -120,7 +125,10 @@ const SelectTravel = () => {
           <h3>{user_info.name}</h3>
           <h4>Email: {user_info.email}</h4>
           <h4> Account : {user_info.account}</h4>
-          <button onClick={Logout}>Log Out</button>
+          <div style={{ display: "flex" }}>
+            <button onClick={Logout}>Log Out</button>
+            <button onClick={modify_info}>Modify</button>
+          </div>
         </div>
         <div style={{ width: "50%" }}>
           <h3>Existing Travels</h3>
