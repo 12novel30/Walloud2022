@@ -75,7 +75,7 @@ function CreateEvent() {
       delete row.difference;
       delete row.userId;
       row.spent = document.getElementById(`${row.personId}-spent`).value;
-      row.role = row.personId === payer;
+      row.role = (row.personId === parseInt(payer));
 
       total_sum = total_sum+parseInt(row.spent);
       return row;

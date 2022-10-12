@@ -58,6 +58,7 @@ const Profile = () => {
       </Link>
       <h2>{profile.userName}</h2>
       <h3>Account : {profile.userAccount}</h3>
+      <h3>Bank : {profile.userBank}</h3>
       {profile.travelRole ? <h3>Manager</h3> : <></>}
       <h3 style={{ color: profile.difference > 0 ? "red" : "blue" }}>
         Spent: {profile.difference}₩
