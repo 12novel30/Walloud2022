@@ -3,6 +3,7 @@ import "./App.css";
 import Home from "./Home/Home";
 import Profile from "./js/Profile";
 import LogIn from "./Authentication/LogIn";
+import Modify from "./Authentication/Modify";
 import Register from "./Authentication/Register";
 import Calendar from "./Home/Calendar";
 import { CreateEvent } from "./Create/CreateEvent";
@@ -23,6 +24,7 @@ const App = () => {
         />
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/:user/modify" element={<Modify/>} />
         <Route path="/calendar" element={<Calendar />} />
         <Route
           path="/:user/:travel/:travelName/createEvent"

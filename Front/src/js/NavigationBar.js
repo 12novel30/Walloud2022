@@ -2,9 +2,10 @@ import React from "react";
 import gearSrc from "../img/gearshape.png";
 import bracketSrc from "../img/leftAngleBracket.jpeg";
 import calendarSrc from "../img/calendar.png";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function NavigationBar({ preferences, setPreferences }) {
+  const { user, travel, travelName } = useParams();
   const [tabActive, setTabActive] = React.useState("none");
   const [loggedIn, setLoggedIn] = React.useState(
     JSON.parse(localStorage.getItem("id"))
@@ -53,6 +54,10 @@ function NavigationBar({ preferences, setPreferences }) {
           Log Out
         </button>
       </Link>
+      <Link to="/selectTravel" state = {{id : user }}>
+        <button id="selectTravel" onClick={onLogOutClick}>
+          Travels
+        </button></Link>
       <img
         className="barIcon"
         src={gearSrc}

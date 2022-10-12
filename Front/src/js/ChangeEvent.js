@@ -69,36 +69,20 @@ function ChangeEvent() {
     });
 
     // ========= 수정 필요!!! =======
-    await axios
-      .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
-        parti_list: temp_list,
-        event_name: place,
-        event_date: date,
-        price: price,
-        payer_person_id: payer,
-      })
+    // await axios
+    //   .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
+    //     parti_list: temp_list,
+    //     event_name: place,
+    //     event_date: date,
+    //     price: price,
+    //     payer_person_id: payer,
+    //   })
 
-      .then((res) => {
-        switch (res.data) {
-          case -1:
-            alert("fail to change event");
-            break;
-          case -2:
-            alert("fail to change participate");
-            break;
-          case 200:
-            alert("Success");
-            navigate(`/${user}/${travel}/${travelName}`, {
-              state: { created: false },
-            });
-            break;
-          default:
-            throw "Network Error";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    //   .then((res) => {
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   //======

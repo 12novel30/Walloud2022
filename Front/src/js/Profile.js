@@ -43,6 +43,9 @@ const Profile = () => {
           navigate(`/${user}/${travel}/${travelName}`, {state : { created: false }})
         })
         .catch((error) => {
+          if (error.response.data.status === 500) {
+            alert(error.response.data.message);
+          }
           console.log(error);
         });
     }
