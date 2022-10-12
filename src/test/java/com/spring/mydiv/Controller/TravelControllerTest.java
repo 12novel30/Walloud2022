@@ -17,15 +17,15 @@ class TravelControllerTest {
     @Commit
     @DisplayName("여행 메인 뷰")
     void getTravelToMainView(){
-        //given
-        int travelId = 57;
-        String travelName = "서울 여행";
-
-        //when
-        TravelDto.HomeView homeView = travelController.getTravelToMainView(travelId);
-
-        //then
-        System.out.println(homeView.getPeriod());
-        System.out.println(homeView.getTravelId());
+//        //given
+//        int travelId = 57;
+//        String travelName = "서울 여행";
+//
+//        //when
+//        TravelDto.HomeView homeView = travelController.getTravelToMainView(travelId);
+//
+//        //then
+//        System.out.println(homeView.getPeriod());
+//        System.out.println(homeView.getTravelId());
     }
 }
