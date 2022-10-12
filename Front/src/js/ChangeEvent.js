@@ -47,7 +47,6 @@ function ChangeEvent() {
 
   const setSelectedPayer = (e) => {
     payer = e.target.value;
-    console.log(payer);
   };
 
   const event_info = async () => {

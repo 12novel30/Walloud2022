@@ -351,6 +351,11 @@ select {
   min-width: 250px;
 }
 
+#select-travel {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 @media (orientation: landscape) {
   .big-box {
     align-items: center;
@@ -364,6 +369,10 @@ select {
     min-height: 100vh;
     /* height: 60vh; */
     /* overflow-y: scroll; */
+  }
+
+  #select-travel {
+    flex-direction: row;
   }
 }
 
