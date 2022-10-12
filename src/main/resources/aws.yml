@@ -1,0 +1,11 @@
+cloud:
+  aws:
+    s3:
+      bucket: walloudbucket
+    credentials:
+      access-key: AKIAQROZ4LJVCEFVTPW6
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
