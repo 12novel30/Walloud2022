@@ -13,10 +13,10 @@ class TravelControllerTest {
     @Autowired(required = true)
     private TravelController travelController;
 
-    @Test
-    @Commit
-    @DisplayName("여행 메인 뷰")
-    void getTravelToMainView(){
+//    @Test
+//    @Commit
+//    @DisplayName("여행 메인 뷰")
+//    void getTravelToMainView(){
 //        //given
 //        int travelId = 57;
 //        String travelName = "서울 여행";
@@ -27,5 +27,5 @@ class TravelControllerTest {
 //        //then
 //        System.out.println(homeView.getPeriod());
 //        System.out.println(homeView.getTravelId());
-    }
+//    }
 }
