@@ -67,6 +67,16 @@ public class PersonService {
         return result;
     }
 
+    public List<PersonDto.basic> getPersonBasicInTravel(int travelId){
+        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
+        List<PersonDto.basic> result = new ArrayList<>();
+        for (Person p : list){
+            PersonDto.basic person = PersonDto.basic.fromEntity(p);
+            result.add(person);
+        }
+        return result;
+    }
+
     public boolean checkIsUserinTravel(Long userId, int travelId){
         return personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId));
     }

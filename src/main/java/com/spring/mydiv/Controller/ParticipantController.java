@@ -16,8 +16,4 @@ import java.util.List;
 public class ParticipantController {
     private final ParticipantService participantService;
 
-    @GetMapping("/{userId}/{travelId}/getPartiList")
-    public List<ParticipantDto.response> getAllPartiListInTravel(@PathVariable("travelid") int travelId){
-        return participantService.getAllPartiListInTravel(travelId);
-    }
 }

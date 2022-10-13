@@ -31,6 +31,4 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
     Optional<Participant> findByEvent_IdAndEventRole(Long id, Boolean eventRole);
 
-    List<Participant> findByEvent_Travel_Id(Long id);
-
 }
