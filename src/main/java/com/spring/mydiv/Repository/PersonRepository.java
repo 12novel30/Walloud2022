@@ -21,6 +21,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	Optional<Person> findByTravel_IdAndIsSuper(Long id, Boolean isSuper);
 
+	List<Person> findByUser_IdAndIsSuper(Long id, Boolean isSuper);
+
 	Optional<Person> findByUser_IdAndTravel_Id(Long id, Long id1);
 
 	boolean existsByUser_IdAndTravel_Id(Long id, Long id1);

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +44,12 @@ public class TravelController {
         return homeView;
     }
 
+    @GetMapping("/{userId}/getSuperUserList")
+    public List<TravelDto.Response> getSuperUserTravelList(@PathVariable int userId){
+        return travelservice.getSuperUserTravelList(Long.valueOf(userId));
+    }
+
+
     @PutMapping("/{userId}/{travelId}/updateTravelInfo")
     public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
         TravelDto.Request updateRequest = new TravelDto.Request(map.get("travel_name").toString());
@@ -60,4 +67,5 @@ public class TravelController {
         }
         else throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
+
 }
