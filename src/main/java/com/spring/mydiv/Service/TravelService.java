@@ -17,6 +17,7 @@ import com.spring.mydiv.Repository.TravelRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +76,18 @@ public class TravelService {
         if (updateRequest.getName() != null) travel.setName(updateRequest.getName());
 
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
+    }
+
+    public List<TravelDto.Response> getSuperUserTravelList(Long userId){
+        List<Person> personList = personRepository.findByUser_IdAndIsSuper(userId, true);
+        List<TravelDto.Response> result = new ArrayList<>();
+        for (Person p : personList){
+            TravelDto.Response tmp = new TravelDto.Response(
+                    p.getTravel().getId(),
+                    p.getTravel().getName()
+            );
+            result.add(tmp);
+        }
+        return result;
     }
 }

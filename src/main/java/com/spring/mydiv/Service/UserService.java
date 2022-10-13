@@ -66,8 +66,8 @@ public class UserService {
                 .orElseThrow(()-> new DefaultException(NO_USER));
     } //fin
 
-    public List<TravelDto.Response> getUserJoinedTravel(int no){
-        List<Person> list = personRepository.findByUser_Id(Long.valueOf(no));
+    public List<TravelDto.Response> getUserJoinedTravel(int userId){
+        List<Person> list = personRepository.findByUser_Id(Long.valueOf(userId));
         List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : list){
             TravelDto.Response travel = TravelDto.Response.builder()
@@ -114,6 +114,10 @@ public class UserService {
         if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
+    }
+
+    public void deleteUser(int userId){
+        userRepository.deleteById(Long.valueOf(userId));
     }
 
 }

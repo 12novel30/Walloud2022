@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,16 @@ public class PersonService {
         return result;
     }
 
+    public List<PersonDto.basic> getPersonBasicInTravel(int travelId){
+        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
+        List<PersonDto.basic> result = new ArrayList<>();
+        for (Person p : list){
+            PersonDto.basic person = PersonDto.basic.fromEntity(p);
+            result.add(person);
+        }
+        return result;
+    }
+
     public boolean checkIsUserinTravel(Long userId, int travelId){
         return personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId));
     }
@@ -102,6 +113,11 @@ public class PersonService {
         return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
                 .map(PersonDto.HomeView::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_PAYER));
+    }
+
+    public boolean isUserSuperuser(int travelId, int userId){
+        return personRepository.findByUser_IdAndTravel_Id(Long.valueOf(userId), Long.valueOf(travelId))
+                .get().getIsSuper();
     }
 
     public boolean isPersonSuperuser(int personId){
@@ -179,4 +195,5 @@ public class PersonService {
         }
         personRepository.updateRoleById(TRUE, currManager.getId());
     }
+
 }

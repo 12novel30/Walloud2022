@@ -70,15 +70,15 @@ button {
   border-color: var(--classic-blue);
   border-style: solid;
   border-radius: 1em;
-  width: 10%;
+  width: 5%;
   height: 10vh;
   display: inline-block;
   font-family: sans-serif;
   font-weight: 100;
   margin: 5% 10% 5% 10%;
   max-height: 50px;
-  max-width: 150px;
-  min-width: 100px;
+  max-width: 100px;
+  min-width: 80px;
   font-size: 100%;
 }
 
@@ -351,6 +351,11 @@ select {
   min-width: 250px;
 }
 
+#select-travel {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 @media (orientation: landscape) {
   .big-box {
     align-items: center;
@@ -364,6 +369,14 @@ select {
     min-height: 100vh;
     /* height: 60vh; */
     /* overflow-y: scroll; */
+  }
+
+  #select-travel {
+    flex-direction: row;
+  }
+
+  button {
+    min-width: 100px;
   }
 }
 

@@ -14,6 +14,7 @@ function ChangeEvent() {
   console.log("parti", parti_list_id);
   var participants = users.filter((e) => parti_list_id.includes(e.personId));
   console.log("init", participants);
+
   var payer = users.filter((e) => e.name === description.payerName)[0].personId;
   const navigate = useNavigate();
   var place = description.name;
@@ -47,18 +48,24 @@ function ChangeEvent() {
 
   const setSelectedPayer = (e) => {
     payer = e.target.value;
-    console.log(payer);
   };
 
   const event_info = async () => {
+    let total_sum = 0;
     let temp_list = [...participants].map(function (row) {
-      delete row.name;
-      delete row.difference;
-      delete row.userId;
       row.spent = document.getElementById(`${row.personId}-spent`).value;
+      row.role = row.personId === parseInt(payer);
 
+      total_sum = total_sum + parseInt(row.spent);
       return row;
     });
+
+    console.log(total_sum);
+
+    if (total_sum !== parseInt(price) && total_sum + 1 !== parseInt(price)) {
+      alert("Participant's sum is not same as price");
+      return;
+    }
 
     console.log("event json", {
       parti_list: temp_list,
@@ -68,24 +75,33 @@ function ChangeEvent() {
       payer_person_id: payer,
     });
 
-    // ========= 수정 필요!!! =======
-    // await axios
-    //   .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
-    //     parti_list: temp_list,
-    //     event_name: place,
-    //     event_date: date,
-    //     price: price,
-    //     payer_person_id: payer,
-    //   })
+    temp_list = temp_list.map(function (row) {
+      delete row.name;
+      delete row.difference;
+      delete row.userId;
 
-    //   .then((res) => {
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+      return row;
+    });
+
+    await axios
+      .post(`/api/${user}/${travel}/${eventId}/updateEvent`, {
+        parti_list: temp_list,
+        event_name: place,
+        event_date: date,
+        price: price,
+        payer_person_id: payer,
+      })
+      .then(() => {
+        navigate(`/${user}/${travel}/${travelName}`, {
+          state: { created: false },
+        });
+      })
+      .catch((error) => {
+        if (error.response.data.status === 500) {
+          alert(error.response.data.message);
+        }
+      });
   };
-
-  //======
 
   return (
     <div>

@@ -122,14 +122,14 @@ public class EventController {
             Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
             Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
             Boolean eventRole = Boolean.parseBoolean(partiDto.get("role").toString());
-            if (updateRequests.containsKey(currPersonId)){
+            if (updateRequests.containsKey(currPersonId)){ // still participated
                 PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(currPersonId);
                 currRequest.setCurrEventRole(eventRole);
                 currRequest.setCurrChargedPrice(chargedPrice);
                 participantService.updateParticipant(eventRole, chargedPrice, curr_p);
                 personService.updatePersonMoney(curr_p, currRequest);
             }
-            else{
+            else{ // new participants
                 ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
                         .person(curr_p)
                         .event(eventService.getEventEntityByEventId(Long.valueOf(event_id)))
@@ -140,9 +140,8 @@ public class EventController {
                 personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
             }
         }
-
         Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
-        for(Long personId : updateRequests.keySet()){
+        for(Long personId : updateRequests.keySet()){ // Deleted participant
             PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(personId);
             if(currRequest.getCurrChargedPrice().equals(-1.0)){
                 personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(personId),
@@ -153,6 +152,8 @@ public class EventController {
                 participantService.deleteParticipant(p, e);
             }
         }
+
+        //Update Person role
         personService.updatePersonRole(travel_id);
     }
 

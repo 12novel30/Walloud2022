@@ -15,19 +15,19 @@ class PersonControllerTest {
     @Autowired(required=true)
     private PersonController personController;
 
-    @Test
-    @Commit
-    @DisplayName("회원 초대")
-    void createPerson2Travel() {
-        //given
-        int travelId = 57;
-        Map<String, Object> map = new HashMap<>();
-        map.put("user_email", "star4007lg@gm.gist.ac.kr");
-
-        //when
-        personController.createPerson2Travel(travelId, map);
-
-        //then
-        System.out.println("fin");
-    }
+//    @Test
+//    @Commit
+//    @DisplayName("회원 초대")
+//    void createPerson2Travel() {
+//        //given
+//        int travelId = 57;
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("user_email", "star4007lg@gm.gist.ac.kr");
+//
+//        //when
+//        personController.createPerson2Travel(travelId, map);
+//
+//        //then
+//        System.out.println("fin");
+//    }
 }

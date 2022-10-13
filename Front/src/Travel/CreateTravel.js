@@ -16,25 +16,26 @@ const CreateTravel = (props) => {
   const onSubmit = () => {
     if (Travel_name === "") {
       alert("Travel Name is blank!");
-    }
-    else {
+    } else {
       for (let i = 0; i < travel_List.length; i++) {
         if (travel_List[i].name === Travel_name) {
           alert("Travel Name exist");
           return;
         }
       }
-    axios
-      .post(`/api/${user_id}/createTravel`, { travel_name: Travel_name })
-      .then((res) => {
-        console.log(res.data);
-        navigate(`/${user_id}/${res.data}/${Travel_name}/`, {state : { created : true}});
-      })
-      .catch((error) => {
-        if (error.response.data.status === 500) {
-          alert(error.response.data.message);
-        }
-      });
+      axios
+        .post(`/api/${user_id}/createTravel`, { travel_name: Travel_name })
+        .then((res) => {
+          console.log(res.data);
+          navigate(`/${user_id}/${res.data}/${Travel_name}/`, {
+            state: { created: true },
+          });
+        })
+        .catch((error) => {
+          if (error.response.data.status === 500) {
+            alert(error.response.data.message);
+          }
+        });
     }
   };
 
@@ -49,6 +50,7 @@ const CreateTravel = (props) => {
       <br />
       <label for="travel-name">New Travel</label>
       <input
+        style={{ width: "50%" }}
         onKeyDown={enterkey}
         onChange={onChange}
         value={Travel_name}
