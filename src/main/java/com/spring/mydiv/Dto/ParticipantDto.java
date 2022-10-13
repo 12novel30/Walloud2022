@@ -32,6 +32,28 @@ public class ParticipantDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class response {
+        private Long participantId;
+        private Person person;
+        private Event event;
+        private Boolean eventRole;
+
+        public static response fromEntity(Participant participant) {
+            return response.builder()
+                    .participantId(participant.getId())
+                    .person(participant.getPerson())
+                    .event(participant.getEvent())
+                    .eventRole(participant.getEventRole())
+                    .build();
+        }
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class peopleList {
         @NotNull
         private List<Person> joinedPerson;
