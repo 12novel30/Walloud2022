@@ -104,6 +104,11 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_PAYER));
     }
 
+    public boolean isUserSuperuser(int travelId, int userId){
+        return personRepository.findByUser_IdAndTravel_Id(Long.valueOf(userId), Long.valueOf(travelId))
+                .get().getIsSuper();
+    }
+
     public boolean isPersonSuperuser(int personId){
         return personRepository.findById(Long.valueOf(personId)).get().getIsSuper();
     }

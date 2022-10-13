@@ -54,10 +54,13 @@ public class UserController {
                 map.get("input_id").toString(),
                 map.get("input_password").toString());
         return userservice.login(loginUser);
-//        /**success -> return [user id]
-//         * wrong email -> -2
-//         * wrong pw -> -1
-//         */
+    }
+
+    @DeleteMapping("/{userId}/deregister")
+    public void deregister(@PathVariable("userId") int user_id){
+        if(userservice.getUserJoinedTravel(user_id).size() == 0){
+            userservice.deleteUser(user_id);
+        } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
     }
 
     @GetMapping("/{userId}")
@@ -74,12 +77,6 @@ public class UserController {
         if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
             return personRequest.getTravel().getTravelId().intValue();
         else throw new DefaultException(CREATE_FAIL);
-    }
-
-    // 여행을 생성한 user가 여행 자체를 삭제하는 메소드
-    @DeleteMapping("/{userId}/{travelId}/delete")
-    public void deleteTravel(@PathVariable int travelId) {
-        travelservice.deleteTravel(travelId);
     }
 
     @PutMapping("/{userId}/updateUserInfo")

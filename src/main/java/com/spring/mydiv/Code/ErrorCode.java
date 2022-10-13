@@ -23,11 +23,18 @@ public enum ErrorCode {
     ALREADY_EXISTED(500, "CREATE-PERSON-ERR-500","have already been invited."),
     ALREADY_REGISTERED(500, "CREATE-USER-ERR-500","is already registered."),
 
+
     CREATE_FAIL(500, "CREATE-ERR-500", "Failed to create entity on request."),
     CREATE_EVENT_FAIL(500, "CREATE-ERR-500", "Failed to create event entity on request."),
     CREATE_PARTICIPANT_FAIL(500, "CREATE-ERR-500", "Failed to create participant entity on request."),
 
-    DELETE_FAIL(500, "DELETE-ERR-500", "Failed to delete entity on request.");
+    DELETE_FAIL(500, "DELETE-ERR-500", "Failed to delete entity on request."),
+
+    INVALID_DELETE_SUPERUSER(500, "INVALID-ERR-500", "SuperUser cannot be deleted from Travel."),
+    INVALID_DELETE_NOTSUPERUSER(500, "INVALID-ERR-500", "Only SuperUser can delete the Travel."),
+    INVALID_DELETE_EVENTEXISTED(500, "INVALID-ERR-500", "This Person has participated Events."),
+
+    INVALID_DELETE_TRAVELEXISTED(500, "INVALID-ERR-500", "This Person has participated Travel.");
 
 
     private int status;

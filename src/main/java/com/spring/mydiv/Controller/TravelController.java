@@ -1,7 +1,9 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
+import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.EventService;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
@@ -46,5 +48,16 @@ public class TravelController {
         TravelDto.Request updateRequest = new TravelDto.Request(map.get("travel_name").toString());
         return ResponseEntity.ok(travelservice.updateTravelInfo(travelId, updateRequest)
         );
+    }
+
+
+    // 여행을 생성한 user가 여행 자체를 삭제하는 메소드
+    @PostMapping("/{userId}/deleteTravel")
+    public void deleteTravel(@PathVariable int userId, @RequestBody Map map) {
+        int travelId = Integer.parseInt(map.get("travel_id").toString());
+        if (personService.isUserSuperuser(travelId, userId)) {
+            travelservice.deleteTravel(travelId);
+        }
+        else throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
 }
