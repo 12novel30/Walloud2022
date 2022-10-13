@@ -40,7 +40,7 @@ tasks.named('test') {
 // @@@@@@@@@@@@@ 내용 추가 @@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-
+/*
 def webappDir = "$projectDir/Front"
 
 sourceSets {
@@ -86,7 +86,7 @@ task installReact(type: Exec) {
 		commandLine "npm", "audit", "fix"
 		commandLine 'npm', 'install'
 	}
-}
+}*/
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@ 내용 추가 @@@@@@@@@@@@@@@@@@@@@
