@@ -15,10 +15,10 @@ class PersonControllerTest {
     @Autowired(required=true)
     private PersonController personController;
 
-    @Test
-    @Commit
-    @DisplayName("회원 초대")
-    void createPerson2Travel() {
+//    @Test
+//    @Commit
+//    @DisplayName("회원 초대")
+//    void createPerson2Travel() {
 //        //given
 //        int travelId = 57;
 //        Map<String, Object> map = new HashMap<>();
@@ -29,5 +29,5 @@ class PersonControllerTest {
 //
 //        //then
 //        System.out.println("fin");
-    }
+//    }
 }
