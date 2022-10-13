@@ -1,5 +1,6 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.ParticipantService;
@@ -47,11 +48,13 @@ public class PersonController {
 
     @DeleteMapping("/{userId}/{travelId}/{personId}/deleteUser")
     public void deletePerson2Travel(@PathVariable("personId") int person_id){
-        if (participantService.getSizeOfJoinedEventList(person_id) == 0 &&
-                !personService.isPersonSuperuser(person_id)){
-            personService.deleteJoinTravel(person_id);
+        if (participantService.getSizeOfJoinedEventList(person_id) == 0) {
+            if (!personService.isPersonSuperuser(person_id)) {
+                personService.deleteJoinTravel(person_id);
+            }
+            else throw new DefaultException(INVALID_DELETE_SUPERUSER);
         }
-        else throw new DefaultException(DELETE_FAIL);
+        else throw new DefaultException(INVALID_DELETE_EVENTEXISTED);
     }
 
     @GetMapping("/{userid}/{travelid}/{personid}/personDetail")
@@ -73,5 +76,10 @@ public class PersonController {
             }
         }
         return detailView;
+    }
+
+    @GetMapping("/{userId}/{travelId}/getPartiList")
+    public List<PersonDto.basic> getAllPersonListBasicVerInTravel(@PathVariable("travelid") int travelId){
+        return personService.getPersonBasicInTravel(travelId);
     }
 }

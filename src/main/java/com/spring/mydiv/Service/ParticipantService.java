@@ -102,4 +102,5 @@ public class ParticipantService {
     public void deleteParticipant(Person p, Event e){
         participantRepository.deleteByPersonAndEvent(p, e);
     }
+
 }
