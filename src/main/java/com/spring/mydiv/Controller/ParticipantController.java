@@ -1,7 +1,11 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Dto.ParticipantDto;
+import com.spring.mydiv.Service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 12nov
@@ -10,5 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ParticipantController {
+    private final ParticipantService participantService;
 
+    @GetMapping("/{userId}/{travelId}/getPartiList")
+    public List<ParticipantDto.response> getAllPartiListInTravel(@PathVariable("travelid") int travelId){
+        return participantService.getAllPartiListInTravel(travelId);
+    }
 }

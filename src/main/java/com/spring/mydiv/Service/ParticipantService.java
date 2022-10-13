@@ -102,4 +102,11 @@ public class ParticipantService {
     public void deleteParticipant(Person p, Event e){
         participantRepository.deleteByPersonAndEvent(p, e);
     }
+
+    public List<ParticipantDto.response> getAllPartiListInTravel(int travelId){
+        List<Participant> list = participantRepository.findByEvent_Travel_Id(Long.valueOf(travelId));
+        List<ParticipantDto.response> response = new ArrayList<>();
+        for (Participant p:list) response.add(ParticipantDto.response.fromEntity(p));
+        return response;
+    }
 }

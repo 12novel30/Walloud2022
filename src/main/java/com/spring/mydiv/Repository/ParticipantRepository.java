@@ -1,5 +1,6 @@
 package com.spring.mydiv.Repository;
 
+import com.spring.mydiv.Dto.ParticipantDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
@@ -29,4 +30,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     int updateEventRoleAndChargedPriceByPerson(Boolean eventRole, Double chargedPrice, Person person);
 
     Optional<Participant> findByEvent_IdAndEventRole(Long id, Boolean eventRole);
+
+    List<Participant> findByEvent_Travel_Id(Long id);
+
 }
