@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
 import org.springframework.stereotype.Service;
@@ -194,4 +195,5 @@ public class PersonService {
         }
         personRepository.updateRoleById(TRUE, currManager.getId());
     }
+
 }
