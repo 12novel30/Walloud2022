@@ -68,21 +68,18 @@ const Modify = () => {
     }
   };
 
-  const onDelete = async(event) => {
-    event.preventDefualt();
-    await axios.delete(`/api/${user}/deregister`)
-    .then(
-      () => {
-        navigate('/login');
-      }
-    ).catch((error) => {
+  const onDelete = (event) => {
+    axios.delete(`/api/${user}/deregister`)
+    .then().catch((error) => {
       if (error.response.data.status === 500) {
         alert(error.response.data.message);
+        navigate(`/`);
       }
       else {
         alert("Check The network");
       }
     })
+    event.preventDefault();
   }
 
   function enterkey() {
@@ -133,7 +130,6 @@ const Modify = () => {
             id="password"
             value={user_password}
             onChange={onPasswordHandler}
-            required
           />
         </div>
         <div>
@@ -145,15 +141,15 @@ const Modify = () => {
             id="confirm-password"
             value={confirmPassword}
             onChange={onConfirmPasswordHandler}
-            required
           />
         </div>
+        <div>
           <button onClick={onSubmit}>
             Submit
-          </button>
-          <button type="delete" onKeyDown={enterkey} onClick={onDelete}>
-              Delete
-          </button>
+          </button></div>
+          <div><button type="delete" onClick={onDelete}>
+              회원탈퇴
+          </button></div>
       </form>
     </div>
   );
