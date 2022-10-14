@@ -124,7 +124,7 @@ const Home = () => {
           <button className="home-button">Add User</button>
         </Link>
       </div>
-      <div className="right-align">
+      <div>
         <h4>{user}</h4>
         <NavigationBar
           preferences={preferences}

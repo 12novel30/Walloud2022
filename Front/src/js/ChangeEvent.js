@@ -12,6 +12,7 @@ function ChangeEvent() {
 
   const parti_list_id = useLocation().state.parti_list.map((e) => e.personId);
   console.log("parti", parti_list_id);
+  console.log("users",users);
   var participants = users.filter((e) => parti_list_id.includes(e.personId));
   console.log("init", participants);
 

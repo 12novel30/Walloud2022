@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
   const { user, travel, travelName, personId } = useParams();
+  const users = useLocation().state.users;
   const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const [person_in_List, seteventList] = useState([]);
@@ -69,7 +70,7 @@ const Profile = () => {
           <div>
             <Link
               to={`/${user}/${travel}/${travelName}/${event.eventName}`}
-              state={{ event: event }}
+              state={{ event: event, users: users }}
             >
               <h3 className="link-text" key={index}>
                 {event.eventName}

@@ -64,7 +64,9 @@ const SelectTravel = () => {
         ) {
           checkedItems.map((travel_id) => {
             axios
-              .delete(`/api/${user}/${travel_id}/delete`)
+              .post(`/api/${user}/deleteTravel`,{
+                travel_id: travel_id
+              })
               .then(() => {
                 alert("삭제되었습니다.");
               })
@@ -72,6 +74,7 @@ const SelectTravel = () => {
                 if (error.response.data.status === 500) {
                   alert(error.response.data.message);
                 }
+                console.log(error);
               });
           });
           window.location.reload();
