@@ -12,10 +12,10 @@ public class DemoApplication {
 			+ "classpath:aws.yml";
 
 	public static void main(String[] args) {
-//		SpringApplication.run(DemoApplication.class, args);
-		new SpringApplicationBuilder(DemoApplication.class)
-				.properties(APPLICATION_LOCATIONS)
-				.run(args);
+		SpringApplication.run(DemoApplication.class, args);
+//		new SpringApplicationBuilder(DemoApplication.class)
+//				.properties(APPLICATION_LOCATIONS)
+//				.run(args);
 		System.out.println("Start!");
 	}
 }

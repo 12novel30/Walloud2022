@@ -10,19 +10,19 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-@Service
+//@RequiredArgsConstructor
+//@Service
 public class S3UploaderService {
-    private final AmazonS3Client amazonS3Client;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
-    public String upload(MultipartFile file, String dirName) throws IOException {
-        String storedFilePath = dirName + "/" + UUID.randomUUID() + file.getOriginalFilename();
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        amazonS3Client.putObject(bucket, storedFilePath, file.getInputStream(), metadata);
-        return amazonS3Client.getUrl(bucket, storedFilePath).toString();
-    }
+//    private final AmazonS3Client amazonS3Client;
+//
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
+//
+//    public String upload(MultipartFile file, String dirName) throws IOException {
+//        String storedFilePath = dirName + "/" + UUID.randomUUID() + file.getOriginalFilename();
+//        ObjectMetadata metadata = new ObjectMetadata();
+//        metadata.setContentLength(file.getSize());
+//        amazonS3Client.putObject(bucket, storedFilePath, file.getInputStream(), metadata);
+//        return amazonS3Client.getUrl(bucket, storedFilePath).toString();
+//    }
 }
