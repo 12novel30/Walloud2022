@@ -4,11 +4,11 @@ import moment from "moment";
 import axios from "axios";
 
 const EventDescription = () => {
-  const users = useLocation().state.users;
   const description = useLocation().state.event;
   const navigate = useNavigate();
   const { user, travel, travelName } = useParams();
   const [parti_list, setParti] = useState([]);
+  const [users, allUsers] = useState([]);
 
   const onDelete = async () => {
     if (window.confirm("Are you sure you want to delete?")) {
@@ -40,6 +40,19 @@ const EventDescription = () => {
       setParti([...res.data]);
       console.log("users : ",res.data);
     });
+
+    await axios.get(`/api/${user}/${travel}/getPersonList`)
+    .then((res) => {
+      allUsers(res.data);
+      console.log("@!!!!",res.data);
+    }).catch((error) => {
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      }
+      else {
+        alert("Check The network");
+      }
+    })
   }
 
   useEffect(() => {

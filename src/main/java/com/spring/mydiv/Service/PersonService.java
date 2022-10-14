@@ -68,11 +68,11 @@ public class PersonService {
         return result;
     }
 
-    public List<PersonDto.basic> getPersonBasicInTravel(int travelId){
+    public List<PersonDto.HomeView> getPersonBasicInTravel(int travelId){
         List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
-        List<PersonDto.basic> result = new ArrayList<>();
+        List<PersonDto.HomeView> result = new ArrayList<>();
         for (Person p : list){
-            PersonDto.basic person = PersonDto.basic.fromEntity(p);
+            PersonDto.HomeView person = PersonDto.HomeView.fromEntity(p);
             result.add(person);
         }
         return result;

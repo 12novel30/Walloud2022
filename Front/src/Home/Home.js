@@ -58,8 +58,9 @@ const Home = () => {
         setSu_Person(response.data.superUser);
         let su_personId = response.data.superUser;
         response.data.personList.map((e) => {
-          if (e.personId === su_personId && e.userId === user) {
+          if (e.personId === su_personId && e.userId === parseInt(user)) {
             setSu(true);
+            console.log("true");
           }
         })
       })
@@ -69,7 +70,12 @@ const Home = () => {
   };
 
   const updateTravel = () => {
-    
+    if(!mod) {
+      setMod(true);
+    }else {
+      setMod(false);
+      
+    }
   }
 
   /////////////////////////////////
@@ -87,9 +93,11 @@ const Home = () => {
   return (
     <div>
       <div className="topBar">
-        <h1 onClick={goHome}>
-          {mod ? <input value = {travelName}/> : {travelName}}
-        </h1>
+        {mod ? 
+          <input value={travelName} />
+        : <h1 onClick={goHome}>
+          {travelName}
+        </h1>}
         {period === null ? <div></div> : <div className="period">{" " + period}</div>}
         {su ? <div>
           <button onClick={updateTravel}>Modify Name</button>
