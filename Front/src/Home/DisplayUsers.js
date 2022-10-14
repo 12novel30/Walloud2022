@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import personSrc from "../img/person.png";
 import { Link, useParams } from "react-router-dom";
 
-function DisplayUsers({ users, preferences }) {
+function DisplayUsers({ users, preferences, su_pid }) {
   const currentLoggedIn = JSON.parse(localStorage.getItem("id"));
   const { user, travel, travelName } = useParams();
   function CreateUser({ username, personId, spent }) {
@@ -18,7 +18,7 @@ function DisplayUsers({ users, preferences }) {
           <br />
           <h4
             className="caption" id="caption-name"
-            style={{ color: currentLoggedIn === user.name ? "blue" : "black" }}
+            style={{ color: personId === su_pid ? "red" : "black" }}
           >
             {username}
           </h4>

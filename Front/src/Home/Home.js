@@ -17,6 +17,9 @@ const Home = () => {
   const [userList, setuserList] = useState([]);
   const [eventList, seteventList] = useState([]);
   const [period, setPeriod] = useState("");
+  const [su_personId, setSu_Person] = useState(-1);
+  const [su, setSu] = useState(false);
+  const [mod, setMod] = useState(false);
   const navigate = useNavigate();
   //받아오는 거를 eventList에서 eventlist로 수정
 
@@ -52,11 +55,22 @@ const Home = () => {
         seteventList(response.data.eventList);
         setuserList(response.data.personList);
         setPeriod(response.data.period);
+        setSu_Person(response.data.superUser);
+        let su_personId = response.data.superUser;
+        response.data.personList.map((e) => {
+          if (e.personId === su_personId && e.userId === user) {
+            setSu(true);
+          }
+        })
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+  const updateTravel = () => {
+    
+  }
 
   /////////////////////////////////
   let initialPreferences = {
@@ -74,9 +88,12 @@ const Home = () => {
     <div>
       <div className="topBar">
         <h1 onClick={goHome}>
-          {travelName}
+          {mod ? <input value = {travelName}/> : {travelName}}
         </h1>
         {period === null ? <div></div> : <div className="period">{" " + period}</div>}
+        {su ? <div>
+          <button onClick={updateTravel}>Modify Name</button>
+        </div> : <></>}
       </div>
       <div className="big-box">
         <h2 className="home-h2">Event</h2>
@@ -118,6 +135,7 @@ const Home = () => {
             users={userList}
             preferences={preferences}
             travelName={travel}
+            su_pid = {su_personId}
           />
         </div>
         <Link to="createUser" key={(user, travel)}>
@@ -125,7 +143,6 @@ const Home = () => {
         </Link>
       </div>
       <div>
-        <h4>{user}</h4>
         <NavigationBar
           preferences={preferences}
           setPreferences={setPreferences}

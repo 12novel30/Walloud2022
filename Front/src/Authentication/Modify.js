@@ -68,8 +68,21 @@ const Modify = () => {
     }
   };
 
-  const onDelete = (event) => {
-    
+  const onDelete = async(event) => {
+    event.preventDefualt();
+    await axios.delete(`/api/${user}/deregister`)
+    .then(
+      () => {
+        navigate('/login');
+      }
+    ).catch((error) => {
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      }
+      else {
+        alert("Check The network");
+      }
+    })
   }
 
   function enterkey() {
@@ -114,7 +127,7 @@ const Modify = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password"> New Password</label>
           <input
             type="password"
             id="password"
@@ -125,7 +138,7 @@ const Modify = () => {
         </div>
         <div>
         <label htmlFor="confirm-password" onKeyDown={enterkey}>
-            Confirm Password
+            New Confirm Password
           </label>
           <input
             type="password"
