@@ -117,6 +117,8 @@ public class EventController {
 
         List<Map> partiDtoList = (List)map.get("parti_list");
         partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
+        Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
+
         for(Map partiDto : partiDtoList){
             Long currPersonId = Long.valueOf(partiDto.get("personId").toString());
             Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
@@ -126,7 +128,7 @@ public class EventController {
                 PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(currPersonId);
                 currRequest.setCurrEventRole(eventRole);
                 currRequest.setCurrChargedPrice(chargedPrice);
-                participantService.updateParticipant(eventRole, chargedPrice, curr_p);
+                participantService.updateParticipant(eventRole, chargedPrice, curr_p, e);
                 personService.updatePersonMoney(curr_p, currRequest);
             }
             else{ // new participants
@@ -140,7 +142,7 @@ public class EventController {
                 personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
             }
         }
-        Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
+
         for(Long personId : updateRequests.keySet()){ // Deleted participant
             PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(personId);
             if(currRequest.getCurrChargedPrice().equals(-1.0)){

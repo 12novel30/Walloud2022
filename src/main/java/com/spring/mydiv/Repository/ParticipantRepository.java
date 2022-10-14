@@ -22,12 +22,13 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByEvent_Id(Long id);
     void delete(Participant participant);
     @Transactional
+
     long deleteByPersonAndEvent(Person person, Event event);
 
     @Transactional
     @Modifying
-    @Query("update Participant p set p.eventRole = ?1, p.chargedPrice = ?2 where p.person = ?3")
-    int updateEventRoleAndChargedPriceByPerson(Boolean eventRole, Double chargedPrice, Person person);
+    @Query("update Participant p set p.eventRole = ?1, p.chargedPrice = ?2 where p.person = ?3, p.event = ?4")
+    void updateEventRoleAndChargedPriceByPersonAndEvent(Boolean eventRole, Double chargedPrice, Person person, Event event);
 
     Optional<Participant> findByEvent_IdAndEventRole(Long id, Boolean eventRole);
 
