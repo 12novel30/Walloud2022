@@ -7,6 +7,7 @@ import personPng from "../img/person.png";
 const SelectTravel = () => {
   const user = useLocation().state.id;
   const [myTravel, setTravellist] = useState([]);
+  const [meSuper, setSuperList] = useState([]);
   const [try_del, setDelete] = useState(false);
   const [user_info, setUser_info] = useState({
     account: "",
@@ -40,6 +41,15 @@ const SelectTravel = () => {
           alert(error.response.data.message);
         }
       });
+    await axios.get(`/api/${user}/getSuperUserList`)
+    .then((res) => {
+      console.log(res.data);
+      setSuperList(res.data.result);
+    }).catch((error) => {
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      }
+    })
   };
 
   const Logout = () => {
@@ -91,12 +101,12 @@ const SelectTravel = () => {
 
   const checkHandler = (checked, elem) => {
     if (checked) {
-      setCheckedItems((prev) => [...prev, elem.travelId]);
-      setCheckedTravel((prev) => [...prev, elem.name]);
+      setCheckedItems((prev) => [...prev, elem.TravelId]);
+      setCheckedTravel((prev) => [...prev, elem.Name]);
       console.log(elem, "push", checkedItems);
     } else {
-      setCheckedItems(checkedItems.filter((e) => e !== elem.travelId));
-      setCheckedTravel(checkedTravel.filter((e) => e !== elem.name));
+      setCheckedItems(checkedItems.filter((e) => e !== elem.TravelId));
+      setCheckedTravel(checkedTravel.filter((e) => e !== elem.Name));
       console.log(elem, "pop", checkedItems);
     }
   };
@@ -107,8 +117,8 @@ const SelectTravel = () => {
       const idArray = [];
       const travelArray = [];
       myTravel.forEach((e) => {
-        idArray.push(e.travelId);
-        travelArray.push(e.name);
+        idArray.push(e.TravelId);
+        travelArray.push(e.Name);
       });
       setCheckedItems(idArray);
       setCheckedTravel(travelArray);
@@ -173,7 +183,7 @@ const SelectTravel = () => {
               ) : (
                 <div className="contStyle">
                   <div style={{ alignItems: "center" }}>
-                    {myTravel.map((travel) => (
+                    {meSuper.map((travel) => (
                       <div
                         style={{
                           display: "inline-block",
@@ -183,25 +193,25 @@ const SelectTravel = () => {
                         }}
                       >
                         <input
-                          id={travel.travelId}
+                          id={travel.TravelId}
                           style={{ display: "inline-block", margin: "0" }}
                           className="checkbox"
                           type="checkbox"
-                          value={travel.travelId}
+                          value={travel.TravelId}
                           onChange={(e) =>
                             checkHandler(e.target.checked, travel)
                           }
                           checked={
-                            checkedItems.includes(travel.travelId)
+                            checkedItems.includes(travel.TravelId)
                               ? true
                               : false
                           }
                         />
                         <label
-                          htmlFor={travel.travelId}
+                          htmlFor={travel.TravelId}
                           className="checkbox-text"
                         >
-                          {travel.name}
+                          {travel.Name}
                         </label>
                       </div>
                     ))}
