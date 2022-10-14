@@ -95,8 +95,8 @@ public class ParticipantService {
         return participantDetailList;
     }
 
-    public void updateParticipant(Boolean eventRole, Double chargedPrice, Person person){
-        participantRepository.updateEventRoleAndChargedPriceByPerson(eventRole, chargedPrice, person);
+    public void updateParticipant(Boolean eventRole, Double chargedPrice, Person person, Event event){
+        participantRepository.updateEventRoleAndChargedPriceByPersonAndEvent(eventRole, chargedPrice, person, event);
     }
 
     public void deleteParticipant(Person p, Event e){
