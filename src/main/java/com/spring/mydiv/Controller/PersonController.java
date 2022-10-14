@@ -78,8 +78,8 @@ public class PersonController {
         return detailView;
     }
 
-    @GetMapping("/{userId}/{travelId}/getPartiList")
-    public List<PersonDto.basic> getAllPersonListBasicVerInTravel(@PathVariable("travelid") int travelId){
+    @GetMapping("/{userId}/{travelId}/getPersonList")
+    public List<PersonDto.HomeView> getAllPersonListInTravel(@PathVariable("travelId") int travelId){
         return personService.getPersonBasicInTravel(travelId);
-    }
+    } //List<PersonDto.HomeView> PersonList;
 }
