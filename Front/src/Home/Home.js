@@ -74,7 +74,13 @@ const Home = () => {
       setMod(true);
     }else {
       setMod(false);
-      
+      axios.put(`/api/${user}/${travel}/updateTravelInfo`,{
+        travel_name : document.getElementById("travel-name").value
+      }).then((res) => {
+        navigate(`/${user}/${travel}/${res.data.name}`,{ state: { created: false } })
+      }).catch((error) => {
+        console.log(error);
+      })
     }
   }
 
@@ -94,7 +100,7 @@ const Home = () => {
     <div>
       <div className="topBar">
         {mod ? 
-          <input value={travelName} />
+          <input defaultValue={travelName} id="travel-name"/>
         : <h1 onClick={goHome}>
           {travelName}
         </h1>}
