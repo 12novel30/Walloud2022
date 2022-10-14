@@ -9,6 +9,7 @@ function DisplayUsers({ users, preferences }) {
     return (
       <Link
         to={`/${user}/${travel}/${travelName}/profile/${personId}`}
+        state = {{ users : users }}
       >
         <div className="user">
           {preferences.displayIcon ? (
