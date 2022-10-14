@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,16 @@ public class PersonService {
         List<PersonDto.Simple> result = new ArrayList<PersonDto.Simple>();
         for (Person p : list){
             PersonDto.Simple person = PersonDto.Simple.fromEntity(p);
+            result.add(person);
+        }
+        return result;
+    }
+
+    public List<PersonDto.basic> getPersonBasicInTravel(int travelId){
+        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
+        List<PersonDto.basic> result = new ArrayList<>();
+        for (Person p : list){
+            PersonDto.basic person = PersonDto.basic.fromEntity(p);
             result.add(person);
         }
         return result;
@@ -184,4 +195,5 @@ public class PersonService {
         }
         personRepository.updateRoleById(TRUE, currManager.getId());
     }
+
 }
