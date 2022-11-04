@@ -5,6 +5,8 @@ const GetEventPartiAPI = async (id: number) => {
     axios.get(`/api/${id}/detail`)
         .then((response) => {
             console.log(response.data)
+            setEventList([...eventList].map((e) =>
+            e.eventId === id ? {...e, isDetail: !e.isDetail, partiList: response.data} : e));
         })
         .catch((error) => {
             if (error.response.data.status === 500) {
