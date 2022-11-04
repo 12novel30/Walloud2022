@@ -1,7 +1,8 @@
 import axios from "axios"
-import { TravelProps } from "../recoils/travel";
+import { SetterOrUpdater } from "recoil";
 
-const GetEventPartiAPI = async (id: number) => {
+const GetEventPartiAPI = async (id: number,
+    eventList: any[], setEventList: SetterOrUpdater<any[]>) => {
     axios.get(`/api/${id}/detail`)
         .then((response) => {
             console.log(response.data)
