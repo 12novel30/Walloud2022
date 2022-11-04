@@ -6,7 +6,7 @@ export interface TravelProps {
     name: string;
 }
 
-const { persistAtom } = recoilPersist()
+const { persistAtom } = recoilPersist();
 
 export const travelListState = atom<TravelProps[]>({
     key: "travelList",
