@@ -6,6 +6,19 @@ export interface TravelProps {
     name: string;
 }
 
+export interface EventProps {
+    eventId: number;
+    name: string;
+    price: number;
+    payerName: string;
+    date: Date;
+    isDetail: boolean;
+    partiList: {eventRole: boolean,
+                chargedPrice: number,
+                name: string,
+                personId: number}[];
+}
+
 const { persistAtom } = recoilPersist()
 
 export const travelListState = atom<TravelProps[]>({
@@ -14,7 +27,7 @@ export const travelListState = atom<TravelProps[]>({
     effects_UNSTABLE: [persistAtom]
 })
 
-export const eventListState = atom<object[]>({
+export const eventListState = atom<EventProps[]>({
     key: "eventList",
     default: [],
     effects_UNSTABLE: [persistAtom]

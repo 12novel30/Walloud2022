@@ -2,7 +2,6 @@ import { css } from "@emotion/react"
 import { Link } from "react-router-dom"
 import { useRecoilValue, useResetRecoilState } from "recoil"
 import { ScreenSize } from "../../layout/globalStyle/globalSize"
-import { eventListState } from "../../recoils/travel"
 import { LoginedState } from "../../recoils/user"
 
 const NavMenuWrapper = css`

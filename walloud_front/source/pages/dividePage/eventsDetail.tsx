@@ -5,10 +5,10 @@ import { css } from "@emotion/react";
 import Color from "../../layout/globalStyle/globalColor";
 import { FontSize } from "../../layout/globalStyle/globalSize";
 import { SetterOrUpdater, useRecoilValue } from "recoil";
-import { eventListState } from "../../recoils/travel";
+import { eventListState, EventProps } from "../../recoils/travel";
 
 function EventsDetail(event: any, idx: number,
-    eventList: any[], setEventList: SetterOrUpdater<any[]>){
+    eventList: EventProps[], setEventList: SetterOrUpdater<EventProps[]>){
     const EventsRowStyle = css`
         &>a {
             position: absolute;
@@ -73,3 +73,7 @@ function EventsDetail(event: any, idx: number,
 }
 
 export default EventsDetail;
+
+/*
+        
+*/

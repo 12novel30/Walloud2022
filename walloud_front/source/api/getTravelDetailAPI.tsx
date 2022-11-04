@@ -1,10 +1,11 @@
 import axios from "axios"
 import { SetterOrUpdater } from "recoil";
+import { EventProps } from "../recoils/travel";
 
 export interface TravelDetailAPIProps {
     userId: number;
     travelId: number;
-    setEventList: SetterOrUpdater<any[]>;
+    setEventList: SetterOrUpdater<EventProps[]>;
     setPersonList: SetterOrUpdater<any[]>;
     setPeriod: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -14,7 +15,8 @@ const GetTravelDetailAPI = async ({userId, travelId, setEventList, setPersonList
         .then((response) => {
             console.log(response.data)
             setEventList(response.data.eventList.map(
-                (event: object) => ({...event, isDetail: false, partiList: [{name: "default", chargedPrice: -1}]})))
+                (event: object) => ({...event, isDetail: false, 
+                    partiList: [{name: "default", chargedPrice: -1}]})))
             setPersonList(response.data.personList)
             setPeriod(response.data.period)
         })
