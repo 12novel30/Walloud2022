@@ -1,7 +1,4 @@
 import axios from "axios"
-import { NonIndexRouteObject } from "react-router-dom";
-import { SetterOrUpdater, useRecoilState } from "recoil";
-import { TravelProps } from "../recoils/travel";
 
 const GetPersonDetailAPI = async (travelId: number, personId: number) => {
     axios.get(`/api/${travelId}/${personId}/personDetail`)
