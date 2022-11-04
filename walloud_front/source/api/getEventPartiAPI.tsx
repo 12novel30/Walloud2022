@@ -1,10 +1,13 @@
 import axios from "axios"
-import { TravelProps } from "../recoils/travel";
+import { SetterOrUpdater } from "recoil";
 
-const GetEventPartiAPI = async (id: number) => {
+const GetEventPartiAPI = async (id: number, 
+    eventList: any[], setEventList: SetterOrUpdater<any[]>) => {
     axios.get(`/api/${id}/detail`)
         .then((response) => {
             console.log(response.data)
+            setEventList([...eventList].map((e) =>
+            e.eventId === id ? {...e, isDetail: !e.isDetail, partiList: response.data} : e));
         })
         .catch((error) => {
             if (error.response.data.status === 500) {
