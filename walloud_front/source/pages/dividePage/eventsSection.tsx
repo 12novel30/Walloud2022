@@ -48,7 +48,7 @@ const EventsSectionStyle = css`
     }
 `
 
-function EventsSection(eventList: any[]) {
+function EventsSection(eventList: any[], travelId: number) {
     const setEventList = useSetRecoilState(eventListState);
 
     function sortEvent(a: any, b: any, attri: string){
@@ -86,7 +86,7 @@ function EventsSection(eventList: any[]) {
                 </span>
             </div>
             {eventList.map((event, idx) => (
-                EventsDetail(event, idx, eventList, setEventList)
+                EventsDetail(event, idx, travelId, eventList, setEventList)
                 ))}
         </div>
     )   

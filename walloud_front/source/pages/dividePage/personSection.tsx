@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import PersonBox from "../../component/box/personBox";
-import { FontSize } from "../../layout/globalStyle/globalSize";
+import { FontSize, ScreenSize } from "../../layout/globalStyle/globalSize";
 
 function PersonSection(personList: any[], travelId: number) {
     const personLength = personList.length
@@ -14,7 +14,10 @@ function PersonSection(personList: any[], travelId: number) {
     }
     &>:nth-child(2) {
         display: grid;
-        grid-template-columns: ${personLength < 4 ? "1fr 1fr" : "1fr 1fr 1fr"};
+        grid-template-columns: 1fr 1fr 1fr;
+        @media only screen and (max-width: ${ScreenSize.tablet}) {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 `
 

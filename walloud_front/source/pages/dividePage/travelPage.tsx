@@ -43,7 +43,7 @@ function TravelPage(){
     return (
         <div css = {DivideMainPageStyle}>
           {/*ViewSection(period, travelName)*/}
-          {EventsSection(eventList)}
+          {EventsSection(eventList, travelId)}
           {/*TravelDetailSection(Map, Calendar, etc.)*/}
           {PersonSection(personList, travelId)}
         </div>
