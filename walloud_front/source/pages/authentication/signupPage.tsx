@@ -5,7 +5,7 @@ import { useState } from 'react';
 import RegisterAPI from '../../api/registerAPI';
 import InputContainer from '../../layout/container/inputContainer';
 import SignInput from '../../component/input/signInput';
-import SellectInput from '../../component/input/sellectInput';
+import SelectInput from '../../component/input/selectInput';
 import { BankList } from '../../storage/bankList';
 import BasicButton from '../../component/button/basicButton';
 import { useNavigate } from 'react-router-dom';
@@ -54,7 +54,7 @@ function SignUpPage() {
         <SignInput name = {email} text = "ex) mywalloud@usage.com" setType = {SetEmail} message = "email" required = {true}/>
         <SignInput name = {password} text = "영문, 숫자, 특수문자 중 2종류 조합: 8~16자" setType = {SetPassword} message = "password" required = {true}/>
         <SignInput name = {account} text = "ex) 1004365828210" setType = {SetAccount} message = "account" required = {false}/>
-        <SellectInput typeList = {BankList.map((bank, idx) => {
+        <SelectInput typeList = {BankList.map((bank, idx) => {
           return bank.name;
         })} setType = {SetBank} />
       </InputContainer>
