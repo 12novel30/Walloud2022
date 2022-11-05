@@ -28,13 +28,15 @@ function TravelMainPage(){
   const [travelList, setTravelList] = useRecoilState(travelListState);
   const [currentTravel, SetCurrentTravel] = useRecoilState(currentTravelState);
 
+  console.log(travelList)
+
   useEffect(() => {
     GetTravelListAPI(id, setTravelList)}
   , [])
 
   return (
       <div css = {DivideMainPageStyle}>
-        {TravelCreateBox()}
+        {TravelCreateBox(travelList, setTravelList)}
         {travelList.map((travel, idx) => (
           TravelBox(travel.name, travel.travelId, SetCurrentTravel)
         ))}
