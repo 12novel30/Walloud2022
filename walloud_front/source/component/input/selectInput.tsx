@@ -7,7 +7,7 @@ interface IProps {
     typeList: Array<string>;
 }
   
-function SellectInput({setType, typeList}: IProps){
+function SelectInput({setType, typeList}: IProps){
     const onInputHandler = (event: any) => {
         setType(event.target.value);
     };
@@ -24,4 +24,4 @@ function SellectInput({setType, typeList}: IProps){
     
 }
 
-export default SellectInput;
+export default SelectInput;
