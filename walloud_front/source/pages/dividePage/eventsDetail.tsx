@@ -48,7 +48,7 @@ function EventsDetail(event: any, idx: number,
             }
         }
     `
-
+    
     return (
         <>
             <div key = {idx} className = 'event-row' css = {EventsRowStyle}>
