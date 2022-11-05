@@ -86,7 +86,7 @@ function EventsSection(eventList: any[]) {
                 </span>
             </div>
             {eventList.map((event, idx) => (
-                EventsDetail(event, idx)
+                EventsDetail(event, idx, eventList, setEventList)
                 ))}
         </div>
     )   
