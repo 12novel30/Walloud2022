@@ -4,16 +4,16 @@ import GetEventPartiAPI from "../../api/getEventPartiAPI"
 import { css } from "@emotion/react";
 import Color from "../../layout/globalStyle/globalColor";
 import { FontSize } from "../../layout/globalStyle/globalSize";
+import { SetterOrUpdater, useRecoilValue } from "recoil";
+import { eventListState, EventProps } from "../../recoils/travel";
 
-function EventsDetail(event: any, idx: number){
-    var isDetailView = true;
-    const partiList = [{name: "임시", chargedPrice: event.price}]
-
+function EventsDetail(event: any, idx: number,
+    eventList: EventProps[], setEventList: SetterOrUpdater<EventProps[]>){
     const EventsRowStyle = css`
         &>a {
             position: absolute;
             width: 100%;
-            height: ${isDetailView ? "calc(100% + 100px)" : "100%"};
+            height: ${event.isDetail ? "calc(100% + 100px)" : "100%"};
             z-index: 1000;
             transition: ease 1s;
             &:hover {
@@ -28,11 +28,11 @@ function EventsDetail(event: any, idx: number){
 
     const EventsDetailStyle = css`
         flex-direction: row-reverse;
-        height: ${isDetailView ? "100px" : "0"};
+        height: ${event.isDetail ? "100px" : "0"};
         width: 100%;
         transition: ease 0.8s;
         &>div {
-            visibility: ${isDetailView ? "visible" : "hidden"};
+            visibility: ${event.isDetail ? "visible" : "hidden"};
             text-align: center;
             transition: ease 0.3s;
             border-radius: 5px;
@@ -48,12 +48,12 @@ function EventsDetail(event: any, idx: number){
             }
         }
     `
-
+    
     return (
         <>
             <div key = {idx} className = 'event-row' css = {EventsRowStyle}>
-                <a onClick = {() => {isDetailView = !isDetailView;
-                GetEventPartiAPI(event.eventId)}}>
+                <a onClick = {() => {
+                    GetEventPartiAPI(event.eventId, eventList, setEventList)}}>
                 </a>
                 <span>{event.name}</span>
                 <span>{event.price.toLocaleString()}₩</span>
@@ -61,7 +61,7 @@ function EventsDetail(event: any, idx: number){
                 <span>{moment.tz(event.date, "Asia/Seoul").format().substring(5, 10)}</span>
             </div>
             <div css = {EventsDetailStyle}>
-                <div>Detail {partiList.map((participant, idx) => (
+                <div>Detail {event.partiList.map((participant: any, idx: number) => (
                     <span key = {idx}>
                         <div>{participant.name}</div> 
                         <div>{participant.chargedPrice.toLocaleString()}₩</div>
@@ -73,3 +73,7 @@ function EventsDetail(event: any, idx: number){
 }
 
 export default EventsDetail;
+
+/*
+        
+*/

@@ -35,7 +35,7 @@ function TravelPage(){
     const [personList, setPersonList] = useRecoilState(personListState);
     const [eventList, setEventList] = useRecoilState(eventListState);
     const [period, setPeriod] = useState("");
-
+    
     useEffect(() => {
       GetTravelDetailAPI({userId, travelId, setPersonList, setEventList, setPeriod});
     }, [])
