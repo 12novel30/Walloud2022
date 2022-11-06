@@ -6,7 +6,7 @@ function PersonSection(personList: any[], travelId: number) {
     const personLength = personList.length
 
     const PersonSectionStyle = css`
-    min-height: 70vh;
+    min-height: auto; 
     &>:nth-child(1) {
         font-size: ${FontSize.fs18};
         padding: 10px 10px;

@@ -7,6 +7,7 @@ import UpdateTravelAPI from "../../api/updateTravelAPI";
 import TravelBox from '../../component/box/travelBox';
 import TravelCreateBox from '../../component/box/travelCreateBox';
 import Color from '../../layout/globalStyle/globalColor';
+import { ScreenSize } from '../../layout/globalStyle/globalSize';
 import { currentTravelState, travelListState } from '../../recoils/travel';
 import { userState } from '../../recoils/user';
 
@@ -17,12 +18,11 @@ const DivideMainPageStyle = css`
   align-items: center;
   justify-content: center;
   display: flex;
-  flex-wrap: wrap;
   gap: 30px 20px;
   &:first-of-type {
     width: 20%;
-  }
-`;
+  }       
+`
 
 function TravelMainPage(){
   const id = useRecoilValue(userState).id;

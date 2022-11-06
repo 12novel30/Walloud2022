@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import GetTravelDetailAPI from '../../api/getTravelDetailAPI';
 import Color from '../../layout/globalStyle/globalColor';
+import { ScreenSize } from '../../layout/globalStyle/globalSize';
 import { currentTravelState, eventListState, personListState } from '../../recoils/travel';
 import { UserProps, userState } from '../../recoils/user';
 import EventsSection from './eventsSection';
@@ -21,10 +22,20 @@ const DivideMainPageStyle = css`
   gap: 5vw;
   &>div {
     width: 40vw;
-    min-width: 400px;
+    height: 70vh;
     border: 2px solid white;
     border-radius: 10px;
     transition: ease 1s;
+  }
+  @media only screen and (max-width: ${ScreenSize.tablet}) {
+    flex-direction: column;
+    &>div {
+    width: 80vw;
+    height: 60vh;
+    border: 2px solid white;
+    border-radius: 10px;
+    transition: ease 1s;
+  }
   }
 `;
 

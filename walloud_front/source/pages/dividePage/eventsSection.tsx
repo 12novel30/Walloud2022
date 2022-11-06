@@ -11,7 +11,6 @@ import EventsDetail from "./eventsDetail"
 
 const EventsSectionStyle = css`
     border: 2px solid white;
-    min-height: 70vh;
     display: flex;
     flex-direction: column;
     &>div{
@@ -36,7 +35,7 @@ const EventsSectionStyle = css`
             font-size: ${FontSize.fs12};
             margin: 2% 2%;
             text-align: right;
-            white-space: nowrap;
+            // white-space: nowrap;
             padding-right: 10px;
             &:nth-child(-n+3){
                 width: 30%;
