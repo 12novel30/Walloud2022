@@ -7,7 +7,7 @@ import BasicButton from "../button/basicButton";
 
 const NavUtilWrapper = css`
     display: inline-flex;
-    gap: 20px;
+    gap: 15px;
     float: right;
     &>a {
         padding: 10px;

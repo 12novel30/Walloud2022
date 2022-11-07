@@ -19,6 +19,24 @@ export interface EventProps {
                 personId: number}[];
 }
 
+export interface PersonProps {
+    personId: number;
+    name: string;
+    role: boolean;
+    difference: number;
+    userId: number;
+
+    detail: {
+        isView: boolean;
+        isSettled: boolean;
+        sumGet: number;
+        sumSend: number;
+        userAccount: string;
+        userBank: string;
+        eventList: any[];
+    }
+}
+
 const { persistAtom } = recoilPersist()
 
 export const travelListState = atom<TravelProps[]>({
@@ -33,7 +51,7 @@ export const eventListState = atom<EventProps[]>({
     effects_UNSTABLE: [persistAtom]
 })
 
-export const personListState = atom<object[]>({
+export const personListState = atom<PersonProps[]>({
     key: "personList",
     default: [],
     effects_UNSTABLE: [persistAtom]

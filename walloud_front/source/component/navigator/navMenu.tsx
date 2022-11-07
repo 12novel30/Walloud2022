@@ -6,7 +6,7 @@ import { LoginedState } from "../../recoils/user"
 
 const NavMenuWrapper = css`
     float: right;
-    gap: 10px;
+    gap: 15px;
     flex-grow: 1;
     font-size: 18px;
     &>a {
@@ -25,7 +25,7 @@ function NavMenu(){
             {!useRecoilValue(LoginedState) ?
             <><Link to="/divide">DivideByN</Link>
             <Link to="/about">About Us</Link></>
-            : <><Link to="/book">Account Book</Link>
+            : <><Link to="/book">Record</Link>
             <Link to="/feed">Feed</Link>
             <Link to="/travel">Travel</Link></>}
         </div>
