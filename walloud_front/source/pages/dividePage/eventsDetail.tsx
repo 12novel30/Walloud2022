@@ -35,17 +35,18 @@ function EventsDetail(event: any, idx: number, travelId: number,
         visibility: ${event.isDetail ? "visible" : "hidden"};
         &>div {
             text-align: center;
-            transition: ease 0.3s;
+            transition: ease 0.5s;
             border-radius: 5px;
             border: 1px solid ${Color.gray01};
             margin: 10px 10px;
             padding: 10px 10px;
             justify-items: center;
-            display: flex;
             font-size: ${FontSize.fs12};
+            display: ${event.isDetail ? "flex" : "none"};
             &>span {
                 margin: 10px 10px;
                 font-size: ${FontSize.fs10};
+                display: ${event.isDetail ? "block" : "none"};
             }
         }
         &>button {
@@ -54,6 +55,7 @@ function EventsDetail(event: any, idx: number, travelId: number,
             padding: 0 5px;
             background-color: transparent;
             border: none;
+            display: ${event.isDetail ? "block" : "none"};
             &:hover {
                 cursor: pointer;
             }

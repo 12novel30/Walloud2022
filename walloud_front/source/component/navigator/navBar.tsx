@@ -19,7 +19,7 @@ const navStyle = css`
     &>* {
         display: inline-flex;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 1.5%;
         &>img {
             filter: invert()
         }
@@ -38,6 +38,7 @@ let navMode: {[index: string]:any} = {
     'down': css`
         position: fixed;
         top: -80px;
+        left: 0;
     `,
     'up': css`
         background-color: white;

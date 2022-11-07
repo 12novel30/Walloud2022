@@ -1,9 +1,13 @@
 import { css } from "@emotion/react";
+import { useSetRecoilState } from "recoil";
 import PersonBox from "../../component/box/personBox";
 import { FontSize, ScreenSize } from "../../layout/globalStyle/globalSize";
+import { personListState } from "../../recoils/travel";
 
 function PersonSection(personList: any[], travelId: number) {
+    const setPersonList = useSetRecoilState(personListState);
     const personLength = personList.length
+    console.log(personList)
 
     const PersonSectionStyle = css`
     min-height: auto; 
@@ -15,9 +19,6 @@ function PersonSection(personList: any[], travelId: number) {
     &>:nth-child(2) {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        @media only screen and (max-width: ${ScreenSize.tablet}) {
-            grid-template-columns: 1fr 1fr;
-        }
     }
 `
 
@@ -29,7 +30,7 @@ function PersonSection(personList: any[], travelId: number) {
                 (person.difference < 0 && type === "Send"))
             .map(
                 (selectPerson, idx) => {
-                    return PersonBox(selectPerson, selectPerson.personId, type, travelId)
+                    return PersonBox(selectPerson, selectPerson.personId, type, travelId, personList, setPersonList)
                 }
             )
         return PersonBoxs
