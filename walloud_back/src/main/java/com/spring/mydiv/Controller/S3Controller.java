@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/s3")
 public class S3Controller  {
     private final S3UploaderService s3UploaderService;
 
@@ -21,7 +21,7 @@ public class S3Controller  {
 //        return new AddDefaultCharsetFilter.ResponseWrapper(new SimpleMessageBody("파일 업로드 성공"));
     }
 
-    @DeleteMapping("/api/images")
+    @DeleteMapping("/files/delete")
     public String deleteFile(@RequestParam("filename") String filename) {
         System.out.println(filename);
         s3UploaderService.deleteImage(filename);
