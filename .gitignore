@@ -4,8 +4,9 @@ walloud_back/build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-walloud_back/src/main/resources/aws.yml
+walloud_back/src/main/resources/aws-s3.yml
 walloud_back/src/main/resources/application.properties
+
 
 ### STS ###
 .apt_generated
