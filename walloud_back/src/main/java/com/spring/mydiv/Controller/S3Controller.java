@@ -11,15 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-//@RestController
-//@RequiredArgsConstructor
-//@RequestMapping("/api/v1")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class S3Controller  {
-//    private final S3UploaderService s3UploaderService;
-//
-//    @PostMapping("/files/upload")
-//    public void uploadFile(@RequestPart(value="file",required = false) MultipartFile file) throws IOException {
-//        s3UploaderService.upload(file, "test");
-//        //return new AddDefaultCharsetFilter.ResponseWrapper(new SimpleMessageBody("파일 업로드 성공"));
-//    }
+    private final S3UploaderService s3UploaderService;
+
+    @PostMapping("/files/upload")
+    public void uploadFile(@RequestPart(value="file",required = false) MultipartFile file) throws IOException {
+        s3UploaderService.upload(file, "test");
+//        return new AddDefaultCharsetFilter.ResponseWrapper(new SimpleMessageBody("파일 업로드 성공"));
+    }
 }
