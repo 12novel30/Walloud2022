@@ -6,8 +6,9 @@ import CreateTravelAPI from '../../api/createTravelAPI'
 import FilpCard from '../../animation/flipCard';
 import SignInput from '../input/signInput';
 import BasicButton from '../button/basicButton';
-import { useRecoilValue } from 'recoil';
+import { SetterOrUpdater, useRecoilValue } from 'recoil';
 import { userState } from '../../recoils/user';
+import { TravelProps } from '../../recoils/travel';
 
 const TravelCreateBoxStyle = css`
     &>div {
@@ -76,7 +77,8 @@ const TravelCreateBoxStyle = css`
     }
 `
 
-function TravelCreateBox() {
+function TravelCreateBox(travelList: TravelProps[],
+    setTravelList: SetterOrUpdater<TravelProps[]>) {
     const [travelName, setTravelName] = useState<string>("");
     const userId = useRecoilValue(userState).id;
 
@@ -101,7 +103,7 @@ function TravelCreateBox() {
                         setType = {setTravelName} message = "Travel Name" required = {true}/>
                     <BasicButton text = "여행 만들기" onClick= {() =>
                     {if (travelName !== ""){
-                        CreateTravelAPI(userId, travelName)}
+                        CreateTravelAPI(userId, travelName, travelList, setTravelList)}
                     else {
                         alert("이름을 입력하세요")
                     }}}/>

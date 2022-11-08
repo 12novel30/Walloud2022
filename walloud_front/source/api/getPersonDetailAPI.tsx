@@ -1,12 +1,23 @@
 import axios from "axios"
-import { NonIndexRouteObject } from "react-router-dom";
-import { SetterOrUpdater, useRecoilState } from "recoil";
-import { TravelProps } from "../recoils/travel";
+import { SetterOrUpdater } from "recoil";
+import { PersonProps } from "../recoils/travel";
 
-const GetPersonDetailAPI = async (travelId: number, personId: number) => {
+const GetPersonDetailAPI = async (travelId: number, personId: number,
+    personList: PersonProps[], setPersonList: SetterOrUpdater<PersonProps[]>) => {
     axios.get(`/api/${travelId}/${personId}/personDetail`)
         .then((response) => {
             console.log(response.data)
+            setPersonList([...personList].map((p) =>
+            p.personId === personId ? {...p, detail: {
+                isView: !p.detail.isView,
+                isSettled: true,
+                sumGet: response.data.sumGet,
+                sumSend: response.data.sumSend,
+                userAccount: response.data.userAccount,
+                userBank: response.data.userBank,
+                eventList: response.data.eventList
+            }} : p
+            ));
         })
         .catch((error) => {
             if (error.response.data.status === 500) {

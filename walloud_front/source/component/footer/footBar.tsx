@@ -12,7 +12,7 @@ const footStyle = css`
     padding: 5vh 0;
     @media only screen and (max-width: ${ScreenSize.tablet}) {
         flex-direction: column;
-        padding: 3vh 5vw;
+        padding: 3vh 0;
     }
 `;
 

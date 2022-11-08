@@ -1,11 +1,11 @@
 HELP.md
 .gradle
-build/
+walloud_back/build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-src/main/resources/aws.yml
-src/main/resources/application.properties
+walloud_back/src/main/resources/aws.yml
+walloud_back/src/main/resources/application.properties
 
 ### STS ###
 .apt_generated
