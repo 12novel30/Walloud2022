@@ -3,10 +3,7 @@ package com.spring.mydiv.Controller;
 import com.spring.mydiv.Service.S3UploaderService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,5 +18,12 @@ public class S3Controller  {
     public void uploadFile(@RequestPart(value="file",required = false) MultipartFile file) throws IOException {
         s3UploaderService.upload(file, "test");
 //        return new AddDefaultCharsetFilter.ResponseWrapper(new SimpleMessageBody("파일 업로드 성공"));
+    }
+
+    @DeleteMapping("/api/images")
+    public String deleteFile(@RequestParam("filename") String filename) {
+        System.out.println(filename);
+        s3UploaderService.deleteImage(filename);
+        return "delete";
     }
 }

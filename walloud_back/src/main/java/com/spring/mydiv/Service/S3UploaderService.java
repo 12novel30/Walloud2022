@@ -1,6 +1,7 @@
 package com.spring.mydiv.Service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,4 +26,9 @@ public class S3UploaderService {
         amazonS3Client.putObject(bucket, storedFilePath, file.getInputStream(), metadata);
         return amazonS3Client.getUrl(bucket, storedFilePath).toString();
     }
+
+    public void deleteImage(String fileName) {
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+    }
+
 }
