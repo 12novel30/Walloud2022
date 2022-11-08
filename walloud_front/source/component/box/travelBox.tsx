@@ -56,6 +56,7 @@ const TravelBoxStyle = css`
                 padding: 0 5px;
                 background-color: transparent;
                 border: none;
+                z-index: 10000;
                 &:hover {
                     cursor: pointer;
                 }
