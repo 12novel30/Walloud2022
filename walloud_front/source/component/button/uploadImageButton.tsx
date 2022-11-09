@@ -4,12 +4,14 @@ const UploadImageButton = (id: { id: number }) => {
   const onChangeInput = (e: any) => {
     var file: File = e.target.files[0];
     var reader: FileReader = new FileReader();
+
     reader.readAsDataURL(file);
 
     reader.onload = function () {
       var image = document.createElement("img");
       image.src = URL.createObjectURL(file);
       image.style.width = "100%";
+      image.style.margin = "auto 0 auto 0";
       image.style.borderTopLeftRadius = "15px";
       image.style.borderTopRightRadius = "15px";
       document.getElementById(`${id.id}-image`).appendChild(image);

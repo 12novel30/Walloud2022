@@ -1,15 +1,20 @@
-import { css } from '@emotion/react'
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import GetTravelListAPI from '../../api/getTravelListAPI';
+import { css } from "@emotion/react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  atom,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
+import GetTravelListAPI from "../../api/getTravelListAPI";
 import UpdateTravelAPI from "../../api/updateTravelAPI";
-import TravelBox from '../../component/box/travelBox';
-import TravelCreateBox from '../../component/box/travelCreateBox';
-import Color from '../../layout/globalStyle/globalColor';
-import { ScreenSize } from '../../layout/globalStyle/globalSize';
-import { currentTravelState, travelListState } from '../../recoils/travel';
-import { userState } from '../../recoils/user';
+import TravelBox from "../../component/box/travelBox";
+import TravelCreateBox from "../../component/box/travelCreateBox";
+import Color from "../../layout/globalStyle/globalColor";
+import { ScreenSize } from "../../layout/globalStyle/globalSize";
+import { currentTravelState, travelListState } from "../../recoils/travel";
+import { userState } from "../../recoils/user";
 
 const DivideMainPageStyle = css`
   background-color: ${Color.blue02};
@@ -21,21 +26,22 @@ const DivideMainPageStyle = css`
   gap: 30px 20px;
   &:first-of-type {
     width: 20%;
-  }       
-`
+  }
+`;
 
-function TravelMainPage(){
+function TravelMainPage() {
   const id = useRecoilValue(userState).id;
   const [travelList, setTravelList] = useRecoilState(travelListState);
   const [currentTravel, setCurrentTravel] = useRecoilState(currentTravelState);
-  const [isEditMode, setIsEditMode] = useState<number|null>(null);
+  const [isEditMode, setIsEditMode] = useState<number | null>(null);
 
   const onClickEdit = (travelId: number) => {
     if (isEditMode !== travelId) {
       setIsEditMode(travelId);
     } else {
       const newName: string = (
-        document.getElementById(`${travelId}-input-name`) as HTMLInputElement).value;
+        document.getElementById(`${travelId}-input-name`) as HTMLInputElement
+      ).value;
       UpdateTravelAPI(id, travelId, newName);
       setIsEditMode(null);
 
@@ -47,24 +53,28 @@ function TravelMainPage(){
     }
   };
 
-  console.log(travelList)
+  console.log(travelList);
 
   useEffect(() => {
     GetTravelListAPI(id, setTravelList);
-  }, [])
+  }, []);
 
   return (
-      <div css = {DivideMainPageStyle}>
-        {TravelCreateBox(travelList, setTravelList)}
-        {travelList.map((travel, idx) => (
-          TravelBox(travel.name, 
-            travel.travelId, 
-            setCurrentTravel, 
-            onClickEdit, 
-            isEditMode)
-        ))}
-      </div>
-  )  
+    <div css={DivideMainPageStyle}>
+      {TravelCreateBox(travelList, setTravelList)}
+      {travelList.map((travel, idx) =>
+        TravelBox(
+          travel.name,
+          travel.travelId,
+          setCurrentTravel,
+          onClickEdit,
+          isEditMode,
+          travelList,
+          setTravelList
+        )
+      )}
+    </div>
+  );
 }
 export default TravelMainPage;
 

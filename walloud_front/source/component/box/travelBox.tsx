@@ -6,7 +6,8 @@ import { FontSize } from "../../layout/globalStyle/globalSize";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
 import FilpCard from "../../animation/flipCard";
 import UploadImageButton from "../button/uploadImageButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { TravelProps } from "../../recoils/travel";
 
 const TravelBoxStyle = css`
   height: 240px;
@@ -78,10 +79,12 @@ function TravelBox(
   id: number,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
-  isEditMode: number | null
+  isEditMode: number | null,
+  travelList: TravelProps[],
+  setTravelList: SetterOrUpdater<TravelProps[]>
 ) {
   const name = travelName;
-  const navigate = useNavigate();
+  //   const navigate = useNavigate();
 
   return (
     <div css={TravelBoxStyle} key={id}>
@@ -93,14 +96,17 @@ function TravelBox(
           setCurrentTravel(id);
         }}
       /> */}
-      <div
-        id={`${id}-image`}
-        // href={`/travel/${name}`}
-        onClick={() => {
+      <Link
+        to={`/travel/${name}`}
+        onClick={(e) => {
           setCurrentTravel(id);
-          isEditMode === id ? null : navigate(`/travel/${name}`);
+          isEditMode === id ? e.preventDefault() : null;
         }}
-      ></div>
+      >
+        <div id={`${id}-image`}></div>
+      </Link>
+      {isEditMode === id ? <UploadImageButton id={id} /> : null}{" "}
+      {/*CSS control Needed*/}
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
@@ -116,7 +122,7 @@ function TravelBox(
           </button>
         </div>
         <div className="back" id={id.toString() + " back"}>
-          <UploadImageButton id={id} /> {/*CSS control Needed*/}
+          {/* <UploadImageButton id={id} /> CSS control Needed */}
           {isEditMode === id ? (
             <input
               placeholder={name}
@@ -140,7 +146,9 @@ function TravelBox(
           >
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
-          <button onClick={() => DeleteTravelAPI(id)}>
+          <button
+            onClick={() => DeleteTravelAPI(id, travelList, setTravelList)}
+          >
             <img alt="delete" src="source/assets/icon/delete.svg" />
           </button>
           <button onClick={() => onClickEdit(id)}>
