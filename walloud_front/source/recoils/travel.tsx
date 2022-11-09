@@ -4,7 +4,6 @@ import { recoilPersist } from "recoil-persist";
 export interface TravelProps {
   travelId: number;
   name: string;
-  //   imgSrc: string;
 }
 export interface EventProps {
   eventId: number;

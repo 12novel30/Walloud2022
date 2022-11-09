@@ -30,6 +30,14 @@ const TravelBoxStyle = css`
       width: 30px;
       border-radius: 2rem;
     }
+
+    & > div {
+      height: 100%;
+      border-radius: 15px 15px 0 0;
+      color: white;
+      vertical-align: center;
+      margin: auto;
+    }
   }
   & > input {
     display: none;
@@ -100,13 +108,25 @@ function TravelBox(
         to={`/travel/${name}`}
         onClick={(e) => {
           setCurrentTravel(id);
-          isEditMode === id ? e.preventDefault() : null;
+          isEditMode === id
+            ? (e.preventDefault(),
+              document.getElementById(`${id}-upload`).click())
+            : null;
         }}
       >
-        <div id={`${id}-image`}></div>
+        <div id={`${id}-image`}>
+          {isEditMode === id ? "Click to Upload Image" : null}
+        </div>
       </Link>
-      {isEditMode === id ? <UploadImageButton id={id} /> : null}{" "}
-      {/*CSS control Needed*/}
+      <UploadImageButton id={id} />
+      {/* {isEditMode === id ? (
+        <img
+          width="10px"
+          alt="upload"
+          src="source/assets/icon/upload.svg"
+          onClick={() => document.getElementById(`${id}-upload`).click()}
+        />
+      ) : null} */}
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
