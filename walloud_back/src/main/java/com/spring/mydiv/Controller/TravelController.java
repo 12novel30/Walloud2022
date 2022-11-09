@@ -50,6 +50,11 @@ public class TravelController {
         return travelservice.getSuperUserTravelList(Long.valueOf(userId));
     }
 
+    @GetMapping("/{userId}/{travelId}/getImage")
+    public String getUserImage(@PathVariable int travelId){
+        return travelservice.getTravelImageURL(travelId);
+    }
+
     
     @PutMapping("/{userId}/{travelId}/updateTravelInfo")
     public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
