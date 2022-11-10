@@ -71,11 +71,14 @@ public class UserService {
             TravelDto.Response travel = TravelDto.Response.builder()
                     .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
+                    .IsSuper(p.getIsSuper())
                     .build();
             result.add(travel);
         }
         return result;
     } //fin
+
+
 
     public UserDto.WithTravel getUserInfoWithTravel(int no){
         User entity = userRepository.findById(Long.valueOf(no))
@@ -112,6 +115,21 @@ public class UserService {
         if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
+    }
+
+    @Transactional
+    public UserDto.ResponseWithImage updateUserImage(int userId, String imageURL){
+        User user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+        user.setInfo(imageURL);
+        return UserDto.ResponseWithImage.fromEntity(userRepository.save(user));
+    }
+
+    public String getUserImageURL(int userId){
+        return userRepository.findById(Long.valueOf(userId))
+                .map(UserDto.ResponseWithImage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_USER))
+                .getImageurl();
     }
 
     public void deleteUser(int userId){
