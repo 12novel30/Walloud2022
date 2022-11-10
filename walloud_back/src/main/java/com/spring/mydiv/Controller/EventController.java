@@ -31,7 +31,7 @@ public class EventController {
     private final TravelService travelService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{userId}/{travelId}/CreateEvent")
+    @PostMapping("/{travelId}/CreateEvent") // need to return created eventId
     public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
         // setting
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -164,4 +164,8 @@ public class EventController {
         return participantService.getParticipantInEvent(eventid);
     }
 
+    @GetMapping("{userid}/{travelid}/{eventid}/getImage")
+    public String getEventImage(@PathVariable int eventid){
+        return eventService.getEventImageURL(eventid);
+    }
 }

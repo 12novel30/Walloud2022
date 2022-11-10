@@ -1,14 +1,20 @@
 import axios from "axios"
-import { NavigateFunction } from "react-router-dom";
-import { SetterOrUpdater} from "recoil";
+import { SetterOrUpdater } from "recoil";
+import { TravelProps } from "../recoils/travel";
 import { UserProps, userState } from "../recoils/user";
 
-const CreateTravelAPI = async (userId: number, travelName: string) => {
+const CreateTravelAPI = async (userId: number, travelName: string,
+  travelList: TravelProps[], setTravelList: SetterOrUpdater<TravelProps[]>) => {
     return axios.post(`/api/${userId}/createTravel`, null, { params: {
             travel_name: travelName
         }})
         .then((response) => {
-            console.log(response);
+          const newTravel : TravelProps = {
+            travelId: response.data,
+            name: travelName
+          } 
+          setTravelList([...travelList, newTravel])
+          console.log(response);
         })
         .catch((error) => {
             if (error.response.data.status === 500) {
