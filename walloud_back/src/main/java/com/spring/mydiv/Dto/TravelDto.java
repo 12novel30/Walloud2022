@@ -33,6 +33,8 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String Name;
+        private Boolean IsSuper;
+
         public static Response fromEntity(Travel travel) {
             return Response.builder()
                     .TravelId(travel.getId())
