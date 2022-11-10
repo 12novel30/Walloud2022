@@ -90,4 +90,11 @@ public class TravelService {
         }
         return result;
     }
+
+    public String getTravelImageURL(int travelId){
+        return travelRepository.findById(Long.valueOf(travelId))
+                .map(TravelDto.ResponseWithImage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_EVENT))
+                .getImageurl();
+    }
 }

@@ -121,4 +121,10 @@ public class EventService {
         eventRepository.deleteById(Long.valueOf(eventId));
     }
 
+    public String getEventImageURL(int userId){
+        return eventRepository.findById(Long.valueOf(userId))
+                .map(EventDto.ResponseWithImage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_EVENT))
+                .getImageurl();
+    }
 }

@@ -164,4 +164,8 @@ public class EventController {
         return participantService.getParticipantInEvent(eventid);
     }
 
+    @GetMapping("{userid}/{travelid}/{eventid}/getImage")
+    public String getEventImage(@PathVariable int eventid){
+        return eventService.getEventImageURL(eventid);
+    }
 }
