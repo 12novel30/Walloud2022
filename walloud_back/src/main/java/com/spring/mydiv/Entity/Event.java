@@ -34,7 +34,7 @@ public class Event implements Serializable {
 	@Column(name = "event_price", length = 11)
 	private int price;
 	
-	@Column(name = "event_image")
+	@Column(name = "event_image", nullable = true)
 	private String image;
 
 	@Column(name = "payer_personid")
