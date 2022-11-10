@@ -42,11 +42,6 @@ public class UserController {
         } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
     }
 
-    @GetMapping("/{userId}")
-    public List<TravelDto.Response> getUserInfo(@PathVariable int userId){
-        return userservice.getUserJoinedTravel(userId);
-    }
-
     @PostMapping("/{userId}/createTravel")
     public int createTravel(@PathVariable int userId, String travel_name){
         TravelDto.Request travelRequest = new TravelDto.Request(travel_name);
