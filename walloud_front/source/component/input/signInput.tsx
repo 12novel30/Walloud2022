@@ -1,18 +1,18 @@
-import { css } from '@emotion/react'
-import Color from '../../layout/globalStyle/globalColor';
-import { FontSize } from '../../layout/globalStyle/globalSize';
+import { css } from "@emotion/react";
+import Color from "../../layout/globalStyle/globalColor";
+import { FontSize } from "../../layout/globalStyle/globalSize";
 
 const InputStyle = css`
-    &>div {
-        padding: 0 5px;
-        font-weight: 300;
-        color: white;
-        &>span {
-            color: red;
-        }
+  & > div {
+    padding: 0 5px;
+    font-weight: 300;
+    color: white;
+    & > span {
+      color: red;
     }
+  }
 
-    &>input {
+  & > input {
     display: block;
     width: 300px;
     height: 4.5vh;
@@ -23,29 +23,39 @@ const InputStyle = css`
     font-family: sans-serif;
     font-weight: 200;
     padding-left: 10px;
-    }
-`
+  }
+`;
 interface IProps {
-    name: string | undefined;
-    text: string;
-    setType: (major: string) => void;
-    message: string;
-    required: boolean;
+  name: string | undefined;
+  text: string;
+  setType: (major: string) => void;
+  message: string;
+  required: boolean;
 }
-  
-function SignInput({name, text, setType, message, required}: IProps){
-    const onInputHandler = (event: any) => {
-        setType(event.target.value);
-    };
 
-    return (
-        <div css = {InputStyle}>
-            <div>{message}<span>{required ? " *" : ""}</span></div> 
-            <input type = {message} value = {name} onChange = {onInputHandler}
-            placeholder = {text} />
-        </div>
-    )
-    
+function SignInput({ name, text, setType, message, required }: IProps) {
+  const onInputHandler = (event: any) => {
+    setType(event.target.value);
+  };
+
+  return (
+    <div css={InputStyle}>
+      <div>
+        {message}
+        <span>{required ? " *" : ""}</span>
+      </div>
+      <input
+        id="sign-input"
+        type={message}
+        value={name}
+        onChange={onInputHandler}
+        placeholder={text}
+        onKeyDown={(e) => {
+          e.key === "Enter" ? document.getElementById("basic").click() : null;
+        }}
+      />
+    </div>
+  );
 }
 
 export default SignInput;
