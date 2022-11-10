@@ -7,6 +7,8 @@ import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.EventService;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
+import com.spring.mydiv.Service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class TravelController {
+    private final UserService userservice;
     private final TravelService travelservice;
     private final PersonService personService;
     private final EventService eventService;
@@ -44,12 +47,15 @@ public class TravelController {
         return homeView;
     }
 
-    //NEED FIX
-    @GetMapping("/{userId}/getSuperUserList")
-    public List<TravelDto.Response> getSuperUserTravelList(@PathVariable int userId){
-        return travelservice.getSuperUserTravelList(Long.valueOf(userId));
+    @GetMapping("/{userId}")
+    public List<TravelDto.Response> getUserInfo(@PathVariable int userId){
+        return userservice.getUserJoinedTravel(userId);
     }
 
+    @GetMapping("/{userId}/{travelId}/getImage")
+    public String getUserImage(@PathVariable int travelId){
+        return travelservice.getTravelImageURL(travelId);
+    }
     
     @PutMapping("/{userId}/{travelId}/updateTravelInfo")
     public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
@@ -59,7 +65,7 @@ public class TravelController {
     }
 
 
-    // 여행을 생성한 user가 여행 자체를 삭제하는 메소드
+    // 여행을 생성한 user가 여행 자체를 삭제하는 메소드 --> 안 사용
     @PostMapping("/{userId}/deleteTravel")
     public void deleteTravel(@PathVariable int userId, @RequestBody Map map) {
         int travelId = Integer.parseInt(map.get("travel_id").toString());
