@@ -71,6 +71,7 @@ public class UserService {
             TravelDto.Response travel = TravelDto.Response.builder()
                     .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
+                    .IsSuper(p.getIsSuper())
                     .build();
             result.add(travel);
         }
