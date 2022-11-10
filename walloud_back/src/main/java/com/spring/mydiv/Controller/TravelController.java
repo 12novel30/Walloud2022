@@ -51,13 +51,6 @@ public class TravelController {
     public List<TravelDto.Response> getUserInfo(@PathVariable int userId){
         return userservice.getUserJoinedTravel(userId);
     }
-
-    //NEED FIX
-    @GetMapping("/{userId}/getSuperUserList")
-    public List<TravelDto.Response> getSuperUserTravelList(@PathVariable int userId){
-        return travelservice.getSuperUserTravelList(Long.valueOf(userId));
-    }
-
     
     @PutMapping("/{userId}/{travelId}/updateTravelInfo")
     public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
