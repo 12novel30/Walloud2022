@@ -2,6 +2,7 @@ import { css } from '@emotion/react'
 import { SetterOrUpdater, useRecoilState, useSetRecoilState } from 'recoil'
 import FilpCard from '../../animation/flipCard';
 import GetPersonDetailAPI from '../../api/getPersonDetailAPI';
+import SetPersonSettleAPI from '../../api/setPersonSettleAPI';
 import Color from '../../layout/globalStyle/globalColor';
 import { FontSize } from '../../layout/globalStyle/globalSize';
 import { currentTravelState, PersonProps } from '../../recoils/travel'
@@ -83,7 +84,7 @@ const PersonBoxStyle = css`
             &>.util {
                 display: flex;
                 height: 15%;
-                margin-left: 70%;
+                margin-left: 50%;
                 &>button {
                     float: right;
                     padding: 0 5%;
@@ -105,7 +106,7 @@ const PersonBoxStyle = css`
         }
     } 
 `
-function PersonBox(Person: PersonProps, id: number, type: string, travelId: number,
+function PersonBox(Person: PersonProps, id: number, type: string, travelId: number, isManager: boolean,
     personList: PersonProps[], setPersonList: SetterOrUpdater<PersonProps[]>){
 
     return (
@@ -140,6 +141,10 @@ function PersonBox(Person: PersonProps, id: number, type: string, travelId: numb
                         <div>계좌: {Person.detail.userBank} {Person.detail.userAccount}</div>
                     </div>
                     <div className='util'>
+                        {isManager ? <button onClick = {() => {SetPersonSettleAPI(id, Person.detail.isSettled, personList, setPersonList)}
+                        }>
+                            <img alt = "check" src = "/source/assets/icon/check.svg" />
+                        </button> : <></>}
                         <button onClick = {() => {}
                         }>
                             <img alt = "delete" src = "/source/assets/icon/delete.svg" />
