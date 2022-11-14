@@ -78,16 +78,10 @@ public class TravelService {
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
 
-    public List<TravelDto.Response> getSuperUserTravelList(Long userId){
-        List<Person> personList = personRepository.findByUser_IdAndIsSuper(userId, true);
-        List<TravelDto.Response> result = new ArrayList<>();
-        for (Person p : personList){
-            TravelDto.Response tmp = new TravelDto.Response(
-                    p.getTravel().getId(),
-                    p.getTravel().getName()
-            );
-            result.add(tmp);
-        }
-        return result;
+    public String getTravelImageURL(int travelId){
+        return travelRepository.findById(Long.valueOf(travelId))
+                .map(TravelDto.ResponseWithImage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_EVENT))
+                .getImageurl();
     }
 }

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 
@@ -47,4 +48,6 @@ public class User implements Serializable {
 	@Column(name = "user_bank", length = 50, nullable = false)
 	private String bank;
 
+	@Column(name = "user_info", nullable = true)
+	private String info;
 }

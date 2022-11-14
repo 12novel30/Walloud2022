@@ -33,7 +33,7 @@ public class Travel implements Serializable {
 	@Column(name = "travel_name", length = 200, nullable = false)
 	private String name;
 	
-	@Column(name = "travel_image")
+	@Column(name = "travel_image", nullable = true)
 	private String image;
 
 }

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -33,12 +34,36 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String Name;
+        private Boolean IsSuper;
+
         public static Response fromEntity(Travel travel) {
             return Response.builder()
                     .TravelId(travel.getId())
                     .Name(travel.getName())
                     .build();
         }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ResponseWithImage {
+        @NotNull
+        private Long TravelId;
+        @NotNull
+        private String Name;
+        @Nullable
+        private String Imageurl;
+        public static ResponseWithImage fromEntity(Travel travel) {
+            return ResponseWithImage.builder()
+                    .TravelId(travel.getId())
+                    .Name(travel.getName())
+                    .Imageurl(travel.getImage())
+                    .build();
+        }
+
     }
 
     @Getter

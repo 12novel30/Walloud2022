@@ -5,6 +5,7 @@ import { TravelProps } from "../recoils/travel";
 const GetTravelListAPI = async (userId: number, setTravelList: SetterOrUpdater<TravelProps[]>) => {
     axios.get(`/api/${userId}`)
         .then((response) => {
+            console.log(response.data)
             setTravelList(response.data)
         })
         .catch((error) => {
