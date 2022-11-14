@@ -46,14 +46,25 @@ function TravelMainPage() {
       setIsEditMode(null);
 
       const newTravelList = [...travelList].map((e) =>
-        e.travelId === travelId ? { travelId: travelId, name: newName } : e
+        e.travelId === travelId ? { travelId: travelId, name: newName, isSuper: true } : e
       );
       console.log(newTravelList);
       setTravelList(newTravelList);
     }
   };
 
-  console.log(travelList);
+  const onClickDelete = (travelId : number, travelName : string) => {
+    if(window.confirm(`Are you sure to delete travel ${travelName}`)) {
+      DeleteTravelAPI(travelId);
+      const newTravelList = travelList.filter((e) => e.travelId !== travelId )
+      console.log(newTravelList);
+      setTravelList(newTravelList);
+    } else {
+      alert("Canceled");
+    }
+  }
+
+  console.log(travelList)
 
   useEffect(() => {
     GetTravelListAPI(id, setTravelList);
@@ -67,6 +78,7 @@ function TravelMainPage() {
           id,
           travel.name,
           travel.travelId,
+          travel.isSuper,
           setCurrentTravel,
           onClickEdit,
           isEditMode,
