@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
         return userservice.login(loginUser);
     }
 
