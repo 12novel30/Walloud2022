@@ -1,4 +1,6 @@
-const UploadImageButton = (id: { id: number }) => {
+import UploadImageAPI from "../../api/uploadImageAPI";
+
+const UploadImageButton = (id: number, userId: number) => {
   const onChangeInput = (e: any) => {
     var file: File = e.target.files[0];
     var reader: FileReader = new FileReader();
@@ -8,17 +10,20 @@ const UploadImageButton = (id: { id: number }) => {
     reader.onload = function () {
       const imageSrc = URL.createObjectURL(file);
       document.getElementById(
-        `${id.id}-image`
+        `${id}-image`
       ).style.backgroundImage = `url(${imageSrc})`;
-      document.getElementById(`${id.id}-image`).innerText = "";
+      document.getElementById(`${id}-image`).innerText = "";
+      const formData = new FormData();
+      formData.append("files", file);
+      UploadImageAPI(userId, formData);
     };
-    console.log(document.getElementById(`${id.id}-image`));
+    console.log(document.getElementById(`${id}-image`));
   };
 
   return (
     <div style={{ display: "none" }}>
       <input
-        id={`${id.id}-upload`}
+        id={`${id}-upload`}
         type="file"
         accept=".jpeg, .jpg, .png"
         onChange={(e) => onChangeInput(e)}

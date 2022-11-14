@@ -4,6 +4,7 @@ import { recoilPersist } from "recoil-persist";
 export interface TravelProps {
   travelId: number;
   name: string;
+  isSuper: boolean;
 }
 export interface EventProps {
   eventId: number;
