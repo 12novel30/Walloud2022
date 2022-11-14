@@ -83,8 +83,10 @@ const TravelBoxStyle = css`
 `;
 
 function TravelBox(
+  userId: number,
   travelName: string,
   id: number,
+  isSuper: boolean,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
   isEditMode: number | null,
@@ -118,15 +120,7 @@ function TravelBox(
           {isEditMode === id ? "Click to Upload Image" : null}
         </div>
       </Link>
-      <UploadImageButton id={id} />
-      {/* {isEditMode === id ? (
-        <img
-          width="10px"
-          alt="upload"
-          src="source/assets/icon/upload.svg"
-          onClick={() => document.getElementById(`${id}-upload`).click()}
-        />
-      ) : null} */}
+      {UploadImageButton(id, userId)}
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
@@ -162,18 +156,20 @@ function TravelBox(
               front.style.transform = "rotateY(0deg)";
               var back = document.getElementById(id.toString() + " back");
               back.style.transform = "rotateY(-180deg)";
+              onClickEdit(id);
             }}
           >
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
           <button
-            onClick={() => DeleteTravelAPI(id, travelList, setTravelList)}
+            onClick={() => {isSuper ? DeleteTravelAPI(id, travelList, setTravelList) : 
+              DeletePersonAPI()}}
           >
             <img alt="delete" src="source/assets/icon/delete.svg" />
           </button>
-          <button onClick={() => onClickEdit(id)}>
+          {isSuper ? <button onClick={() => onClickEdit(id)}>
             <img alt="edit" src="source/assets/icon/edit.svg" />
-          </button>
+          </button> : <></>}
         </div>
       </FilpCard>
     </div>
