@@ -248,4 +248,13 @@ public class PersonService {
         //personRepository.updateRoleById(TRUE, currManager.getId());
     }
 
+    public PersonDto.Detail updateIsSettled(int personId, boolean isSettled){
+        Person person = personRepository.findById(Long.valueOf(personId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+
+        person.setIsSettled(isSettled);
+
+        return PersonDto.Detail.fromEntity(personRepository.save(person));
+    }
+
 }

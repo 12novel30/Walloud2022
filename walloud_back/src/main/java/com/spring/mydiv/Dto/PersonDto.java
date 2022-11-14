@@ -116,6 +116,7 @@ public class PersonDto {
 		private String UserEmail;
 		private String UserAccount;
 		private String UserBank;
+		private boolean isSettled;
 
 		private List<EventDto.PersonView> EventList;
 		private List<HomeView> PersonInTravelList;
@@ -131,6 +132,7 @@ public class PersonDto {
 					.UserEmail(person.getUser().getEmail())
 					.UserAccount(person.getUser().getAccount())
 					.UserBank(person.getUser().getBank())
+					.isSettled(person.getIsSettled())
 					.build();
 		}
 	}
