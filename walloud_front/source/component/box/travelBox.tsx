@@ -121,7 +121,6 @@ function TravelBox(
         </div>
       </Link>
       {UploadImageButton(id, userId)}
-
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
