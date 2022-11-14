@@ -35,15 +35,15 @@ public class TravelController {
         System.out.println("_________________________2");
         homeView.setPersonList(personService.getPersonInfoInTravel(travelId));
         System.out.println("_________________________3");
-        homeView.setPersonCount(personService.getPersonCountInTravel(travelId));
-        System.out.println("_________________________4");
+        //homeView.setPersonCount(personService.getPersonCountInTravel(travelId));
+        //System.out.println("_________________________4");
         homeView.setEventList(eventService.getEventInfoInTravel(travelId));
         System.out.println("_________________________5");
-        homeView.setEventCount(eventService.getEventCountInTravel(travelId));
-        System.out.println("_________________________6");
+        //homeView.setEventCount(eventService.getEventCountInTravel(travelId));
+        //System.out.println("_________________________6");
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
         System.out.println("_________________________7");
-        homeView.setSuperUser(eventService.getSuperUser(travelId));
+        //homeView.setSuperUser(eventService.getSuperUser(travelId));
         return homeView;
     }
 

@@ -86,6 +86,7 @@ public class PersonDto {
 		private Boolean Role;
 		private Double Difference;
 		private Long UserId;
+		private boolean isSettled;
 		@Nullable
 		private String Imageurl;
 
@@ -97,6 +98,7 @@ public class PersonDto {
 					.Difference(person.getDifference())
 					.UserId(person.getUser().getId())
 					.Imageurl(person.getUser().getInfo())
+					.isSettled(person.getIsSettled())
 					.build();
 		}
 	}
