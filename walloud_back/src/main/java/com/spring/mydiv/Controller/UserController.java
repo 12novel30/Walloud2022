@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
         return userservice.login(loginUser);
     }
 
@@ -44,6 +44,11 @@ public class UserController {
         if(userservice.getUserJoinedTravel(user_id).size() == 0){
             userservice.deleteUser(user_id);
         } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
+    }
+
+    @GetMapping("/{userId}")
+    public List<TravelDto.Response> getUserUserJoinedTravel(@PathVariable int userId){
+        return userservice.getUserJoinedTravel(userId);
     }
 
     @GetMapping("/{userId}/getImage")
@@ -79,7 +84,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/updateUserImage")
-    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(@PathVariable int userId, @RequestPart(value="file",required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
+                                                                     @RequestPart(value="file",required = false) MultipartFile file)
+                                                    throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);
         return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));

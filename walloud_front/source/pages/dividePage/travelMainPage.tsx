@@ -53,7 +53,18 @@ function TravelMainPage() {
     }
   };
 
-  console.log(travelList);
+  const onClickDelete = (travelId : number, travelName : string) => {
+    if(window.confirm(`Are you sure to delete travel ${travelName}`)) {
+      DeleteTravelAPI(travelId);
+      const newTravelList = travelList.filter((e) => e.travelId !== travelId )
+      console.log(newTravelList);
+      setTravelList(newTravelList);
+    } else {
+      alert("Canceled");
+    }
+  }
+
+  console.log(travelList)
 
   useEffect(() => {
     GetTravelListAPI(id, setTravelList);
@@ -64,6 +75,7 @@ function TravelMainPage() {
       {TravelCreateBox(travelList, setTravelList)}
       {travelList.map((travel, idx) =>
         TravelBox(
+          id,
           travel.name,
           travel.travelId,
           travel.isSuper,

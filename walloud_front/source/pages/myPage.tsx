@@ -8,9 +8,8 @@ const MyPageStyle = css`
 `;
 
 function MyPage(){
-	const User = useRecoilValue(userState);
-	console.log(User);
-    
+    const User = useRecoilValue(userState);
+    console.log(User);
     return (
     	<MobileContainer>
         	<div css = {MyPageStyle}>
