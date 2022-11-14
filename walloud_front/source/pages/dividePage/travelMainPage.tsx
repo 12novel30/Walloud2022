@@ -64,6 +64,7 @@ function TravelMainPage() {
       {TravelCreateBox(travelList, setTravelList)}
       {travelList.map((travel, idx) =>
         TravelBox(
+          id,
           travel.name,
           travel.travelId,
           travel.isSuper,
