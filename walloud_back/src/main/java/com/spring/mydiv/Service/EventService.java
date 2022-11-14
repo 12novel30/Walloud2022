@@ -39,15 +39,16 @@ public class EventService {
         return EventDto.Response.fromEntity(event);
     }
 
-    public void updateEvent(int eventId, EventDto.Request request){
+    public EventDto.Response updateEvent(int eventId, EventDto.Request updateRequest){
         Event event = eventRepository.findById(Long.valueOf(eventId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
 
-        eventRepository.updateNameAndDateAndPriceAndPayerPersonidById(request.getName(),
-                request.getDate(),
-                request.getPrice(),
-                request.getPayerPersonId(),
-                Long.valueOf(eventId));
+        if (updateRequest.getName() != null) event.setName(updateRequest.getName());
+        if (updateRequest.getDate() != null) event.setDate(updateRequest.getDate());
+        if (updateRequest.getPrice() != 0) event.setPrice(updateRequest.getPrice());
+        if (updateRequest.getPayerPersonId() != null) event.setPayerPersonid(updateRequest.getPayerPersonId());
+
+        return EventDto.Response.fromEntity(eventRepository.save(event));
     }
 
     public List<Map> checkPayerInParticipant(List<Map> partiList, Long payerId){
