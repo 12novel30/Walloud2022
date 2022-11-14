@@ -4,6 +4,7 @@ import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Entity.Travel;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
@@ -85,6 +86,28 @@ public class EventDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class ResponseWithImage {
+        @NotNull
+        private Long EventId;
+        @NotNull
+        private String Name;
+        @Nullable
+        private String Imageurl;
+
+        public static ResponseWithImage fromEntity(Event event) {
+            return ResponseWithImage.builder()
+                    .EventId(event.getId())
+                    .Name(event.getName())
+                    .Imageurl(event.getImage())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class HomeView {
         @NotNull
         private Long EventId;
@@ -95,6 +118,8 @@ public class EventDto {
         @NotNull
         private int Price;
         private String PayerName;
+        @Nullable
+        private String Imageurl;
 
         public static HomeView fromEntity(Event event) {
             return HomeView.builder()
@@ -102,6 +127,7 @@ public class EventDto {
                     .Name(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
+                    .Imageurl(event.getImage())
                     .build();
         }
     }

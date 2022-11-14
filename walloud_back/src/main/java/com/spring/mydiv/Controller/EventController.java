@@ -4,14 +4,13 @@ import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
-import com.spring.mydiv.Service.EventService;
-import com.spring.mydiv.Service.ParticipantService;
-import com.spring.mydiv.Service.PersonService;
-import com.spring.mydiv.Service.TravelService;
+import com.spring.mydiv.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +29,7 @@ public class EventController {
     private final PersonService personService;
     private final TravelService travelService;
     private final ParticipantService participantService;
+    private final S3UploaderService s3UploaderService;
 
     @PostMapping("/{travelId}/CreateEvent") // need to return created eventId
     public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
@@ -164,4 +164,18 @@ public class EventController {
         return participantService.getParticipantInEvent(eventid);
     }
 
+    /************image************/
+    @GetMapping("/{eventid}/getImage")
+    public String getEventImage(@PathVariable int eventid){
+        return eventService.getEventImageURL(eventid);
+    }
+
+    @PutMapping("/{eventid}/uploadUserImage")
+    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
+                                                                     @RequestPart(value="file",required = false) MultipartFile file)
+            throws IOException {
+        String objectURL = s3UploaderService.upload(file, "test");
+        System.out.println(objectURL);
+        return ResponseEntity.ok(eventService.uploadEventImage(userId, objectURL));
+    }
 }

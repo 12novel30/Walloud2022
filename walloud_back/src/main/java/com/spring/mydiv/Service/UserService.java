@@ -50,11 +50,11 @@ public class UserService {
     public boolean checkIsEmailRegistered(String email){
         return userRepository.existsByEmail(email);
     }
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
         if (loginUser.getPassword().equals(entity.getPassword()))
-            return UserDto.Response.fromEntity(entity);
+            return UserDto.ResponseWithImage.fromEntity(entity);
         else throw new DefaultException(WRONG_PASSWORD);
     } //ing
 
@@ -71,11 +71,14 @@ public class UserService {
             TravelDto.Response travel = TravelDto.Response.builder()
                     .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
+                    .IsSuper(p.getIsSuper())
                     .build();
             result.add(travel);
         }
         return result;
     } //fin
+
+
 
     public UserDto.WithTravel getUserInfoWithTravel(int no){
         User entity = userRepository.findById(Long.valueOf(no))
@@ -112,6 +115,21 @@ public class UserService {
         if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
+    }
+
+    @Transactional
+    public UserDto.ResponseWithImage updateUserImage(int userId, String imageURL){
+        User user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+        user.setInfo(imageURL);
+        return UserDto.ResponseWithImage.fromEntity(userRepository.save(user));
+    }
+
+    public String getUserImageURL(int userId){
+        return userRepository.findById(Long.valueOf(userId))
+                .map(UserDto.ResponseWithImage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_USER))
+                .getImageurl();
     }
 
     public void deleteUser(int userId){

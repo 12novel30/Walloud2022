@@ -4,6 +4,7 @@ import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.spring.mydiv.Code.ErrorCode.NO_EVENT;
+import static com.spring.mydiv.Code.ErrorCode.NO_USER;
 
 /**
  * @author 12nov
@@ -96,7 +98,13 @@ public class ParticipantService {
     }
 
     public void updateParticipant(Boolean eventRole, Double chargedPrice, Person person, Event event){
-        participantRepository.updateEventRoleAndChargedPriceByPersonAndEvent(eventRole, chargedPrice, person, event);
+        Participant participant = participantRepository.findByPersonAndEvent(person, event)
+                .orElseThrow(() -> new DefaultException(NO_USER));
+
+        participant.setEventRole(eventRole);
+        participant.setChargedPrice(chargedPrice);
+
+        participantRepository.save(participant);
     }
 
     public void deleteParticipant(Person p, Event e){

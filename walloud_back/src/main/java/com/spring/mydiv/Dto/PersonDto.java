@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -85,6 +86,10 @@ public class PersonDto {
 		private Boolean Role;
 		private Double Difference;
 		private Long UserId;
+		private boolean isSettled;
+		@Nullable
+		private String Imageurl;
+
 		public static HomeView fromEntity(Person person) {
 			return HomeView.builder()
 					.PersonId(person.getId())
@@ -92,6 +97,8 @@ public class PersonDto {
 					.Role(person.getRole())
 					.Difference(person.getDifference())
 					.UserId(person.getUser().getId())
+					.Imageurl(person.getUser().getInfo())
+					.isSettled(person.getIsSettled())
 					.build();
 		}
 	}
@@ -111,6 +118,7 @@ public class PersonDto {
 		private String UserEmail;
 		private String UserAccount;
 		private String UserBank;
+		private boolean isSettled;
 
 		private List<EventDto.PersonView> EventList;
 		private List<HomeView> PersonInTravelList;
@@ -126,6 +134,7 @@ public class PersonDto {
 					.UserEmail(person.getUser().getEmail())
 					.UserAccount(person.getUser().getAccount())
 					.UserBank(person.getUser().getBank())
+					.isSettled(person.getIsSettled())
 					.build();
 		}
 	}
