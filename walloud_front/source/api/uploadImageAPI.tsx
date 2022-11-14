@@ -1,8 +1,15 @@
 import axios from "axios";
 
-const UploadImageAPI = async (userId: number, formData: FormData) => {
+const UploadImageAPI = async (
+  userId: number,
+  travelId: number,
+  formData: FormData
+) => {
   return axios
-    .post("api/s3/files/upload", { KEY: userId, VALUE: formData })
+    .post("api/${userId}/${travelId}/updateTravelImage", {
+      key: "file",
+      value: formData,
+    })
     .then((response) => {
       console.log(response);
     })

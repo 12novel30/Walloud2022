@@ -15,7 +15,7 @@ const UploadImageButton = (id: number, userId: number) => {
       document.getElementById(`${id}-image`).innerText = "";
       const formData = new FormData();
       formData.append("files", file);
-      UploadImageAPI(userId, formData);
+      UploadImageAPI(userId, id, formData);
     };
     console.log(document.getElementById(`${id}-image`));
   };
