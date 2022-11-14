@@ -84,7 +84,8 @@ public class TravelService {
         for (Person p : personList){
             TravelDto.Response tmp = new TravelDto.Response(
                     p.getTravel().getId(),
-                    p.getTravel().getName()
+                    p.getTravel().getName(),
+                    p.getIsSuper() // 에러나서 임의로 수정함
             );
             result.add(tmp);
         }
@@ -94,7 +95,15 @@ public class TravelService {
     public String getTravelImageURL(int travelId){
         return travelRepository.findById(Long.valueOf(travelId))
                 .map(TravelDto.ResponseWithImage::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_EVENT))
+                .orElseThrow(()-> new DefaultException(NO_TRAVEL))
                 .getImageurl();
+    }
+
+    @Transactional
+    public TravelDto.ResponseWithImage updateTravelImage(int userId, String imageURL){
+        Travel travel = travelRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_TRAVEL));
+        travel.setImage(imageURL);
+        return TravelDto.ResponseWithImage.fromEntity(travelRepository.save(travel));
     }
 }

@@ -76,6 +76,8 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String TravelName;
+        @Nullable
+        private String Imageurl;
 
         private List<PersonDto.HomeView> PersonList;
         private int PersonCount;
@@ -90,6 +92,7 @@ public class TravelDto {
             return HomeView.builder()
                     .TravelId(travel.getId())
                     .TravelName(travel.getName())
+                    .Imageurl(travel.getImage())
                     .build();
         }
     }

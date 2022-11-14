@@ -118,6 +118,8 @@ public class EventDto {
         @NotNull
         private int Price;
         private String PayerName;
+        @Nullable
+        private String Imageurl;
 
         public static HomeView fromEntity(Event event) {
             return HomeView.builder()
@@ -125,6 +127,7 @@ public class EventDto {
                     .Name(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
+                    .Imageurl(event.getImage())
                     .build();
         }
     }
