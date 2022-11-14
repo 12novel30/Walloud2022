@@ -9,6 +9,7 @@ import com.spring.mydiv.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -121,10 +122,19 @@ public class EventService {
         eventRepository.deleteById(Long.valueOf(eventId));
     }
 
+    /************image************/
     public String getEventImageURL(int userId){
         return eventRepository.findById(Long.valueOf(userId))
                 .map(EventDto.ResponseWithImage::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_EVENT))
                 .getImageurl();
+    }
+
+    @Transactional
+    public EventDto.ResponseWithImage uploadEventImage(int userId, String imageURL){
+        Event event = eventRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_EVENT));
+        event.setImage(imageURL);
+        return EventDto.ResponseWithImage.fromEntity(eventRepository.save(event));
     }
 }

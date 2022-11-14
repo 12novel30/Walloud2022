@@ -84,7 +84,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/updateUserImage")
-    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(@PathVariable int userId, @RequestPart(value="file",required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
+                                                                     @RequestPart(value="file",required = false) MultipartFile file)
+                                                    throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);
         return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));

@@ -4,15 +4,14 @@ import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Exception.DefaultException;
-import com.spring.mydiv.Service.EventService;
-import com.spring.mydiv.Service.PersonService;
-import com.spring.mydiv.Service.TravelService;
-import com.spring.mydiv.Service.UserService;
+import com.spring.mydiv.Service.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ public class TravelController {
     private final TravelService travelservice;
     private final PersonService personService;
     private final EventService eventService;
+    private final S3UploaderService s3UploaderService;
 
     @GetMapping("/{userId}/{travelId}") //return empty
     public TravelDto.HomeView getTravelToMainView(@PathVariable int travelId){
@@ -53,10 +53,17 @@ public class TravelController {
     }
 
     @GetMapping("/{userId}/{travelId}/getImage")
-    public String getUserImage(@PathVariable int travelId){
+    public String getTravelImage(@PathVariable int travelId){
         return travelservice.getTravelImageURL(travelId);
     }
-    
+    @PutMapping("/{userId}/{travelId}/updateTravelImage")
+    public ResponseEntity<TravelDto.ResponseWithImage> uploadTravelImage(@PathVariable int travelId,
+                                                                         @RequestPart(value="file",required = false) MultipartFile file)
+            throws IOException {
+        String objectURL = s3UploaderService.upload(file, "test");
+        System.out.println(objectURL);
+        return ResponseEntity.ok(travelservice.updateTravelImage(travelId, objectURL));
+    }
     @PutMapping("/{userId}/{travelId}/updateTravelInfo")
     public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
         TravelDto.Request updateRequest = new TravelDto.Request(map.get("travel_name").toString());
