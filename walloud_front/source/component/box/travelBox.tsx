@@ -77,6 +77,7 @@ function TravelBox(
     id: number, 
     setCurrentTravel: SetterOrUpdater<number>,
     onClickEdit: {(id: number): void; (arg0: number): void},
+    onClickDelete : {(id: number, name: string): void;},
     isEditMode: number | null){
 
     const name = travelName;
@@ -120,7 +121,7 @@ function TravelBox(
                         }}>
                         <img alt = "return" src = "source/assets/icon/return.svg" />
                     </button>
-                    <button onClick = {() => DeleteTravelAPI(id)
+                    <button onClick = {() => onClickDelete(id, name)
                     }>
                         <img alt = "delete" src = "source/assets/icon/delete.svg" />
                     </button>

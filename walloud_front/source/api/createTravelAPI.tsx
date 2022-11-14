@@ -1,5 +1,5 @@
 import axios from "axios"
-import { SetterOrUpdater } from "recoil";
+import { SetterOrUpdater,useRecoilState } from "recoil";
 import { TravelProps } from "../recoils/travel";
 import { UserProps, userState } from "../recoils/user";
 

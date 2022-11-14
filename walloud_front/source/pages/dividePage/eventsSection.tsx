@@ -6,8 +6,11 @@ import { css } from "@emotion/react";
 import { FontSize } from "../../layout/globalStyle/globalSize";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { eventListState } from "../../recoils/travel";
+import { isopenModal,ModalContainer} from "../../layout/container/modalContainer";
 import Color from "../../layout/globalStyle/globalColor";
 import EventsDetail from "./eventsDetail"
+import { EventCreate } from "./eventsModify";
+import SignUpPage from "../authentication/signupPage";
 
 const EventsSectionStyle = css`
     border: 2px solid white;
@@ -46,8 +49,29 @@ const EventsSectionStyle = css`
         }
     }
 `
-
+const CreateBotton = css`
+    opacity: 0.5;
+    border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    font-size: 2px;
+    font-weight: bold;
+    margin-top: 4%;
+    margin-bottom: 4%;
+    margin-left: 48%;
+    transition-duration: 0.3s;
+    &:hover{
+        opacity: 0.7;
+    }
+    &:focus{
+        border:none;
+        outline:none;
+    }
+`
 function EventsSection(eventList: any[], travelId: number) {
+    const setOpenEventModal = useSetRecoilState(isopenModal);
     const setEventList = useSetRecoilState(eventListState);
 
     function sortEvent(a: any, b: any, attri: string){
@@ -62,7 +86,7 @@ function EventsSection(eventList: any[], travelId: number) {
     return (
         <div css = {EventsSectionStyle}>
             <div> 
-                Event 
+                Event
             </div>
             <div>
                 <div></div>
@@ -87,6 +111,10 @@ function EventsSection(eventList: any[], travelId: number) {
             {eventList.map((event, idx) => (
                 EventsDetail(event, idx, travelId, eventList, setEventList)
                 ))}
+            <button css = {CreateBotton} onClick={() => {setOpenEventModal(true)}}>+</button>
+            <ModalContainer checkleft = {true}>
+                <EventCreate></EventCreate>
+            </ModalContainer>
         </div>
     )   
 }

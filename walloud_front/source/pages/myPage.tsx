@@ -16,6 +16,7 @@ const blankError = css`
 
 function MyPage(){
     const User = useRecoilValue(userState);
+    console.log(User);
     return (
       <div css = {blankError}>
         <div>

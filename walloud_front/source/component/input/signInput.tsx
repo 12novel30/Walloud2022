@@ -28,7 +28,7 @@ const InputStyle = css`
 interface IProps {
     name: string | undefined;
     text: string;
-    setType: (major: string) => void;
+    setType: (major: any) => void;
     message: string;
     required: boolean;
 }
@@ -40,9 +40,9 @@ function SignInput({name, text, setType, message, required}: IProps){
 
     return (
         <div css = {InputStyle}>
-            <div>{message}<span>{required ? " *" : ""}</span></div> 
+            <label htmlFor={message}>{message}<span>{required ? " *" : ""}</span></label> 
             <input type = {message} value = {name} onChange = {onInputHandler}
-            placeholder = {text} />
+            placeholder = {text} id={message}/>
         </div>
     )
     

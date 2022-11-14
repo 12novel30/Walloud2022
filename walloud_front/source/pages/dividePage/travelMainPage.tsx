@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import GetTravelListAPI from '../../api/getTravelListAPI';
+import DeleteTravelAPI from '../../api/deleteTravelAPI';
 import UpdateTravelAPI from "../../api/updateTravelAPI";
 import TravelBox from '../../component/box/travelBox';
 import TravelCreateBox from '../../component/box/travelCreateBox';
@@ -47,6 +48,17 @@ function TravelMainPage(){
     }
   };
 
+  const onClickDelete = (travelId : number, travelName : string) => {
+    if(window.confirm(`Are you sure to delete travel ${travelName}`)) {
+      DeleteTravelAPI(travelId);
+      const newTravelList = travelList.filter((e) => e.travelId !== travelId )
+      console.log(newTravelList);
+      setTravelList(newTravelList);
+    } else {
+      alert("Canceled");
+    }
+  }
+
   console.log(travelList)
 
   useEffect(() => {
@@ -61,6 +73,7 @@ function TravelMainPage(){
             travel.travelId, 
             setCurrentTravel, 
             onClickEdit, 
+            onClickDelete,
             isEditMode)
         ))}
       </div>

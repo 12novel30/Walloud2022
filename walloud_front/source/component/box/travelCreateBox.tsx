@@ -79,6 +79,7 @@ const TravelCreateBoxStyle = css`
 
 function TravelCreateBox(travelList: TravelProps[],
     setTravelList: SetterOrUpdater<TravelProps[]>) {
+
     const [travelName, setTravelName] = useState<string>("");
     const userId = useRecoilValue(userState).id;
 
@@ -102,8 +103,15 @@ function TravelCreateBox(travelList: TravelProps[],
                     <SignInput name = {travelName} text = "ex) 부산 여행"
                         setType = {setTravelName} message = "Travel Name" required = {true}/>
                     <BasicButton text = "여행 만들기" onClick= {() =>
-                    {if (travelName !== ""){
-                        CreateTravelAPI(userId, travelName, travelList, setTravelList)}
+                    {
+                    var Lock : boolean = false
+                    if (travelName !== ""){
+                        // HandleOnceAPI(CreateTravelAPI)(userId, travelName, travelList, setTravelList)
+                        if(!Lock) {
+                            Lock = true
+                            CreateTravelAPI(userId, travelName, travelList, setTravelList);
+                        }
+                    }
                     else {
                         alert("이름을 입력하세요")
                     }}}/>
