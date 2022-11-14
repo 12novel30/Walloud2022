@@ -85,6 +85,7 @@ const TravelBoxStyle = css`
 function TravelBox(
   travelName: string,
   id: number,
+  isSuper: boolean,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
   isEditMode: number | null,
@@ -167,13 +168,14 @@ function TravelBox(
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
           <button
-            onClick={() => DeleteTravelAPI(id, travelList, setTravelList)}
+            onClick={() => {isSuper ? DeleteTravelAPI(id, travelList, setTravelList) : 
+              DeletePersonAPI()}}
           >
             <img alt="delete" src="source/assets/icon/delete.svg" />
           </button>
-          <button onClick={() => onClickEdit(id)}>
+          {isSuper ? <button onClick={() => onClickEdit(id)}>
             <img alt="edit" src="source/assets/icon/edit.svg" />
-          </button>
+          </button> : <></>}
         </div>
       </FilpCard>
     </div>

@@ -46,7 +46,7 @@ function TravelMainPage() {
       setIsEditMode(null);
 
       const newTravelList = [...travelList].map((e) =>
-        e.travelId === travelId ? { travelId: travelId, name: newName } : e
+        e.travelId === travelId ? { travelId: travelId, name: newName, isSuper: true } : e
       );
       console.log(newTravelList);
       setTravelList(newTravelList);
@@ -66,6 +66,7 @@ function TravelMainPage() {
         TravelBox(
           travel.name,
           travel.travelId,
+          travel.isSuper,
           setCurrentTravel,
           onClickEdit,
           isEditMode,
