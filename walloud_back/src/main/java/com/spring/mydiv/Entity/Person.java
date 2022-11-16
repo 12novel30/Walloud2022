@@ -55,5 +55,11 @@ public class Person implements Serializable {
 
 	@Column(name = "person_superuser", nullable = false)
 	private Boolean isSuper;
+
+	@Column(name = "person_issettled", nullable = false)
+	private Boolean isSettled;
+	/**is settled?
+	 * 1, true
+	 * 0, false*/
 	
 }

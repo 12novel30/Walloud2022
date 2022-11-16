@@ -9,6 +9,7 @@ import com.spring.mydiv.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,15 +39,16 @@ public class EventService {
         return EventDto.Response.fromEntity(event);
     }
 
-    public void updateEvent(int eventId, EventDto.Request request){
+    public EventDto.Response updateEvent(int eventId, EventDto.Request updateRequest){
         Event event = eventRepository.findById(Long.valueOf(eventId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
 
-        eventRepository.updateNameAndDateAndPriceAndPayerPersonidById(request.getName(),
-                request.getDate(),
-                request.getPrice(),
-                request.getPayerPersonId(),
-                Long.valueOf(eventId));
+        if (updateRequest.getName() != null) event.setName(updateRequest.getName());
+        if (updateRequest.getDate() != null) event.setDate(updateRequest.getDate());
+        if (updateRequest.getPrice() != 0) event.setPrice(updateRequest.getPrice());
+        if (updateRequest.getPayerPersonId() != null) event.setPayerPersonid(updateRequest.getPayerPersonId());
+
+        return EventDto.Response.fromEntity(eventRepository.save(event));
     }
 
     public List<Map> checkPayerInParticipant(List<Map> partiList, Long payerId){
@@ -121,10 +123,19 @@ public class EventService {
         eventRepository.deleteById(Long.valueOf(eventId));
     }
 
+    /************image************/
     public String getEventImageURL(int userId){
         return eventRepository.findById(Long.valueOf(userId))
                 .map(EventDto.ResponseWithImage::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_EVENT))
                 .getImageurl();
+    }
+
+    @Transactional
+    public EventDto.ResponseWithImage uploadEventImage(int userId, String imageURL){
+        Event event = eventRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new DefaultException(NO_EVENT));
+        event.setImage(imageURL);
+        return EventDto.ResponseWithImage.fromEntity(eventRepository.save(event));
     }
 }

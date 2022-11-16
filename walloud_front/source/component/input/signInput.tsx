@@ -26,11 +26,11 @@ const InputStyle = css`
   }
 `;
 interface IProps {
-  name: string | undefined;
-  text: string;
-  setType: (major: string) => void;
-  message: string;
-  required: boolean;
+    name: string | undefined;
+    text: string;
+    setType: (major: any) => void;
+    message: string;
+    required: boolean;
 }
 
 function SignInput({ name, text, setType, message, required }: IProps) {

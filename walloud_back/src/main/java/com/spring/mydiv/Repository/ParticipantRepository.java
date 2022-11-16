@@ -30,6 +30,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     @Query("update Participant p set p.eventRole = ?1, p.chargedPrice = ?2 where p.person = ?3 and p.event = ?4")
     void updateEventRoleAndChargedPriceByPersonAndEvent(Boolean eventRole, Double chargedPrice, Person person, Event event);
 
+    Optional<Participant> findByPersonAndEvent(Person person, Event event);
+
     Optional<Participant> findByEvent_IdAndEventRole(Long id, Boolean eventRole);
 
 }

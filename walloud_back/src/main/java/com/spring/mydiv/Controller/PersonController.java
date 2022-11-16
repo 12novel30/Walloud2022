@@ -8,6 +8,7 @@ import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
 import com.spring.mydiv.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -84,4 +85,15 @@ public class PersonController {
     public List<PersonDto.HomeView> getAllPersonListInTravel(@PathVariable("travelId") int travelId){
         return personService.getPersonBasicInTravel(travelId);
     } //List<PersonDto.HomeView> PersonList;
+
+    @PostMapping("{personId}/setSettle")
+    public ResponseEntity<PersonDto.Detail> updateIsSettled(@PathVariable("personId") int personId,
+                                @RequestBody Map map){
+        if (map.containsKey("isSettled")){
+            return null;
+        } else {
+            Boolean isSettled = Boolean.valueOf(map.get("isSettled").toString());
+            return ResponseEntity.ok(personService.updateIsSettled(personId, isSettled));
+        }
+    }
 }

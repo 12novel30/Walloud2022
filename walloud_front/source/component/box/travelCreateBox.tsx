@@ -76,7 +76,6 @@ const TravelCreateBoxStyle = css`
     }
   }
 `;
-
 function TravelCreateBox(
   travelList: TravelProps[],
   setTravelList: SetterOrUpdater<TravelProps[]>

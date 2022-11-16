@@ -4,7 +4,7 @@ import PersonBox from "../../component/box/personBox";
 import { FontSize, ScreenSize } from "../../layout/globalStyle/globalSize";
 import { personListState } from "../../recoils/travel";
 
-function PersonSection(personList: any[], travelId: number) {
+function PersonSection(personList: any[], travelId: number, isManager: boolean) {
     const setPersonList = useSetRecoilState(personListState);
     const personLength = personList.length
     console.log(personList)
@@ -30,7 +30,7 @@ function PersonSection(personList: any[], travelId: number) {
                 (person.difference < 0 && type === "Send"))
             .map(
                 (selectPerson, idx) => {
-                    return PersonBox(selectPerson, selectPerson.personId, type, travelId, personList, setPersonList)
+                    return PersonBox(selectPerson, selectPerson.personId, type, travelId, isManager, personList, setPersonList)
                 }
             )
         return PersonBoxs
@@ -39,7 +39,7 @@ function PersonSection(personList: any[], travelId: number) {
     return (
         <div css = {PersonSectionStyle}>
             <div> 
-                Person 
+                Person
             </div>
             <div>
                 {PersonType("Send")}

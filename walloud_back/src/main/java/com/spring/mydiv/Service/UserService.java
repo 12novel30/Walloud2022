@@ -50,11 +50,11 @@ public class UserService {
     public boolean checkIsEmailRegistered(String email){
         return userRepository.existsByEmail(email);
     }
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
         if (loginUser.getPassword().equals(entity.getPassword()))
-            return UserDto.Response.fromEntity(entity);
+            return UserDto.ResponseWithImage.fromEntity(entity);
         else throw new DefaultException(WRONG_PASSWORD);
     } //ing
 

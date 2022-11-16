@@ -46,9 +46,10 @@ function TravelPage(){
     const [personList, setPersonList] = useRecoilState(personListState);
     const [eventList, setEventList] = useRecoilState(eventListState);
     const [period, setPeriod] = useState("");
+    const [isManager, setIsManager] = useState(false);
     
     useEffect(() => {
-      GetTravelDetailAPI({userId, travelId, setPersonList, setEventList, setPeriod});
+      GetTravelDetailAPI({userId, travelId, setPersonList, setEventList, setPeriod, setIsManager});
     }, [])
 
     return (
@@ -56,7 +57,7 @@ function TravelPage(){
           {/*ViewSection(period, travelName)*/}
           {EventsSection(eventList, travelId)}
           {/*TravelDetailSection(Map, Calendar, etc.)*/}
-          {PersonSection(personList, travelId)}
+          {PersonSection(personList, travelId, isManager)}
         </div>
   )
 }

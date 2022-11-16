@@ -54,7 +54,7 @@ function SignUpPage() {
         <SignInput name = {email} text = "ex) mywalloud@usage.com" setType = {SetEmail} message = "email" required = {true}/>
         <SignInput name = {password} text = "영문, 숫자, 특수문자 중 2종류 조합: 8~16자" setType = {SetPassword} message = "password" required = {true}/>
         <SignInput name = {account} text = "ex) 1004365828210" setType = {SetAccount} message = "account" required = {false}/>
-        <SelectInput typeList = {BankList.map((bank, idx) => {
+        <SelectInput message="Bank" typeList = {BankList.map((bank, idx) => {
           return bank.name;
         })} setType = {SetBank} />
       </InputContainer>
