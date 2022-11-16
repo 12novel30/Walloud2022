@@ -47,7 +47,7 @@ public class TravelController {
         return homeView;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/getUserInfoTmp")
     public List<TravelDto.Response> getUserInfo(@PathVariable int userId){
         return userservice.getUserJoinedTravel(userId);
     }
