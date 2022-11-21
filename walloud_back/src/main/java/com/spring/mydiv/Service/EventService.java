@@ -23,6 +23,7 @@ public class EventService {
     private final ParticipantRepository participantRepository;
     private final PersonRepository personRepository;
     private final ParticipantService participantService;
+    private final S3UploaderService s3UploaderService;
 
     public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
@@ -135,7 +136,13 @@ public class EventService {
     public EventDto.ResponseWithImage uploadEventImage(int userId, String imageURL){
         Event event = eventRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
+//        deleteEventImage(event);
         event.setImage(imageURL);
         return EventDto.ResponseWithImage.fromEntity(eventRepository.save(event));
+    }
+
+    public void deleteEventImage(Event event){
+        String eventExistingImage = event.getImage();
+        s3UploaderService.deleteImage(eventExistingImage);
     }
 }
