@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/joinedTravel")
-    public List<TravelDto.Response> getUserUserJoinedTravel(@PathVariable int userId){
+    public List<TravelDto.Response> getUserJoinedTravel(@PathVariable int userId){
         return userservice.getUserJoinedTravel(userId);
     }
 
