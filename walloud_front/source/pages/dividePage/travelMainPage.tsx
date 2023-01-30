@@ -16,6 +16,7 @@ import { ScreenSize } from "../../layout/globalStyle/globalSize";
 import { currentTravelState, travelListState } from "../../recoils/travel";
 import { userState } from "../../recoils/user";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
+import DeleteTravelAPI from "../../api/deleteTravelAPI";
 
 const DivideMainPageStyle = css`
   background-color: ${Color.blue02};
@@ -79,8 +80,10 @@ function TravelMainPage() {
       {travelList.map((travel, idx) =>
         TravelBox(
           id,
+          id,
           travel.name,
           travel.travelId,
+          travel.isSuper,
           travel.isSuper,
           setCurrentTravel,
           onClickEdit,
