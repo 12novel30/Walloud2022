@@ -16,6 +16,7 @@ import { ScreenSize } from "../../layout/globalStyle/globalSize";
 import { currentTravelState, travelListState } from "../../recoils/travel";
 import { userState } from "../../recoils/user";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
+import DeleteTravelAPI from "../../api/deleteTravelAPI";
 
 const DivideMainPageStyle = css`
   background-color: ${Color.blue02};
@@ -47,25 +48,27 @@ function TravelMainPage() {
       setIsEditMode(null);
 
       const newTravelList = [...travelList].map((e) =>
-        e.travelId === travelId ? { travelId: travelId, name: newName, isSuper: true } : e
+        e.travelId === travelId
+          ? { travelId: travelId, name: newName, isSuper: true }
+          : e
       );
       console.log(newTravelList);
       setTravelList(newTravelList);
     }
   };
 
-  const onClickDelete = (travelId : number, travelName : string) => {
-    if(window.confirm(`Are you sure to delete travel ${travelName}`)) {
+  const onClickDelete = (travelId: number, travelName: string) => {
+    if (window.confirm(`Are you sure to delete travel ${travelName}`)) {
       DeleteTravelAPI(travelId, travelList, setTravelList);
-      const newTravelList = travelList.filter((e) => e.travelId !== travelId )
+      const newTravelList = travelList.filter((e) => e.travelId !== travelId);
       console.log(newTravelList);
       setTravelList(newTravelList);
     } else {
       alert("Canceled");
     }
-  }
+  };
 
-  console.log(travelList)
+  console.log(travelList);
 
   useEffect(() => {
     GetTravelListAPI(id, setTravelList);
@@ -77,8 +80,10 @@ function TravelMainPage() {
       {travelList.map((travel, idx) =>
         TravelBox(
           id,
+          id,
           travel.name,
           travel.travelId,
+          travel.isSuper,
           travel.isSuper,
           setCurrentTravel,
           onClickEdit,
