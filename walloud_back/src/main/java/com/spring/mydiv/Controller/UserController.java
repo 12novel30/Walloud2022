@@ -46,11 +46,6 @@ public class UserController {
         } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
     }
 
-    @GetMapping("/{userId}/joinedTravel")
-    public List<TravelDto.Response> getUserJoinedTravel(@PathVariable int userId){
-        return userservice.getUserJoinedTravel(userId);
-    }
-
     @GetMapping("/{userId}/getImage")
     public String getUserImage(@PathVariable int userId){
         return userservice.getUserImageURL(userId);
