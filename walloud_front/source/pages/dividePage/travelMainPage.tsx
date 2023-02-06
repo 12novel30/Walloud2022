@@ -15,6 +15,7 @@ import Color from "../../layout/globalStyle/globalColor";
 import { ScreenSize } from "../../layout/globalStyle/globalSize";
 import { currentTravelState, travelListState } from "../../recoils/travel";
 import { userState } from "../../recoils/user";
+import DeleteTravelAPI from "../../api/deleteTravelAPI";
 
 const DivideMainPageStyle = css`
   background-color: ${Color.blue02};
@@ -55,7 +56,7 @@ function TravelMainPage() {
 
   const onClickDelete = (travelId : number, travelName : string) => {
     if(window.confirm(`Are you sure to delete travel ${travelName}`)) {
-      DeleteTravelAPI(travelId);
+      DeleteTravelAPI(travelId, travelList, setTravelList);
       const newTravelList = travelList.filter((e) => e.travelId !== travelId )
       console.log(newTravelList);
       setTravelList(newTravelList);

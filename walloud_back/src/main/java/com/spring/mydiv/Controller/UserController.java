@@ -45,12 +45,7 @@ public class UserController {
             userservice.deleteUser(user_id);
         } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
     }
-
-    @GetMapping("/{userId}/joinedTravel")
-    public List<TravelDto.Response> getUserUserJoinedTravel(@PathVariable int userId){
-        return userservice.getUserJoinedTravel(userId);
-    }
-
+    
     @GetMapping("/{userId}/getImage")
     public String getUserImage(@PathVariable int userId){
         return userservice.getUserImageURL(userId);
