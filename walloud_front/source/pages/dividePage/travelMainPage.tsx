@@ -16,7 +16,6 @@ import { ScreenSize } from "../../layout/globalStyle/globalSize";
 import { currentTravelState, travelListState } from "../../recoils/travel";
 import { userState } from "../../recoils/user";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
-import DeleteTravelAPI from "../../api/deleteTravelAPI";
 
 const DivideMainPageStyle = css`
   background-color: ${Color.blue02};

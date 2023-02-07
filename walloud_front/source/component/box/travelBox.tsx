@@ -84,10 +84,8 @@ const TravelBoxStyle = css`
 
 function TravelBox(
   userId: number,
-  userId: number,
   travelName: string,
   id: number,
-  isSuper: boolean,
   isSuper: boolean,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
