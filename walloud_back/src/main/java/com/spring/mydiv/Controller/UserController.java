@@ -8,6 +8,7 @@ import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.S3UploaderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import com.spring.mydiv.Service.TravelService;
@@ -32,6 +33,11 @@ public class UserController {
         if (!userservice.checkIsEmailRegistered(request.getEmail())) {
             return ResponseEntity.ok(userservice.createUser(request));
         } else throw new DefaultException(ALREADY_REGISTERED);
+    }
+
+    @GetMapping("/OAuth2")
+    public OAuth2AuthenticationToken home(final OAuth2AuthenticationToken token) {
+        return token;
     }
 
     @PostMapping(value = "/login")
