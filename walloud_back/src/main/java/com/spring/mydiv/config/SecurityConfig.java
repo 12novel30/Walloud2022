@@ -11,42 +11,53 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-@Configuration
-@EnableWebSecurity
-@AllArgsConstructor
+
+//@Configuration
+//@EnableWebSecurity
+//@AllArgsConstructor
+//@EnableWebSecurity // TODO this!
+//@EnableGlobalMethodSecurity(prePostEnabled = true) // TODO this!
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final Environment environment;
-    private final String registration = "spring.security.oauth2.client.registration.";
-    private final GoogleOAuth2Service googleOAuth2Service;
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers("/api/login", "/api/register",
-                                "/api/index", "api/OAuth2").permitAll()
-                        // TODO 여기 뭐 허용해야하는지 논의 필!
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-//                        .clientRegistrationRepository(clientRegistrationRepository())
-//                        .authorizedClientService(authorizedClientService())
-                        .userInfoEndpoint( user -> user
-                                .oidcUserService(googleOAuth2Service)
-                                // google 인증, OpenID Connect 1.0)
-                        )
-                )
-        ;
-    }
+//    private final Environment environment;
+//    private final String registration = "spring.security.oauth2.client.registration.";
+//    private final GoogleOAuth2Service googleOAuth2Service;
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//
+//        http
+//                .authorizeRequests(authorize -> authorize
+//                        .antMatchers("/api/login", "/api/register",
+//                                "/api/index", "api/OAuth2").permitAll()
+//                        // TODO 여기 뭐 허용해야하는지 논의 필!
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+////                        .clientRegistrationRepository(clientRegistrationRepository())
+////                        .authorizedClientService(authorizedClientService())
+//                        .userInfoEndpoint( user -> user
+//                                .oidcUserService(googleOAuth2Service)
+//                                // google 인증, OpenID Connect 1.0)
+//                        )
+//                )
+//        ;
+//    }
 
 //    @Bean
 //    public OAuth2AuthorizedClientService authorizedClientService() {
@@ -93,4 +104,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .userInfoUri("https://graph.facebook.com/me?fields=id,name,email,picture,gender,birthday")
 //                .build();
 //    }
+
+    private final JWTRequestFilter jwtRequestFilter;
+
+    public SecurityConfig(JWTRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors();
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringAntMatchers("/v1/oauth/login");
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests()
+                .antMatchers("/v1/oauth/login").permitAll()
+                .anyRequest().authenticated();
+    }
 }

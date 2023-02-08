@@ -1,6 +1,5 @@
 package com.spring.mydiv.Service;
 
-import com.spring.mydiv.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -11,12 +10,14 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+
 @Service
 @AllArgsConstructor
 public class GoogleOAuth2Service
         implements OAuth2UserService<OidcUserRequest, OidcUser> {
     private final UserSecurityService userSecurityService;
-
+    private final HttpSession httpSession;
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest)
         throws OAuth2AuthenticationException{
@@ -27,7 +28,8 @@ public class GoogleOAuth2Service
         final String name = oidcUser.getAttributes().get("name").toString();
         final String email = oidcUser.getAttributes().get("email").toString();
 
-        userSecurityService.requestRegistration(name,email);
+//        httpSession.setAttribute("user", new SessionUserDto(name, email));
+//        userSecurityService.requestRegistration(name,email);
         return new DefaultOidcUser(
                 oidcUser.getAuthorities(),
                 oidcUser.getIdToken(),
