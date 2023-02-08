@@ -8,7 +8,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class DemoApplication {
 
 	public static final String APPLICATION_LOCATIONS = "spring.config.location="
-			+ "classpath:application.properties,"
+//			+ "classpath:application.properties,"
+			+ "classpath:walloud_back/src/main/resources/application.properties"
 			+ "classpath:aws-s3.yml";
 
 	public static void main(String[] args) {
