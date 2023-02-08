@@ -32,8 +32,7 @@ import static com.spring.mydiv.Code.ErrorCode.*;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PersonRepository personRepository;
-	private final TravelRepository travelRepository;
-	
+
     @Transactional
     public UserDto.Response createUser(UserDto.Request request) {
         User user = User.builder()

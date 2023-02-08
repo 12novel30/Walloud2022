@@ -35,11 +35,6 @@ public class UserController {
         } else throw new DefaultException(ALREADY_REGISTERED);
     }
 
-    @GetMapping("/OAuth2")
-    public OAuth2AuthenticationToken home(final OAuth2AuthenticationToken token) {
-        return token;
-    }
-
     @PostMapping(value = "/login")
     public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
         return userservice.login(loginUser);
