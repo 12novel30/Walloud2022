@@ -10,7 +10,7 @@ public class DemoApplication {
 	public static final String APPLICATION_LOCATIONS = "spring.config.location="
 			+ "classpath:application.properties,"
 			+ "classpath:application-awsS3.yml,"
-			+ "classpath:application-OAuth2.yml,";
+			+ "classpath:application-OAuth2.yml";
 
 	public static void main(String[] args) {
 		// SpringApplication.run(DemoApplication.class, args);
