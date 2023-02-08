@@ -52,7 +52,7 @@ public class TravelController {
         return userservice.getUserJoinedTravel(userId);
     }
 
-    @GetMapping("/{userId}/{travelId}/getImage")
+    @GetMapping("/{userId}/{travelId}/getTravelImage")
     public String getTravelImage(@PathVariable int travelId){
         return travelservice.getTravelImageURL(travelId);
     }
