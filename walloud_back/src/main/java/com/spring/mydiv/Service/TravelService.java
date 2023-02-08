@@ -85,7 +85,8 @@ public class TravelService {
         for (Person p : personList){
             TravelDto.Response tmp = new TravelDto.Response(
                     p.getTravel().getId(),
-                    p.getTravel().getName()
+                    p.getTravel().getName(),
+                    p.getIsSuper()
             );
             result.add(tmp);
         }
