@@ -89,6 +89,10 @@ function TravelMainPage() {
           setTravelList
         )
       )}
+      <img
+        alt="dog"
+        src="https://walloud-bucket-ver2.s3.ap-northeast-2.amazonaws.com/test/ac28ab47-ad36-49ba-84ab-0398f3324ee9gang.jpg"
+      />
     </div>
   );
 }
