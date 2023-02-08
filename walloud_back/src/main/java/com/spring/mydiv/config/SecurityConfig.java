@@ -32,7 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers("/api/login", "/api/register", "/api/index").permitAll()
+                        .antMatchers("/api/login", "/api/register",
+                                "/api/index", "api/OAuth2").permitAll()
+                        // TODO 여기 뭐 허용해야하는지 논의 필!
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
