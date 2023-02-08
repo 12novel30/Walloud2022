@@ -159,7 +159,6 @@ function TravelBox(
               var back = document.getElementById(id.toString() + " back");
               back.style.transform = "rotateY(-180deg)";
               onClickEdit(id);
-              onClickEdit(id);
             }}
           >
             <img alt="return" src="source/assets/icon/return.svg" />
@@ -168,7 +167,8 @@ function TravelBox(
             onClick={() => {
               isSuper
                 ? DeleteTravelAPI(id, travelList, setTravelList)
-                : DeletePersonAPI();
+                : // : DeletePersonAPI();
+                  null;
             }}
           >
             <img alt="delete" src="source/assets/icon/delete.svg" />

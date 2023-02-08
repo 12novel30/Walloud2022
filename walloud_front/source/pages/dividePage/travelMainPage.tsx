@@ -79,10 +79,8 @@ function TravelMainPage() {
       {travelList.map((travel, idx) =>
         TravelBox(
           id,
-          id,
           travel.name,
           travel.travelId,
-          travel.isSuper,
           travel.isSuper,
           setCurrentTravel,
           onClickEdit,
