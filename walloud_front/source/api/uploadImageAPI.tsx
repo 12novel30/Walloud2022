@@ -6,12 +6,12 @@ const UploadImageAPI = async (
   formData: FormData
 ) => {
   return axios
-    .post("api/${userId}/${travelId}/updateTravelImage", {
+    .put(`localhost:8080/api/${userId}/${travelId}/updateTravelImage`, {
       key: "file",
       value: formData,
     })
     .then((response) => {
-      console.log(response);
+      console.log("failed:", response);
     })
     .catch((error) => {
       if (error.response.data.status === 500) {
