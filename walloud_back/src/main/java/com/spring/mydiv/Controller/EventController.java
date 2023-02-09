@@ -165,7 +165,7 @@ public class EventController {
     }
 
     /************image************/
-    @GetMapping("/{eventid}/getImage")
+    @GetMapping("/{eventid}/getEventImage")
     public String getEventImage(@PathVariable int eventid){
         return eventService.getEventImageURL(eventid);
     }
