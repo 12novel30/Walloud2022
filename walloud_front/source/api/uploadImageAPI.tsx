@@ -6,12 +6,10 @@ const UploadImageAPI = async (
   formData: FormData
 ) => {
   return axios
-    .put(`localhost:8080/api/${userId}/${travelId}/updateTravelImage`, {
-      key: "file",
-      value: formData,
-    })
-    .then((response) => {
-      console.log("failed:", response);
+    .put(`/api/${userId}/${travelId}/updateTravelImage`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
     .catch((error) => {
       if (error.response.data.status === 500) {

@@ -1,9 +1,9 @@
 import axios from "axios";
 import UploadImageAPI from "../../api/uploadImageAPI";
 
-const UploadImageButton = (id: number, userId: number) => {
+const UploadImageButton = (travelId: number, userId: number) => {
   const onChangeInput = (e: any) => {
-    console.log("travel id: ", id, " user id: ", userId);
+    console.log("travel id: ", travelId, " user id: ", userId);
     var file: File = e.target.files[0];
     var reader: FileReader = new FileReader();
 
@@ -12,22 +12,20 @@ const UploadImageButton = (id: number, userId: number) => {
     reader.onload = function () {
       const imageSrc = URL.createObjectURL(file);
       document.getElementById(
-        `${id}-image`
+        `${travelId}-image`
       ).style.backgroundImage = `url(${imageSrc})`;
-      document.getElementById(`${id}-image`).innerText = "";
+      document.getElementById(`${travelId}-image`).innerText = "";
       var formData = new FormData();
-      console.log("1", formData.values());
-      formData.append("file", "file");
-      console.log("2", formData.values());
-      UploadImageAPI(userId, id, formData);
+      formData.append("file", file);
+      UploadImageAPI(userId, travelId, formData);
     };
-    console.log(document.getElementById(`${id}-image`));
+    console.log(document.getElementById(`${travelId}-image`));
   };
 
   return (
     <div style={{ display: "none" }}>
       <input
-        id={`${id}-upload`}
+        id={`${travelId}-upload`}
         type="file"
         accept=".jpeg, .jpg, .png"
         onChange={(e) => onChangeInput(e)}
