@@ -171,8 +171,9 @@ public class EventController {
     }
 
     @PutMapping("/{eventid}/uploadUserImage")
-    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
-                                                                     @RequestPart(value="file",required = false) MultipartFile file)
+    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(
+            @PathVariable int userId,
+            @RequestPart(value="file",required = false) MultipartFile file)
             throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);

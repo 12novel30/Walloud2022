@@ -80,7 +80,7 @@ public class UserController {
         return userservice.login(loginUser);
     }
 
-    @GetMapping("/S3/{userId}/getUserImage")
+    @GetMapping("/{userId}/getUserImage")
     public String getUserImage(@PathVariable int userId){
         return userservice.getUserImageURL(userId);
     }
