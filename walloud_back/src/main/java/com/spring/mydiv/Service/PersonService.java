@@ -49,6 +49,7 @@ public class PersonService {
                 .difference(0.0)
                 .role(superUser)
                 .isSuper(superUser)
+                .isSettled(false)
                 .build();
         personRepository.save(person);
         return PersonDto.basic.fromEntity(person);

@@ -33,6 +33,7 @@ public class TravelService {
 	private final TravelRepository travelRepository;
     private final EventRepository eventRepository;
     private final PersonRepository personRepository;
+    private final S3UploaderService s3UploaderService;
 
     @Transactional
     public TravelDto.Response createTravel(TravelDto.Request request) {
@@ -85,7 +86,7 @@ public class TravelService {
             TravelDto.Response tmp = new TravelDto.Response(
                     p.getTravel().getId(),
                     p.getTravel().getName(),
-                    p.getIsSuper() // 에러나서 임의로 수정함
+                    p.getIsSuper()
             );
             result.add(tmp);
         }
@@ -103,7 +104,13 @@ public class TravelService {
     public TravelDto.ResponseWithImage updateTravelImage(int userId, String imageURL){
         Travel travel = travelRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
+//        deleteTravelImage(travel);
         travel.setImage(imageURL);
         return TravelDto.ResponseWithImage.fromEntity(travelRepository.save(travel));
+    }
+
+    public void deleteTravelImage(Travel travel){
+        String travelExistingImage = travel.getImage();
+        s3UploaderService.deleteImage(travelExistingImage);
     }
 }

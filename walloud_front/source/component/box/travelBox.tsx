@@ -8,6 +8,8 @@ import FilpCard from "../../animation/flipCard";
 import UploadImageButton from "../button/uploadImageButton";
 import { Link, useNavigate } from "react-router-dom";
 import { TravelProps } from "../../recoils/travel";
+import GetTravelImageAPI from "../../api/getTravelImageAPI";
+import axios from "axios";
 
 const TravelBoxStyle = css`
   height: 240px;
@@ -95,6 +97,24 @@ function TravelBox(
 ) {
   const name = travelName;
   //   const navigate = useNavigate();
+  axios
+    .get(`/api/${userId}/${id}/getTravelImage`)
+    .then((response) => {
+      const div = document.getElementById(`${id}-image`);
+      // const image = document.createElement("img");
+      // image.src = response.data;
+      // div.appendChild(image);
+      div.style.backgroundImage = `url(${response.data})`;
+      div.style.backgroundSize = "cover";
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      } else {
+        alert("예기치 못한 오류가 발생했습니다");
+      }
+    });
 
   return (
     <div css={TravelBoxStyle} key={id}>
@@ -121,6 +141,7 @@ function TravelBox(
         </div>
       </Link>
       {UploadImageButton(id, userId)}
+
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
@@ -162,14 +183,22 @@ function TravelBox(
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
           <button
-            onClick={() => {isSuper ? DeleteTravelAPI(id, travelList, setTravelList) : 
-              DeletePersonAPI()}}
+            onClick={() => {
+              isSuper
+                ? DeleteTravelAPI(id, travelList, setTravelList)
+                : // : DeletePersonAPI();
+                  null;
+            }}
           >
             <img alt="delete" src="source/assets/icon/delete.svg" />
           </button>
-          {isSuper ? <button onClick={() => onClickEdit(id)}>
-            <img alt="edit" src="source/assets/icon/edit.svg" />
-          </button> : <></>}
+          {isSuper ? (
+            <button onClick={() => onClickEdit(id)}>
+              <img alt="edit" src="source/assets/icon/edit.svg" />
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
       </FilpCard>
     </div>

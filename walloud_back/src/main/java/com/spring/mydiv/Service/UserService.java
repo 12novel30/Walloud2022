@@ -33,6 +33,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PersonRepository personRepository;
 	private final TravelRepository travelRepository;
+    private final S3UploaderService s3UploaderService;
 	
     @Transactional
     public UserDto.Response createUser(UserDto.Request request) {
@@ -121,8 +122,14 @@ public class UserService {
     public UserDto.ResponseWithImage updateUserImage(int userId, String imageURL){
         User user = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_USER));
+//        deleteUserImage(user);
         user.setInfo(imageURL);
         return UserDto.ResponseWithImage.fromEntity(userRepository.save(user));
+    }
+
+    public void deleteUserImage(User user){
+        String userExistingImage = user.getInfo();
+        s3UploaderService.deleteImage(userExistingImage);
     }
 
     public String getUserImageURL(int userId){

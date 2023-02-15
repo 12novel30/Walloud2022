@@ -52,13 +52,14 @@ public class TravelController {
         return userservice.getUserJoinedTravel(userId);
     }
 
-    @GetMapping("/{userId}/{travelId}/getImage")
+    @GetMapping("/{userId}/{travelId}/getTravelImage")
     public String getTravelImage(@PathVariable int travelId){
         return travelservice.getTravelImageURL(travelId);
     }
     @PutMapping("/{userId}/{travelId}/updateTravelImage")
-    public ResponseEntity<TravelDto.ResponseWithImage> uploadTravelImage(@PathVariable int travelId,
-                                                                         @RequestPart(value="file",required = false) MultipartFile file)
+    public ResponseEntity<TravelDto.ResponseWithImage> uploadTravelImage(
+            @PathVariable int travelId,
+            @RequestPart(value="file",required = false) MultipartFile file)
             throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);

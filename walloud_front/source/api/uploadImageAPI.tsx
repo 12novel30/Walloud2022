@@ -1,10 +1,15 @@
 import axios from "axios";
 
-const UploadImageAPI = async (userId: number, formData: FormData) => {
+const UploadImageAPI = async (
+  userId: number,
+  travelId: number,
+  formData: FormData
+) => {
   return axios
-    .post("api/s3/files/upload", { KEY: userId, VALUE: formData })
-    .then((response) => {
-      console.log(response);
+    .put(`/api/${userId}/${travelId}/updateTravelImage`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
     .catch((error) => {
       if (error.response.data.status === 500) {
