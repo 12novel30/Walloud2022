@@ -23,28 +23,36 @@ import static java.lang.Boolean.TRUE;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userservice;
-    private final TravelService travelservice;
-    private final PersonService personservice;
     private final S3UploaderService s3UploaderService;
 
     @PostMapping(value = "/login")
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public Long login(@RequestBody UserDto.Login loginUser) {
         return userservice.login(loginUser);
     }
+
     @PostMapping("/register")
     public ResponseEntity<UserDto.Response> createUser(
             @RequestBody UserDto.Request request) {
         return ResponseEntity.ok(userservice.createUser(request));
     }
-    @DeleteMapping("/{userId}")
+
+    @GetMapping("/{userId}/getUserInfoExceptImage")
+    public UserDto.Response getUserInfoExceptImage(
+            @PathVariable("userId") int userId){
+        return userservice.getUserInfo(userId);
+    }
+
+    @DeleteMapping("/{userId}/deleteUser")
     public void deleteUser(@PathVariable("userId") int userId){
         userservice.deleteUser(userId);
     }
-    @PostMapping("/{userId}/createTravel")
+
+    @PostMapping("/{userId}/createNewTravelUserJoining")
     public int createNewTravelUserJoining( // TODO - not yet
-            @PathVariable int userId, String travel_name){
+            @PathVariable int userId, @RequestBody String travel_name){
         return userservice.createNewTravelUserJoining(userId, travel_name);
     }
+
     @PutMapping("/{userId}/updateUserInfoExceptImage")
     public ResponseEntity<UserDto.Response> updateUserInfoExceptImage(
             @PathVariable int userId, @RequestBody UserDto.Request request) {
@@ -55,10 +63,10 @@ public class UserController {
     public String updateUserImage(@PathVariable int userId,
                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return ResponseEntity.ok(userservice.updateUserImage(
-                userId,
-                s3UploaderService.upload(file, "test")));
+        return userservice.updateUserImage(
+                userId, s3UploaderService.upload(file, "test"));
     }
+
     @GetMapping("/{userId}/getUserImage")
     public String getUserImage(@PathVariable int userId){
         return userservice.getUserImageURL(userId);

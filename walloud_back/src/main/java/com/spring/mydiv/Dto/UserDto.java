@@ -21,9 +21,9 @@ public class UserDto {
 	@Builder
 	public static class Login {
 		@NotNull
-		private String Email;
+		private String email;
 		@NotNull
-		private String Password;
+		private String password;
 	}
 
 	@Getter
@@ -49,7 +49,7 @@ public class UserDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
-	public static class Response { // TODO 이미지 제외할 것 - 이미지만 주는거 => 두개로 할 것
+	public static class Response {
 		@NotNull
 		private Long UserId;
 		@NotNull
@@ -71,54 +71,6 @@ public class UserDto {
 					.Password(user.getPassword())
 					.Account(user.getAccount())
 					.Bank(user.getBank())
-					.build();
-		}
-	}
-
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class ResponseWithImage {
-		@NotNull
-		private Long UserId;
-		@NotNull
-		private String Name;
-		@NotNull
-		private String Email;
-		@NotNull
-		private String Password;
-		@NotNull
-		private String Account;
-		@NotNull
-		private String Bank;
-		@Nullable
-		private String Imageurl;
-
-		public static ResponseWithImage fromEntity(User user) {
-			return ResponseWithImage.builder()
-					.UserId(user.getId())
-					.Name(user.getName())
-					.Email(user.getEmail())
-					.Password(user.getPassword())
-					.Account(user.getAccount())
-					.Bank(user.getBank())
-					.Imageurl(user.getInfo())
-					.build();
-		}
-	}
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class Image {
-		@Nullable
-		private String Imageurl;
-		public static Image fromEntity(User user) {
-			return Image.builder()
-					.Imageurl(user.getInfo())
 					.build();
 		}
 	}

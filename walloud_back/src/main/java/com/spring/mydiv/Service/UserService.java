@@ -55,11 +55,12 @@ public class UserService {
     public boolean checkIsEmailRegistered(String email){
         return userRepository.existsByEmail(email);
     }
-    public UserDto.Response login(UserDto.Login loginUser) {
+    public Long login(UserDto.Login loginUser) {
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+
         if (loginUser.getPassword().equals(entity.getPassword()))
-            return UserDto.Response.fromEntity(entity);
+            return entity.getId();
         else throw new DefaultException(WRONG_PASSWORD);
     } //ing
 
@@ -114,8 +115,14 @@ public class UserService {
                 .orElseThrow(() -> new DefaultException(NO_USER));
 
         if (updateRequest.getUser_name() != null) user.setName(updateRequest.getUser_name());
-        if (updateRequest.getUser_email() != null) user.setEmail(updateRequest.getUser_email());
-        // TODO 이메일 중복인지 확인해야할 것 같음
+        if (updateRequest.getUser_email() != null) {
+            if (!checkIsEmailRegistered(updateRequest.getUser_email()) ||
+                    (checkIsEmailRegistered(updateRequest.getUser_email()) &&
+                            updateRequest.getUser_email().equals(user.getEmail())))
+                user.setEmail(updateRequest.getUser_email());
+            else
+                throw new DefaultException(ALREADY_REGISTERED);
+        }
         if (updateRequest.getUser_password() != null) user.setPassword(updateRequest.getUser_password());
         if (updateRequest.getUser_account() != null) user.setAccount(updateRequest.getUser_account());
         if (updateRequest.getUser_bank() != null) user.setBank(updateRequest.getUser_bank());
@@ -124,16 +131,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto.ResponseWithImage updateUserImage(int userId, String imageURL){
+    public String updateUserImage(int userId, String imageURL){
         User user = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_USER));
         // TODO - deleteUserImage(user);
         user.setInfo(imageURL);
-        return UserDto.ResponseWithImage.fromEntity(userRepository.save(user));
-        userRepository.findById(Long.valueOf(userId))
-                .map(UserDto.ResponseWithImage::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER))
-                .getImageurl();
+        return userRepository.save(user).getInfo();
     }
 
     public void deleteUserImage(User user){
@@ -143,28 +146,28 @@ public class UserService {
 
     public String getUserImageURL(int userId){
         return userRepository.findById(Long.valueOf(userId))
-                .map(UserDto.ResponseWithImage::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_USER))
-                .getImageurl();
+                .getInfo();
     }
 
     public void deleteUser(int userId){
         if(getUserJoinedTravel(userId).size() == 0)
-            // can delete this user - not participated some travel
             userRepository.deleteById(Long.valueOf(userId));
         else
             throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
     }
 
     public int createNewTravelUserJoining(int userId, String travelName) {
-        TravelDto.Request travelRequest = new TravelDto.Request(travelName);
-        PersonDto.Request personRequest = new PersonDto.Request(
-                getUserInfo(userId),
-                travelservice.createTravel(travelRequest));
-        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
+        PersonDto.Request personRequest = setPersonRequest(userId, travelName);
+        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE))
+                .getStatusCodeValue() == 200)
             return personRequest.getTravel().getTravelId().intValue();
         else throw new DefaultException(CREATE_FAIL);
     }
-}
 
-//
+    private PersonDto.Request setPersonRequest(int userId, String travelName) {
+        return new PersonDto.Request(
+                getUserInfo(userId),
+                travelservice.createTravel(travelName));
+    }
+}

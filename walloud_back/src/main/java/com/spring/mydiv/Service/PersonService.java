@@ -29,7 +29,6 @@ import static java.lang.Boolean.*;
 @RequiredArgsConstructor
 public class PersonService {
 	private final PersonRepository personRepository;
-	
     @Transactional
     public PersonDto.basic createPerson(PersonDto.Request request, boolean superUser) {
         Person person = Person.builder()

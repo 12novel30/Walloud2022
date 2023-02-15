@@ -36,9 +36,9 @@ public class TravelService {
     private final S3UploaderService s3UploaderService;
 
     @Transactional
-    public TravelDto.Response createTravel(TravelDto.Request request) {
+    public TravelDto.Response createTravel(String travelName) {
         Travel travel = Travel.builder()
-                .name(request.getName())
+                .name(travelName)
                 .build();
         travelRepository.save(travel);
         return TravelDto.Response.fromEntity(travel);
