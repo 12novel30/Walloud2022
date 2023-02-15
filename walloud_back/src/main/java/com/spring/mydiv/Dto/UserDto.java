@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class UserDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
-	public static class WithTravel {
+	public static class WithTravel { // TODO - 아직 확인 못함
 		@NotNull
 		private Long Id;
 		@NotNull

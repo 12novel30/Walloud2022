@@ -1,22 +1,15 @@
 package com.spring.mydiv.Controller;
 import java.io.IOException;
-import java.util.Map;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Exception.DefaultException;
-import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.S3UploaderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.mydiv.Service.TravelService;
 import com.spring.mydiv.Service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.spring.mydiv.Code.ErrorCode.*;
-import static java.lang.Boolean.TRUE;
 
 @RestController
 @RequiredArgsConstructor
