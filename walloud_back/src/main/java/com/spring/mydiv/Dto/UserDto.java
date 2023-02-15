@@ -49,7 +49,7 @@ public class UserDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
-	public static class Response {
+	public static class Response { // TODO 이미지 제외할 것 - 이미지만 주는거 => 두개로 할 것
 		@NotNull
 		private Long UserId;
 		@NotNull
