@@ -1,6 +1,5 @@
 package com.spring.mydiv.Dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import com.spring.mydiv.Entity.User;
@@ -34,15 +33,15 @@ public class UserDto {
 	@Builder
 	public static class Request {
 		@NotNull
-		private String Name;
+		private String user_name;
 		@NotNull
-		private String Email;
+		private String user_email;
 		@NotNull
-		private String Password;
+		private String user_password;
 		@NotNull
-		private String Account;
+		private String user_account;
 		@NotNull
-		private String Bank;
+		private String user_bank;
 	}
 
 	@Getter

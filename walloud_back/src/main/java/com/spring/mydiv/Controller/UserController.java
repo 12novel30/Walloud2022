@@ -1,7 +1,5 @@
 package com.spring.mydiv.Controller;
-import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import com.spring.mydiv.Dto.*;
@@ -32,7 +30,7 @@ public class UserController {
     /* --------------- not image zone --------------- */
     @PostMapping(value = "/register")
     public ResponseEntity<UserDto.Response> createUser(@RequestBody UserDto.Request request) {
-        if (!userservice.checkIsEmailRegistered(request.getEmail())) {
+        if (!userservice.checkIsEmailRegistered(request.getUser_email())) {
             return ResponseEntity.ok(userservice.createUser(request));
         } else throw new DefaultException(ALREADY_REGISTERED);
     }
@@ -56,19 +54,12 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/updateUserInfo")
-    public ResponseEntity<UserDto.Response> updateUser(@PathVariable int userId, @RequestBody Map map) {
-        if (map.containsKey("user_info")){
-            return null;
-        } else {
-            UserDto.Request updateRequest = new UserDto.Request(
-                    map.get("user_name").toString(),
-                    map.get("user_email").toString(),
-                    map.get("user_password").toString(),
-                    map.get("user_account").toString(),
-                    map.get("user_bank").toString());
-            return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
-            );
-        }
+    public ResponseEntity<UserDto.Response> updateUser(
+            @PathVariable int userId, @RequestBody UserDto.Request request) {
+//        if (request.containsKey("user_info")){
+//            return null;
+//        } else {
+        return ResponseEntity.ok(userservice.updateUserInfo(userId, request));
     }
 
 

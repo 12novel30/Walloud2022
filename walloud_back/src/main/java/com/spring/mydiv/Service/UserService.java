@@ -2,21 +2,17 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
-import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Repository.PersonRepository;
 import com.spring.mydiv.Repository.TravelRepository;
 import com.spring.mydiv.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +34,11 @@ public class UserService {
     @Transactional
     public UserDto.Response createUser(UserDto.Request request) {
         User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .account(request.getAccount())
-                .bank(request.getBank())
+                .name(request.getUser_name())
+                .email(request.getUser_email())
+                .password(request.getUser_password())
+                .account(request.getUser_account())
+                .bank(request.getUser_bank())
                 .build();
         userRepository.save(user);
         return UserDto.Response.fromEntity(user);
@@ -109,11 +105,11 @@ public class UserService {
         User user = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_USER));
 
-        if (updateRequest.getName() != null) user.setName(updateRequest.getName());
-        if (updateRequest.getEmail() != null) user.setEmail(updateRequest.getEmail());
-        if (updateRequest.getPassword() != null) user.setPassword(updateRequest.getPassword());
-        if (updateRequest.getAccount() != null) user.setAccount(updateRequest.getAccount());
-        if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
+        if (updateRequest.getUser_name() != null) user.setName(updateRequest.getUser_name());
+        if (updateRequest.getUser_email() != null) user.setEmail(updateRequest.getUser_email());
+        if (updateRequest.getUser_password() != null) user.setPassword(updateRequest.getUser_password());
+        if (updateRequest.getUser_account() != null) user.setAccount(updateRequest.getUser_account());
+        if (updateRequest.getUser_bank() != null) user.setBank(updateRequest.getUser_bank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
     }
