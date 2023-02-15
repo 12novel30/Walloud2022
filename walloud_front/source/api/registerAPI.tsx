@@ -10,6 +10,11 @@ interface RegisterAPIProps {
 
 
 const RegisterAPI = async ({userAuth, name, account, bank}: RegisterAPIProps) => {
+    if(!name || !account || !userAuth.email || !userAuth.password) {
+      alert("비어있는 요소가 있습니다!");
+      return;
+    }
+
     await axios
       .post("/api/register", null, { params: {
         Name: name,

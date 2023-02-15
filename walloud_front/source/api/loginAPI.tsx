@@ -11,8 +11,8 @@ export interface LoginAPIProps {
   path: NavigateFunction;
 }
 
-const LoginAPI = async ({email, password, setUser, setLogined, path}: LoginAPIProps) => {
-    return axios.post("/api/login", null, { params: {
+const LoginAPI = async ({email, password, setUser, setLogined, path}: LoginAPIProps, SetboolEmail: SetterOrUpdater<boolean>, SetboolPass: SetterOrUpdater<boolean>) => {
+  axios.post("/api/login", null, { params: {
             Email: email,
             Password: password,
         }})
@@ -28,7 +28,16 @@ const LoginAPI = async ({email, password, setUser, setLogined, path}: LoginAPIPr
         })
         .catch((error) => {
             if (error.response.data.status === 500) {
-              alert(error.response.data.message);
+              let message = error.response.data.message;
+              SetboolEmail(true);
+              SetboolPass(true);
+
+              if(message === "There is no such email information.") {
+                SetboolEmail(false);
+              }
+              else if(message === "Invalid password.") {
+                SetboolPass(false);
+              }
             }
             else {
               alert("Check The network");
