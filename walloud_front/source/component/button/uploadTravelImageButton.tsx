@@ -1,7 +1,7 @@
 import axios from "axios";
-import UploadImageAPI from "../../api/uploadImageAPI";
+import UploadTravelImageAPI from "../../api/uploadTravelImageAPI";
 
-const UploadImageButton = (travelId: number, userId: number) => {
+const UploadTravelImageButton = (travelId: number, userId: number) => {
   const onChangeInput = (e: any) => {
     console.log("travel id: ", travelId, " user id: ", userId);
     var file: File = e.target.files[0];
@@ -17,7 +17,7 @@ const UploadImageButton = (travelId: number, userId: number) => {
       document.getElementById(`${travelId}-image`).innerText = "";
       var formData = new FormData();
       formData.append("file", file);
-      UploadImageAPI(userId, travelId, formData);
+      UploadTravelImageAPI(userId, travelId, formData);
     };
     console.log(document.getElementById(`${travelId}-image`));
   };
@@ -34,4 +34,4 @@ const UploadImageButton = (travelId: number, userId: number) => {
   );
 };
 
-export default UploadImageButton;
+export default UploadTravelImageButton;
