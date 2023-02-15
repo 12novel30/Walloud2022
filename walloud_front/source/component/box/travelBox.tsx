@@ -5,7 +5,7 @@ import Color from "../../layout/globalStyle/globalColor";
 import { FontSize } from "../../layout/globalStyle/globalSize";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
 import FilpCard from "../../animation/flipCard";
-import UploadImageButton from "../button/uploadImageButton";
+import UploadTravelImageButton from "../button/uploadTravelImageButton";
 import { Link, useNavigate } from "react-router-dom";
 import { TravelProps } from "../../recoils/travel";
 import GetTravelImageAPI from "../../api/getTravelImageAPI";
@@ -140,7 +140,7 @@ function TravelBox(
           {isEditMode === id ? "Click to Upload Image" : null}
         </div>
       </Link>
-      {UploadImageButton(id, userId)}
+      {UploadTravelImageButton(id, userId)}
 
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>

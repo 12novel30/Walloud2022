@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const UploadImageAPI = async (
+const UploadTravelImageAPI = async (
   userId: number,
   travelId: number,
   formData: FormData
@@ -20,4 +20,4 @@ const UploadImageAPI = async (
     });
 };
 
-export default UploadImageAPI;
+export default UploadTravelImageAPI;
