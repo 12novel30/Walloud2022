@@ -4,6 +4,28 @@ import PersonBox from "../../component/box/personBox";
 import { FontSize, ScreenSize } from "../../layout/globalStyle/globalSize";
 import { personListState } from "../../recoils/travel";
 
+const CreateBotton = css`
+    opacity: 0.5;
+    border: none;
+    outline: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    font-size: 2px;
+    font-weight: bold;
+    margin-top: 4%;
+    margin-bottom: 4%;
+    margin-left: 48%;
+    transition-duration: 0.3s;
+    &:hover{
+        opacity: 0.7;
+    }
+    &:focus{
+        border:none;
+        outline:none;
+    }
+`
+
 function PersonSection(personList: any[], travelId: number, isManager: boolean) {
     const setPersonList = useSetRecoilState(personListState);
     const personLength = personList.length
@@ -41,6 +63,7 @@ function PersonSection(personList: any[], travelId: number, isManager: boolean) 
             <div> 
                 Person
             </div>
+            {/* <button css = {CreateBotton} onClick={() => {setOpenEventModal(true)}}>+</button> */}
             <div>
                 {PersonType("Send")}
                 {PersonType("Manager")}
