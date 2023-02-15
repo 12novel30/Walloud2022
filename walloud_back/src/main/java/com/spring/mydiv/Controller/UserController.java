@@ -31,7 +31,7 @@ public class UserController {
 
     /* --------------- not image zone --------------- */
     @PostMapping(value = "/register")
-    public ResponseEntity<UserDto.Response> createUser(UserDto.Request request) {
+    public ResponseEntity<UserDto.Response> createUser(@RequestBody UserDto.Request request) {
         if (!userservice.checkIsEmailRegistered(request.getEmail())) {
             return ResponseEntity.ok(userservice.createUser(request));
         } else throw new DefaultException(ALREADY_REGISTERED);
