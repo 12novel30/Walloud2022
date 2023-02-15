@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import MobileContainer from "../layout/container/mobileContainer";
 import PageContainer from "../layout/container/pageContainer";
 import { userState } from "../recoils/user";
-
+import UploadUserImageBox from "../component/box/uploadUserImageBox";
 const MyPageStyle = css``;
 
 function MyPage() {
@@ -12,6 +12,7 @@ function MyPage() {
   return (
     <MobileContainer>
       <div css={MyPageStyle}>
+        {UploadUserImageBox(User.id)}
         {User.name} <br />
         {User.account} <br />
         {User.bank}
