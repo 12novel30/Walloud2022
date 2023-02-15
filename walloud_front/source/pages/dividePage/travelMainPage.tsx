@@ -76,7 +76,7 @@ function TravelMainPage() {
   return (
     <div css={DivideMainPageStyle}>
       {TravelCreateBox(travelList, setTravelList)}
-      {travelList.map((travel, idx) =>
+       {travelList.map((travel, idx) =>
         TravelBox(
           id,
           travel.name,
