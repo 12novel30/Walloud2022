@@ -151,18 +151,4 @@ public class UserService {
         else
             throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
     }
-    @Transactional
-    public int createNewTravelUserJoining(int userId, String travelName) {
-        PersonDto.Request personRequest = setPersonRequest(userId, travelName);
-        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE))
-                .getStatusCodeValue() == 200)
-            return personRequest.getTravel().getTravelId().intValue();
-        else throw new DefaultException(CREATE_FAIL);
-    }
-
-    private PersonDto.Request setPersonRequest(int userId, String travelName) {
-        return new PersonDto.Request(
-                getUserInfo(userId),
-                travelservice.createTravel(travelName));
-    }
 }

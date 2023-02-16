@@ -2,11 +2,10 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Dto.PersonDto;
 import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 
@@ -42,7 +40,7 @@ public class TravelService {
                 .build();
         travelRepository.save(travel);
         return TravelDto.Response.fromEntity(travel);
-    } //fin
+    }
 
     public TravelDto.Response getTravelInfo(int no){
         return travelRepository.findById(Long.valueOf(no))
@@ -54,7 +52,7 @@ public class TravelService {
         return travelRepository.findById(Long.valueOf(travelId))
                 .map(TravelDto.HomeView::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_TRAVEL));
-    } //fin
+    }
 
     @Transactional
     public void deleteTravel(int travelId){
@@ -70,12 +68,10 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelDto.Response updateTravelInfo(int travelId, TravelDto.Request updateRequest){
+    public TravelDto.Response updateTravelInfo(int travelId, String travelName){
         Travel travel = travelRepository.findById(Long.valueOf(travelId))
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
-
-        if (updateRequest.getName() != null) travel.setName(updateRequest.getName());
-
+        if (travelName != null) travel.setName(travelName);
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
 
@@ -101,16 +97,20 @@ public class TravelService {
     }
 
     @Transactional
-    public TravelDto.ResponseWithImage updateTravelImage(int userId, String imageURL){
+    public String updateTravelImage(int userId, String imageURL){
         Travel travel = travelRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
-//        deleteTravelImage(travel);
+        // TODO - deleteTravelImage(travel);
         travel.setImage(imageURL);
-        return TravelDto.ResponseWithImage.fromEntity(travelRepository.save(travel));
+        return travelRepository.save(travel).getImage();
     }
 
     public void deleteTravelImage(Travel travel){
         String travelExistingImage = travel.getImage();
         s3UploaderService.deleteImage(travelExistingImage);
+    }
+
+    public int getTravelIdFromPersonDto(PersonDto.basic personDto) {
+        return personDto.getTravel().getId().intValue();
     }
 }

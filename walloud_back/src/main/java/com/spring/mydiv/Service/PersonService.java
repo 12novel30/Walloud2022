@@ -6,6 +6,7 @@ import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spring.mydiv.Dto.PersonDto;
@@ -52,6 +53,10 @@ public class PersonService {
                 .build();
         personRepository.save(person);
         return PersonDto.basic.fromEntity(person);
+//        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE))
+//                .getStatusCodeValue() == 200)
+//            return personRequest.getTravel().getTravelId().intValue();
+//        else throw new DefaultException(CREATE_FAIL);
     } //fin
 
     @Transactional
@@ -117,7 +122,8 @@ public class PersonService {
     }
 
     public boolean isUserSuperuser(int travelId, int userId){
-        return personRepository.findByUser_IdAndTravel_Id(Long.valueOf(userId), Long.valueOf(travelId))
+        return personRepository.findByUser_IdAndTravel_Id(
+                Long.valueOf(userId), Long.valueOf(travelId))
                 .get().getIsSuper();
     }
 
@@ -257,4 +263,8 @@ public class PersonService {
         return PersonDto.Detail.fromEntity(personRepository.save(person));
     }
 
+    public PersonDto.Request setPersonRequest(
+            UserDto.Response userDto, TravelDto.Response travelDto) {
+        return new PersonDto.Request(userDto, travelDto);
+    }
 }
