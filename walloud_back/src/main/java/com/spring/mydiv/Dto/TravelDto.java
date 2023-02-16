@@ -14,17 +14,6 @@ import java.util.List;
 
 public class TravelDto {
     @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Request {
-        @NotNull
-        private String travel_name;
-    }
-
-    @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -33,6 +22,7 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String Name;
+        @Nullable
         private Boolean IsSuper;
 
         public static Response fromEntity(Travel travel) {
@@ -48,42 +38,26 @@ public class TravelDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class ResponseWithImage {
-        @NotNull
-        private Long TravelId;
-        @NotNull
-        private String Name;
-        @Nullable
-        private String Imageurl;
-        public static ResponseWithImage fromEntity(Travel travel) {
-            return ResponseWithImage.builder()
-                    .TravelId(travel.getId())
-                    .Name(travel.getName())
-                    .Imageurl(travel.getImage())
-                    .build();
-        }
-
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
     public static class HomeView {
         @NotNull
         private Long TravelId;
         @NotNull
         private String TravelName;
+        // TODO - homeView 에 image 넣을지 논의해야 함
 //        @Nullable
 //        private String Imageurl;
-
+        @Nullable
         private List<PersonDto.HomeView> PersonList;
+        @Nullable
         private int PersonCount;
+        @Nullable
         private List<EventDto.HomeView> EventList;
+        @Nullable
         private int EventCount;
+        @Nullable
         private String Period;
-        private Long SuperUser;
+        @Nullable
+        private Long SuperUserPersonId;
 
         public static HomeView fromEntity(Travel travel) {
             return HomeView.builder()
