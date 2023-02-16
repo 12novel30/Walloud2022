@@ -110,6 +110,7 @@ const PersonBoxStyle = css`
     }
   }
 `;
+
 function PersonBox(
   Person: PersonProps,
   id: number,
