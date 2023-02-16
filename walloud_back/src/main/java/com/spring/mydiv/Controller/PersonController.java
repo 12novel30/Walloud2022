@@ -49,22 +49,22 @@ public class PersonController {
         // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
     }
 
+    @GetMapping("{travelId}/{personId}/personDetail")
+    public PersonDto.Detail getPersonDetailView(@PathVariable("travelId") int travelId,
+                                                @PathVariable("personId") int personId){
+        PersonDto.Detail detailView = personService.getPersonToDetailView(personId);
 
-    @GetMapping("{travelid}/{personid}/personDetail")
-    public PersonDto.Detail getPersonToDetailView(@PathVariable("travelid") int travelid,
-                                                        @PathVariable("personid") int personid){
-        System.out.println(travelid);
 
-        PersonDto.Detail detailView = personService.getPersonToDetailView(personid);
-        List<EventDto.PersonView> EventList = participantService.getEventListThatPersonJoin(personid);
+
+        List<EventDto.PersonView> EventList = participantService.getEventListThatPersonJoin(personId);
         detailView.setEventList(EventList);
         if (EventList.size()!=0) {
             //이 여행에서 해야하는 order 프린트를 위한 list(travelrole, diff에 따라)
             if (detailView.getTravelRole()) { // =총무 -> (여행 참여 전원) id, name, 이사람에게(받을/줄)돈
-                detailView.setPersonInTravelList(personService.getPersonListToHomeView(travelid));
+                detailView.setPersonInTravelList(personService.getPersonListToHomeView(travelId));
             } else { // ~총무 -> 총무id, 총무name, 내가총무에게(받을/줄)돈
                 List<PersonDto.HomeView> PersonInTravelList = new ArrayList<>();
-                PersonDto.HomeView tmp = personService.getPayerInTravel(travelid);
+                PersonDto.HomeView tmp = personService.getPayerInTravel(travelId);
                 tmp.setDifference(detailView.getDifference());
                 PersonInTravelList.add(tmp);
                 detailView.setPersonInTravelList(PersonInTravelList);

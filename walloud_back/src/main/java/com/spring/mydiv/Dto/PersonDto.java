@@ -116,12 +116,9 @@ public class PersonDto {
 		private Double SumGet;
 		private Double Difference;
 		private Boolean TravelRole;
-		private String UserName;
-		private String UserEmail;
-		private String UserAccount;
-		private String UserBank;
 		private boolean isSettled;
-
+		@NotNull
+		private UserDto.Response User;
 		private List<EventDto.PersonView> EventList;
 		private List<HomeView> PersonInTravelList;
 
@@ -132,11 +129,8 @@ public class PersonDto {
 					.SumGet(person.getSumGet())
 					.Difference(person.getDifference())
 					.TravelRole(person.getRole())
-					.UserName(person.getUser().getName())
-					.UserEmail(person.getUser().getEmail())
-					.UserAccount(person.getUser().getAccount())
-					.UserBank(person.getUser().getBank())
 					.isSettled(person.getIsSettled())
+					.User(UserDto.Response.fromEntity(person.getUser()))
 					.build();
 		}
 	}

@@ -85,11 +85,12 @@ public class PersonService {
     } //fin
 
     public PersonDto.Detail getPersonToDetailView(int personId){
-        //- 사용자 개인 정보 -> user(name, email, account)
-        //- travel에서의 정보 -> person(sumsend, sumget, diff, travelrole)
-        Person info = personRepository.findById(Long.valueOf(personId))
-                .orElseThrow(()-> new DefaultException(NO_USER));
-        return PersonDto.Detail.fromEntity(info);
+        return PersonDto.Detail.fromEntity(getPersonEntity(personId));
+    }
+
+    private Person getPersonEntity(int personId) {
+        return personRepository.findById(Long.valueOf(personId))
+                .orElseThrow(() -> new DefaultException(NO_USER));
     }
 
     public PersonDto.HomeView getPayerInTravel(int travelId){
@@ -234,8 +235,7 @@ public class PersonService {
     }
 
     public PersonDto.Detail updateIsSettled(int personId, boolean isSettled){
-        Person person = personRepository.findById(Long.valueOf(personId))
-                .orElseThrow(() -> new DefaultException(NO_USER));
+        Person person = getPersonEntity(personId);
 
         person.setIsSettled(isSettled);
 

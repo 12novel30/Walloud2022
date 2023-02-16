@@ -60,7 +60,7 @@ public class TravelController {
         homeView.setEventList(eventService.getEventInfoInTravel(travelId));
         homeView.setEventCount(homeView.getEventList().size());
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
-        homeView.setSuperUser(eventService.getSuperUser(travelId));
+        homeView.setSuperUserPersonId(eventService.getSuperUser(travelId));
 
         return homeView;
     }
