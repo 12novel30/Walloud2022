@@ -58,7 +58,7 @@ public class PersonController {
         personService.deletePerson2Travel(person_id);
     }
 
-    @GetMapping("{travelId}/{personId}/personDetail")
+    @GetMapping("{travelId}/{personId}/getPersonDetailView")
     public PersonDto.Detail getPersonDetailView(
             @PathVariable("travelId") int travelId,
             @PathVariable("personId") int personId){
@@ -85,15 +85,11 @@ public class PersonController {
         return personService.getPersonListToHomeView(travelId);
     }
 
-    @PostMapping("{personId}/setSettle")
-    public ResponseEntity<PersonDto.Detail> updateIsSettled(@PathVariable("personId") int personId,
-                                @RequestBody Map map){
-        if (map.containsKey("isSettled")){
-            return null;
-        } else {
-            Boolean isSettled = Boolean.valueOf(map.get("isSettled").toString());
-            return ResponseEntity.ok(personService.updateIsSettled(personId, isSettled));
-        }
+    @PutMapping("{personId}/updateIsSettled")
+    public ResponseEntity<PersonDto.Simple> updateIsSettled(
+            @PathVariable int personId, @RequestBody String isSettled){
+        return ResponseEntity.ok(
+                personService.updateIsSettled(personId, Boolean.valueOf(isSettled)));
     }
     
     // TODO - superUser 변경할 수 있는 메소드 만들어둘것

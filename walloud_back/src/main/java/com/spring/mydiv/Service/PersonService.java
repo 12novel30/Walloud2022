@@ -243,12 +243,10 @@ public class PersonService {
         //personRepository.updateRoleById(TRUE, currManager.getId());
     }
 
-    public PersonDto.Detail updateIsSettled(int personId, boolean isSettled){
+    public PersonDto.Simple updateIsSettled(int personId, boolean isSettled){
         Person person = getPersonEntity(personId);
-
         person.setIsSettled(isSettled);
-
-        return PersonDto.Detail.fromEntity(personRepository.save(person));
+        return PersonDto.Simple.fromEntity(personRepository.save(person));
     }
 
     public PersonDto.Request setPersonRequest(
