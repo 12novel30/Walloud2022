@@ -29,21 +29,18 @@ public class PersonController {
     private final PersonService personService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{userId}/{travelId}/createUser")
+    @PostMapping("/{userId}/{travelId}/createPerson2Travel")
     public void createPerson2Travel(@PathVariable int travelId,
-                                      @RequestBody Map map){
-        String user_email = map.get("user_email").toString();
+                                    @RequestBody String user_email){
         UserDto.Response userDetailDto = userService.getUserInfoByEmail(user_email);
-        if (userDetailDto == null) throw new DefaultException(WRONG_EMAIL);
-        else {
-            if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId))
-                throw new DefaultException(ALREADY_EXISTED);
-            PersonDto.Request request = new PersonDto.Request(
-                    userDetailDto,
-                    travelService.getTravelInfo(travelId));
-            PersonDto.basic personDto = personService.createPerson(request, FALSE);
-            if (personDto == null) throw new DefaultException(CREATE_FAIL);
-        }
+
+        if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId))
+            throw new DefaultException(ALREADY_EXISTED);
+        PersonDto.Request request = new PersonDto.Request(
+                userDetailDto,
+                travelService.getTravelInfo(travelId));
+        PersonDto.basic personDto = personService.createPerson(request, FALSE);
+        if (personDto == null) throw new DefaultException(CREATE_FAIL);
     }
 
     @DeleteMapping("/{userId}/{travelId}/{personId}/deleteUser")
@@ -55,7 +52,9 @@ public class PersonController {
             else throw new DefaultException(INVALID_DELETE_SUPERUSER);
         }
         else throw new DefaultException(INVALID_DELETE_EVENTEXISTED);
+        // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
     }
+
 
     @GetMapping("{travelid}/{personid}/personDetail")
     public PersonDto.Detail getPersonToDetailView(@PathVariable("travelid") int travelid,
@@ -80,10 +79,12 @@ public class PersonController {
         return detailView;
     }
 
-    @GetMapping("/{userId}/{travelId}/getPersonList")
-    public List<PersonDto.HomeView> getAllPersonListInTravel(@PathVariable("travelId") int travelId){
+    @GetMapping("/{travelId}/getPersonListToHomeView")
+    // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
+    public List<PersonDto.HomeView> getPersonListToHomeView(
+            @PathVariable("travelId") int travelId){
         return personService.getPersonListToHomeView(travelId);
-    } //List<PersonDto.HomeView> PersonList;
+    }
 
     @PostMapping("{personId}/setSettle")
     public ResponseEntity<PersonDto.Detail> updateIsSettled(@PathVariable("personId") int personId,
@@ -95,4 +96,6 @@ public class PersonController {
             return ResponseEntity.ok(personService.updateIsSettled(personId, isSettled));
         }
     }
+    
+    // TODO - superUser 변경할 수 있는 메소드 만들어둘것
 }

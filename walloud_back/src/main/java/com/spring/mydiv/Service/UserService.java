@@ -50,6 +50,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional(readOnly = true)
     public Long login(@NonNull UserDto.Login loginUser) {
         User entity = userRepository.findByEmail(loginUser.getEmail())
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
@@ -83,18 +84,10 @@ public class UserService {
     }
     @Transactional(readOnly = true)
     public UserDto.Response getUserInfoByEmail(String email){
-        Optional<User> user = userRepository.findByEmail(email);
-        if (!user.isPresent()) return null;
-
-        return UserDto.Response.builder()
-                .UserId(user.get().getId())
-                .Name(user.get().getName())
-                .Email(user.get().getEmail())
-                .Account(user.get().getAccount())
-                .Password(user.get().getPassword())
-                .Bank(user.get().getBank())
-                .build();
-    } // TODO - 아직 확인 안했음
+        return userRepository.findByEmail(email)
+                .map(UserDto.Response::fromEntity)
+                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+    }
 
     @Transactional
     public UserDto.Response updateUserInfo(int userId, UserDto.Request updateRequest){
