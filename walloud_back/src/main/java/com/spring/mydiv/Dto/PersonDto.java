@@ -28,6 +28,7 @@ public class PersonDto {
 	@NoArgsConstructor
 	@Builder
 	public static class basic {
+		private Long PersonId;
 		private User User;
 		private Travel Travel;
 		private Double SumSend;
@@ -37,6 +38,7 @@ public class PersonDto {
 
 		public static basic fromEntity(Person person) {
 			return basic.builder()
+					.PersonId(person.getId())
 					.User(person.getUser())
 					.Travel(person.getTravel())
 					.SumSend(person.getSumSend())
