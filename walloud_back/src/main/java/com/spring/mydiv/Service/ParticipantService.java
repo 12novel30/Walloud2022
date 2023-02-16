@@ -4,7 +4,6 @@ import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Participant;
 import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
@@ -15,10 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static com.spring.mydiv.Code.ErrorCode.NO_EVENT;
-import static com.spring.mydiv.Code.ErrorCode.NO_USER;
+import static com.spring.mydiv.Code.ErrorCode.*;
 
 /**
  * @author 12nov
@@ -77,7 +74,7 @@ public class ParticipantService {
         return result;
     }
 
-    public int getSizeOfJoinedEventList(int personId){
+    public int getSizeOfPersonJoinedEventList(int personId){
         return participantRepository.findByPerson_Id(Long.valueOf(personId)).size();
     }
 
@@ -111,4 +108,8 @@ public class ParticipantService {
         participantRepository.deleteByPersonAndEvent(p, e);
     }
 
+    public void validatePersonNotJoinedAnyEvent(int personId) {
+        if (participantRepository.findByPerson_Id(Long.valueOf(personId)).size() > 0)
+            throw new DefaultException(INVALID_DELETE_EVENTEXISTED);
+    }
 }

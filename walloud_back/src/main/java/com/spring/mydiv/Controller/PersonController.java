@@ -1,7 +1,6 @@
 package com.spring.mydiv.Controller;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.ParticipantService;
 import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.spring.mydiv.Code.ErrorCode.*;
 import static java.lang.Boolean.FALSE;
 
 /**
@@ -44,14 +42,10 @@ public class PersonController {
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")
-    public void deletePerson2Travel(@PathVariable("personId") int person_id){
-        if (participantService.getSizeOfJoinedEventList(person_id) == 0) {
-            if (!personService.isPersonSuperuser(person_id)) {
-                personService.deleteJoinTravel(person_id);
-            }
-            else throw new DefaultException(INVALID_DELETE_SUPERUSER);
-        }
-        else throw new DefaultException(INVALID_DELETE_EVENTEXISTED);
+    public void deletePerson2Travel(@PathVariable int person_id){
+        participantService.validatePersonNotJoinedAnyEvent(person_id);
+        personService.validatePersonNotSuperuser(person_id);
+        personService.deletePerson2Travel(person_id);
         // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
     }
 

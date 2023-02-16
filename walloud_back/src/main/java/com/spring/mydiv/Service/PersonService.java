@@ -58,7 +58,7 @@ public class PersonService {
     }
 
     @Transactional
-    public void deleteJoinTravel(int personId) {
+    public void deletePerson2Travel(int personId) {
         personRepository.deleteById(Long.valueOf(personId));
     }
 
@@ -104,8 +104,10 @@ public class PersonService {
                 .get().getIsSuper();
     }
 
-    public boolean isPersonSuperuser(int personId){
-        return personRepository.findById(Long.valueOf(personId)).get().getIsSuper();
+    public void validatePersonNotSuperuser(int personId){
+        // superuser (여행 최초 생성자) 면 여행에서 탈퇴 불가
+        if (personRepository.findById(Long.valueOf(personId)).get().getIsSuper())
+            throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }
 
     public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
