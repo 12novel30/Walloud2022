@@ -26,8 +26,8 @@ public class TravelController {
     private final S3UploaderService s3UploaderService;
 
     @PostMapping("/{userId}/createNewTravelUserJoining")
-    public int createNewTravelUserJoining(
-            @PathVariable int userId, @RequestBody String travel_name){
+    public int createNewTravelUserJoining(@PathVariable int userId,
+                                          @RequestBody String travel_name){
         return travelService.getTravelIdFromPersonDto(
                 personService.createPerson(
                         personService.setPersonRequest(
@@ -73,9 +73,8 @@ public class TravelController {
     @DeleteMapping("/{userId}/{travelId}/deleteTravel") // TODO - delete Travel
     public void deleteTravel(@PathVariable(value = "userId") int userId,
                              @PathVariable(value = "travelId") int travelId) {
-        if (personService.isUserSuperuser(travelId, userId))
-            travelService.deleteTravel(travelId);
-        else throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
+        personService.validateUserSuperuser(travelId, userId);
+        travelService.deleteTravel(travelId);
     }
 
 }

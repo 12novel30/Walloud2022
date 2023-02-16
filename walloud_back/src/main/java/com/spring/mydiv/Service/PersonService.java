@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
@@ -108,14 +109,13 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_MANAGER));
     }
 
-    public boolean isUserSuperuser(int travelId, int userId){
-        return personRepository.findByUser_IdAndTravel_Id(
-                Long.valueOf(userId), Long.valueOf(travelId))
-                .get().getIsSuper();
+    public void validateUserSuperuser(int travelId, int userId){
+        if (!personRepository.findByUser_IdAndTravel_Id(
+                Long.valueOf(userId), Long.valueOf(travelId)).get().getIsSuper())
+            throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
 
     public void validatePersonNotSuperuser(int personId){
-        // superuser (여행 최초 생성자) 면 여행에서 탈퇴 불가
         if (personRepository.findById(Long.valueOf(personId)).get().getIsSuper())
             throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }

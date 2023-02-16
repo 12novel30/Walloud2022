@@ -17,9 +17,6 @@ import static com.spring.mydiv.Code.WalloudCode.MANAGER;
 import static com.spring.mydiv.Code.WalloudCode.OTHERS;
 import static java.lang.Boolean.FALSE;
 
-/**
- * @author 12nov
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -31,7 +28,7 @@ public class PersonController {
 
     @PostMapping("/{travelId}/createPerson2Travel")
     public int createPerson2Travel(@PathVariable int travelId,
-                                    @RequestBody String user_email){
+                                   @RequestBody String user_email){
         // get User Information
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
         // if user not in travel then throw Exception
@@ -41,7 +38,7 @@ public class PersonController {
                 personService.createPerson( // create person
                         personService.setPersonRequest( // set person Dto
                                 userDto,
-                                // get Travel info
+                                // get Travel Information
                                 travelService.getTravelInfo(travelId)),
                         FALSE) // this person is not superUser
         );
@@ -81,7 +78,7 @@ public class PersonController {
     @GetMapping("/{travelId}/getPersonListToHomeView")
     // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
     public List<PersonDto.HomeView> getPersonListToHomeView(
-            @PathVariable("travelId") int travelId){
+            @PathVariable int travelId){
         return personService.getPersonListToHomeView(travelId);
     }
 
@@ -89,8 +86,8 @@ public class PersonController {
     public ResponseEntity<PersonDto.Simple> updateIsSettled(
             @PathVariable int personId, @RequestBody String isSettled){
         return ResponseEntity.ok(
-                personService.updateIsSettled(personId, Boolean.valueOf(isSettled)));
+                personService.updateIsSettled(personId,Boolean.valueOf(isSettled)));
     }
-    
-    // TODO - superUser 변경할 수 있는 메소드 만들어둘것
+
+    // TODO - superUser 변경할 수 있는 메소드 만들어둘지 논의
 }
