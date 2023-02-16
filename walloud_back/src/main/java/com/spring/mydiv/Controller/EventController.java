@@ -18,9 +18,6 @@ import java.util.*;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 
-/**
- * @author 12nov
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -30,44 +27,33 @@ public class EventController {
     private final TravelService travelService;
     private final ParticipantService participantService;
     private final S3UploaderService s3UploaderService;
+    private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    @PostMapping("/{travelId}/CreateEvent") // need to return created eventId
-    public void createEvent(@PathVariable("travelId") int travelId, @RequestBody Map map) throws ParseException {
-        // setting
-        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        int eventPrice = Integer.parseInt(map.get("price").toString());
-        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
-        List<Map> partiDtoList = (List)map.get("parti_list");
+    @PostMapping("/{travelId}/createEvent")
+    public Long createEvent(@PathVariable int travelId,
+                            @RequestBody EventDto.Request eventRequest) throws ParseException {
 
+        // get Travel Information
+        eventRequest.setTravel(travelService.getTravelInfo(travelId));
         // create event
-        EventDto.Request request = EventDto.Request.builder()
-                .Name(map.get("event_name").toString())
-                .Travel(travelService.getTravelInfo(travelId)) //orElseThrow
-                .Date(simpleDateFormat.parse(map.get("event_date").toString()))
-                .Price(eventPrice)
-                .PayerPersonId(payerId)
-                .build();
-        EventDto.Response eventDto = eventService.createEvent(request);
+        EventDto.Response eventResponse = eventService.createEvent(eventRequest);
+        // if payer not in parti_list, then add payer to parti_list
+        List<ParticipantDto.CreateEvent> partiDtoList =
+                eventService.validatePayerInPartiList(eventRequest);
 
-        if (ResponseEntity.ok(eventDto).getStatusCodeValue() == 200){
-            partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
-            for (Map partiDto : partiDtoList){
-                Person person = personService.getPersonEntityByPersonId(Long.valueOf(partiDto.get("personId").toString()));
-                Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
-                Boolean p_role = Boolean.valueOf(partiDto.get("role").toString());
+        // for each participant,
+        for (ParticipantDto.CreateEvent partiDto : partiDtoList){
+            // create participant
+            participantService.createParticipant(
+                    participantService.setParticipantRequest(partiDto, eventResponse));
+            // change person(parti) sumSend etc.
+            personService.updatePersonMoneyByCreating(partiDto, eventRequest);
+        }
 
-                ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
-                        .person(person)
-                        .event(eventService.getEventEntityByEventId(Long.valueOf(eventDto.getEventId().toString())))
-                        .role(p_role)
-                        .chargedPrice(chargedPrice)
-                        .build();
-                if (ResponseEntity.ok(participantService.createParticipant(partiRequest)).getStatusCodeValue() != 200)
-                    throw new DefaultException(CREATE_PARTICIPANT_FAIL);
-                personService.updatePersonMoneyByCreating(person, eventPrice, chargedPrice, p_role);
-            }
-            personService.updatePersonRole(travelId);
-        } else throw new DefaultException(CREATE_EVENT_FAIL);
+        // change person role in this Travel
+        personService.updatePersonRole(travelId);
+        // return created event id
+        return eventResponse.getEventId();
     }
 
     @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
@@ -93,7 +79,7 @@ public class EventController {
 
         //update eventDB
         EventDto.Request request = EventDto.Request.builder()
-                .Name(map.get("event_name").toString())
+                .event_name(map.get("event_name").toString())
                 .Date(simpleDateFormat.parse(map.get("event_date").toString()))
                 .Price(eventPrice)
                 .PayerPersonId(payerId)
@@ -116,7 +102,7 @@ public class EventController {
         }
 
         List<Map> partiDtoList = (List)map.get("parti_list");
-        partiDtoList = eventService.checkPayerInParticipant(partiDtoList, payerId);
+        partiDtoList = eventService.validatePayerInPartiList(partiDtoList, payerId);
         Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
 
         for(Map partiDto : partiDtoList){

@@ -8,6 +8,20 @@ import java.util.List;
 
 public class ParticipantDto {
     @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class CreateEvent {
+        @NotNull
+        private Long personId;
+        @NotNull
+        private Boolean role;
+        @NotNull
+        private Double spent;
+    }
+
+
+    @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor

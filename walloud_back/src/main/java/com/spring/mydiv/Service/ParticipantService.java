@@ -9,6 +9,7 @@ import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
 import com.spring.mydiv.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,8 +37,21 @@ public class ParticipantService {
                 .eventRole(request.getRole())
                 .chargedPrice(request.getChargedPrice())
                 .build();
-        participantRepository.save(participant);
-        return ParticipantDto.basic.fromEntity(participant);
+
+        if (ResponseEntity.ok(participantRepository.save(participant)).getStatusCodeValue() == 200)
+            return ParticipantDto.basic.fromEntity(participant);
+        else throw new DefaultException(CREATE_PARTICIPANT_FAIL);
+    }
+    public ParticipantDto.Request setParticipantRequest(
+            ParticipantDto.CreateEvent partiDto, EventDto.Response eventResponse) {
+        return ParticipantDto.Request.builder()
+                .person(personRepository.findById(partiDto.getPersonId())
+                        .orElseThrow(()-> new DefaultException(NO_USER))) // TODO - no person 으로 바꿔야 하는지?
+                .event(eventRepository.findById(eventResponse.getEventId())
+                        .orElseThrow(()-> new DefaultException(NO_EVENT)))
+                .role(partiDto.getRole())
+                .chargedPrice(partiDto.getSpent())
+                .build();
     }
 
     public Double calculateChargedPrice(int eventPrice, int partiSize){

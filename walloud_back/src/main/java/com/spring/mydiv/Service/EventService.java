@@ -7,6 +7,7 @@ import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.ParticipantRepository;
 import com.spring.mydiv.Repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,43 +28,47 @@ public class EventService {
 
     public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
-                .name(request.getName())
+                .name(request.getEvent_name())
                 .date(request.getDate())
                 .price(request.getPrice())
                 .travel(Travel.builder()
                         .id(request.getTravel().getTravelId())
                         .name(request.getTravel().getName())
                         .build())
-                .payerPersonid(request.getPayerPersonId())
+                .payerPersonid(request.getPayer_person_id())
                 .build();
-        eventRepository.save(event);
-        return EventDto.Response.fromEntity(event);
+
+        if (ResponseEntity.ok(eventRepository.save(event)).getStatusCodeValue() == 200)
+            return EventDto.Response.fromEntity(event);
+        else throw new DefaultException(CREATE_EVENT_FAIL);
     }
 
     public EventDto.Response updateEvent(int eventId, EventDto.Request updateRequest){
         Event event = eventRepository.findById(Long.valueOf(eventId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
 
-        if (updateRequest.getName() != null) event.setName(updateRequest.getName());
+        if (updateRequest.getEvent_name() != null) event.setName(updateRequest.getEvent_name());
         if (updateRequest.getDate() != null) event.setDate(updateRequest.getDate());
         if (updateRequest.getPrice() != 0) event.setPrice(updateRequest.getPrice());
-        if (updateRequest.getPayerPersonId() != null) event.setPayerPersonid(updateRequest.getPayerPersonId());
+        if (updateRequest.getPayer_person_id() != null) event.setPayerPersonid(updateRequest.getPayer_person_id());
 
         return EventDto.Response.fromEntity(eventRepository.save(event));
     }
 
-    public List<Map> checkPayerInParticipant(List<Map> partiList, Long payerId){
-        List<Long> partiIds = new ArrayList<>();
-        for (Map parti : partiList){
-            partiIds.add(Long.valueOf(parti.get("personId").toString()));
-        }
-        if(!partiIds.contains(payerId)){
-            Map<String, String> payerMap = new HashMap<>();
-            payerMap.put("role", "true");
-            payerMap.put("personId", String.valueOf(payerId));
-            payerMap.put("spent", "0");
-            partiList.add(payerMap);
-        }
+    public List<ParticipantDto.CreateEvent> validatePayerInPartiList(EventDto.Request eventRequest){
+        List<ParticipantDto.CreateEvent> partiList = eventRequest.getParti_list();
+        Long payerId = eventRequest.getPayer_person_id();
+
+        // partiList 에 payer 가 없으면 -> partiList 에 추가할 필요가 있음
+        for (ParticipantDto.CreateEvent parti : partiList)
+            if (parti.getPersonId().equals(payerId)) {
+                partiList.add(ParticipantDto.CreateEvent.builder()
+                        .personId(payerId)
+                        .role(true)
+                        .spent(Double.valueOf(0))
+                        .build());
+                break;
+            }
         return partiList;
     }
 

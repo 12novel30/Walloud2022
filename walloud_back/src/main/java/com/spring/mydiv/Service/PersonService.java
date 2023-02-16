@@ -2,14 +2,12 @@ package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Code.WalloudCode;
-import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Dto.UserDto;
+import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.spring.mydiv.Dto.PersonDto;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -67,7 +65,7 @@ public class PersonService {
 
     public Person getPersonEntityByPersonId(Long id){
         return personRepository.findById(id)
-                .orElseThrow(()-> new DefaultException(NO_USER));
+                .orElseThrow(()-> new DefaultException(NO_USER)); // TODO - no person 으로 바꿔야 하는지?
     }
 
     public List<PersonDto.HomeView> getPersonListToHomeView(int travelId){// TODO - checking
@@ -115,28 +113,23 @@ public class PersonService {
             throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }
 
-    public void updatePersonMoneyByCreating(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
+    public void updatePersonMoneyByCreating(
+            ParticipantDto.CreateEvent partiDto,
+            EventDto.Request eventRequest){
 
-        Person person = personRepository.findById(p.getId())
+        Person person = personRepository.findById(partiDto.getPersonId())
                 .orElseThrow(() -> new DefaultException(NO_USER));
-
-        if(p_role){
-            Double takePrice = eventPrice - chargedPrice;
-            p.setSumGet(p.getSumGet() + takePrice);
-            p.setDifference(p.getDifference() + takePrice);
-
-            person.setSumGet(p.getSumGet());
-            person.setDifference(p.getDifference());
+        Double chargedPrice = partiDto.getSpent();
+        if(partiDto.getRole()){ // 결제자라면
+            Double takePrice = eventRequest.getPrice() - chargedPrice;
+            person.setSumGet(person.getSumGet() + takePrice);
+            person.setDifference(person.getDifference() + takePrice);
             personRepository.save(person);
-            //personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
-        else{
-            p.setSumSend(p.getSumSend() + chargedPrice);
-            p.setDifference(p.getDifference() - chargedPrice);
-            person.setSumSend(p.getSumSend());
-            person.setDifference(p.getDifference());
+        else{ // 일반 참가자라면
+            person.setSumSend(person.getSumSend() + chargedPrice);
+            person.setDifference(person.getDifference() - chargedPrice);
             personRepository.save(person);
-            //personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
 

@@ -6,7 +6,6 @@ import com.spring.mydiv.Entity.Travel;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -51,15 +50,16 @@ public class EventDto {
     @Builder
     public static class Request {
         @NotNull
-        private String Name;
-        private TravelDto.Response Travel;
+        private String event_name;
         @NotNull
         private java.util.Date Date;
         @NotNull
-        private int Price;
-        private String Image;
+        private int price;
         @NotNull
-        private Long PayerPersonId;
+        private Long payer_person_id;
+        private TravelDto.Response Travel;
+        private List<ParticipantDto.CreateEvent> parti_list;
+        private String Image;
     }
 
     @Getter
