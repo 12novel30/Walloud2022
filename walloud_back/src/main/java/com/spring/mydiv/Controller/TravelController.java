@@ -28,12 +28,14 @@ public class TravelController {
     @PostMapping("/{userId}/createNewTravelUserJoining")
     public int createNewTravelUserJoining(@PathVariable int userId,
                                           @RequestBody String travel_name){
-        return travelService.getTravelIdFromPersonDto(
-                personService.createPerson(
-                        personService.setPersonRequest(
+        return travelService.getTravelIdFromPersonDto( // return created travel id
+                personService.createPerson( // create person
+                        personService.setPersonRequest( // set person Dto
+                                // get User Information
                                 userService.getUserResponseFromEntity(userId),
+                                // create Travel Information
                                 travelService.createTravel(travel_name)),
-                        TRUE)
+                        TRUE) // this person is superUser
         );
     }
 
@@ -70,10 +72,13 @@ public class TravelController {
         return travelService.getTravelImageURL(travelId);
     }
 
-    @DeleteMapping("/{userId}/{travelId}/deleteTravel") // TODO - delete Travel
+    @DeleteMapping("/{userId}/{travelId}/deleteTravel")
     public void deleteTravel(@PathVariable(value = "userId") int userId,
                              @PathVariable(value = "travelId") int travelId) {
+        // TODO - userId -> personId 논의
+        // if this person is not superUser for this travel, then throw Exception
         personService.validateUserSuperuser(travelId, userId);
+        // delete travel
         travelService.deleteTravel(travelId);
     }
 
