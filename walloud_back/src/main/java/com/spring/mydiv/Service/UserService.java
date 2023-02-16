@@ -4,7 +4,6 @@ import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
 import lombok.NonNull;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spring.mydiv.Entity.User;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
-import static java.lang.Boolean.TRUE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +25,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PersonRepository personRepository;
     private final S3UploaderService s3UploaderService;
-    private final TravelService travelservice;
-    private final PersonService personservice;
 
     @Transactional
     public UserDto.Response createUser(@NonNull UserDto.Request request) {
@@ -61,11 +57,8 @@ public class UserService {
         else throw new DefaultException(WRONG_PASSWORD);
     }
 
-    @Transactional(readOnly = true)
-    public UserDto.Response getUserInfo(int no){
-        return userRepository.findById(Long.valueOf(no))
-                .map(UserDto.Response::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER));
+    public UserDto.Response getUserResponseFromEntity(int no){
+        return UserDto.Response.fromEntity(getUserEntity(no));
     }
 
     @Transactional(readOnly = true)

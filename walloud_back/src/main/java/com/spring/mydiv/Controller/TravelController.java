@@ -34,7 +34,7 @@ public class TravelController {
         return travelService.getTravelIdFromPersonDto(
                 personService.createPerson(
                         personService.setPersonRequest(
-                                userService.getUserInfo(userId),
+                                userService.getUserResponseFromEntity(userId),
                                 travelService.createTravel(travel_name)),
                         TRUE)
         );
