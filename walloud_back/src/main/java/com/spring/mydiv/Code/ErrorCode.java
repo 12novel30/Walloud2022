@@ -34,7 +34,9 @@ public enum ErrorCode {
     INVALID_DELETE_NOTSUPERUSER(500, "INVALID-ERR-500", "Only SuperUser can delete the Travel."),
     INVALID_DELETE_EVENTEXISTED(500, "INVALID-ERR-500", "This Person has participated Events."),
 
-    INVALID_DELETE_TRAVEL_EXISTED(500, "INVALID-ERR-500", "This Person has participated Travel.");
+    INVALID_DELETE_TRAVEL_EXISTED(500, "INVALID-ERR-500",
+            "This Person has participated Travel. \n" +
+            "Please withdraw from the trip to deregister.");
 
 
     private int status;
