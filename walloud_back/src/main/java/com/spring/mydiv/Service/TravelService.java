@@ -20,9 +20,6 @@ import java.util.List;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 
-/**
- * @author 12nov
- */
 @Service
 @RequiredArgsConstructor
 public class TravelService {
@@ -71,7 +68,7 @@ public class TravelService {
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
     @Transactional(readOnly = true)
-    public List<TravelDto.Response> getSuperUserTravelList(Long userId){ // TODO - check yet
+    public List<TravelDto.Response> getSuperUserTravelList(Long userId){ // TODO - 어디서 쓰는지 확인 못함
         List<Person> personList = personRepository.findByUser_IdAndIsSuper(userId, true);
         List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : personList)

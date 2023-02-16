@@ -62,7 +62,7 @@ public class UserController {
         return userService.getUserImageURL(userId);
     }
 
-    @GetMapping("/{userId}/getTravelListUserJoined") // TODO - NEW
+    @GetMapping("/{userId}/getTravelListUserJoined")
     public List<TravelDto.Response> getTravelListUserJoined(@PathVariable int userId){
         return userService.getUserJoinedTravel(userId);
     }

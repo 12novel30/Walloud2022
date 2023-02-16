@@ -15,9 +15,6 @@ import java.io.IOException;
 import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
 import static java.lang.Boolean.TRUE;
 
-/**
- * @author 12nov
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -53,7 +50,7 @@ public class TravelController {
         return travelService.updateTravelImage(travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
     }
 
-    @GetMapping("/{travelId}/getTravelHomeView")
+    @GetMapping("/{travelId}/getTravelHomeView") // TODO - postman test yet - create event, user 끝나면 진행할 것
     public TravelDto.HomeView getTravelHomeView(@PathVariable int travelId){
         // TODO - path variable 을 long 으로 변경할 수 있는지 확인할 것
         TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
