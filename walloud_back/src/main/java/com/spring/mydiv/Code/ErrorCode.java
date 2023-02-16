@@ -13,7 +13,7 @@ public enum ErrorCode {
     NO_USER(500, "USER-ERR-500", "There is no corresponding USER."),
     NO_TRAVEL(500, "TRAVEL-ERR-500","There is no corresponding TRAVEL."),
     NO_EVENT(500, "EVENT-ERR-500","There is no corresponding EVENT."),
-    NO_PAYER(500, "EVENT-ERR-500","There is no PAYER for the event."),
+    NO_MANAGER(500, "EVENT-ERR-500","There is no MANAGER for the event."),
     NO_SUPERUSER(500, "TRAVEL-SUPERUSER-ERROR", "There is no SuperUser on this trip."),
     NO_PRICE(500, "EVENT-PRICE-ERROR", "There is no Price on this event."),
 

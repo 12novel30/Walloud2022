@@ -73,7 +73,7 @@ public class EventService {
         for (Event e : list){
             EventDto.HomeView event = EventDto.HomeView.fromEntity(e);
             Person payer = personRepository.findById(e.getPayerPersonid())
-                    .orElseThrow(()-> new DefaultException(NO_PAYER)); // Error 발생
+                    .orElseThrow(()-> new DefaultException(NO_MANAGER)); // Error 발생
             event.setPayerName(payer.getUser().getName());
             result.add(event);
         }

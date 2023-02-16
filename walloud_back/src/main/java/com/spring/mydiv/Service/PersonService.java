@@ -2,6 +2,7 @@ package com.spring.mydiv.Service;
 
 import javax.transaction.Transactional;
 
+import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Travel;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
+import static com.spring.mydiv.Code.WalloudCode.*;
 import static java.lang.Boolean.*;
 
 /**
@@ -79,6 +81,13 @@ public class PersonService {
             result.add(PersonDto.HomeView.fromEntity(p));
         return result;
     }
+    public List<PersonDto.OrderMessage> getPersonListForOrderMessage(int travelId){
+        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
+        List<PersonDto.OrderMessage> result = new ArrayList<>();
+        for (Person p : list)
+            result.add(PersonDto.OrderMessage.fromEntity(p));
+        return result;
+    }
 
     public int getPersonCountInTravel(int travelId){
         return personRepository.countDistinctByTravel_Id(Long.valueOf(travelId));
@@ -93,10 +102,10 @@ public class PersonService {
                 .orElseThrow(() -> new DefaultException(NO_USER));
     }
 
-    public PersonDto.HomeView getPayerInTravel(int travelId){
+    public PersonDto.OrderMessage getManagerInTravel(int travelId){
         return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
-                .map(PersonDto.HomeView::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_PAYER));
+                .map(PersonDto.OrderMessage::fromEntity)
+                .orElseThrow(()-> new DefaultException(NO_MANAGER));
     }
 
     public boolean isUserSuperuser(int travelId, int userId){
@@ -249,5 +258,12 @@ public class PersonService {
 
     public int getPersonIdFromPersonDto(PersonDto.basic personDto) {
         return personDto.getPersonId().intValue();
+    }
+
+    public WalloudCode getOrderCodeFromDetailView(PersonDto.Detail detailView) {
+        if (detailView.getEventList().size() != 0)
+            if (detailView.getTravelRole()) return MANAGER;
+            else return OTHERS;
+        else return NO_EVENTS;
     }
 }

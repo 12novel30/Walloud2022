@@ -110,6 +110,27 @@ public class PersonDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
+	public static class OrderMessage {
+		private Long PersonId;
+		private String Name;
+		private Double Difference;
+		private boolean isSettled;
+
+		public static OrderMessage fromEntity(Person person) {
+			return OrderMessage.builder()
+					.PersonId(person.getId())
+					.Name(person.getUser().getName())
+					.Difference(person.getDifference())
+					.isSettled(person.getIsSettled())
+					.build();
+		}
+	}
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Builder
 	public static class Detail {
 		private Long PersonId;
 		private Double SumSend;
@@ -120,7 +141,7 @@ public class PersonDto {
 		@NotNull
 		private UserDto.Response User;
 		private List<EventDto.PersonView> EventList;
-		private List<HomeView> PersonInTravelList;
+		private List<OrderMessage> PersonInTravelList;
 
 		public static Detail fromEntity(Person person) {
 			return Detail.builder()

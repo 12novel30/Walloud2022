@@ -1,5 +1,6 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Service.ParticipantService;
 import com.spring.mydiv.Service.PersonService;
@@ -9,10 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.spring.mydiv.Code.WalloudCode.MANAGER;
+import static com.spring.mydiv.Code.WalloudCode.OTHERS;
 import static java.lang.Boolean.FALSE;
 
 /**
@@ -30,45 +32,48 @@ public class PersonController {
     @PostMapping("/{travelId}/createPerson2Travel")
     public int createPerson2Travel(@PathVariable int travelId,
                                     @RequestBody String user_email){
+        // get User Information
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
+        // if user not in travel then throw Exception
         personService.validateUserInTravel(userDto.getUserId(), Long.valueOf(travelId));
+        // return created person id
         return personService.getPersonIdFromPersonDto(
-                personService.createPerson(
-                        personService.setPersonRequest(
+                personService.createPerson( // create person
+                        personService.setPersonRequest( // set person Dto
                                 userDto,
+                                // get Travel info
                                 travelService.getTravelInfo(travelId)),
-                        FALSE)
+                        FALSE) // this person is not superUser
         );
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")
     public void deletePerson2Travel(@PathVariable int person_id){
+        // if this person joined any event, then throw Exception
         participantService.validatePersonNotJoinedAnyEvent(person_id);
+        // if this person is superUser for this travel, then throw Exception
         personService.validatePersonNotSuperuser(person_id);
-        personService.deletePerson2Travel(person_id);
         // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
+        // delete person
+        personService.deletePerson2Travel(person_id);
     }
 
     @GetMapping("{travelId}/{personId}/personDetail")
-    public PersonDto.Detail getPersonDetailView(@PathVariable("travelId") int travelId,
-                                                @PathVariable("personId") int personId){
+    public PersonDto.Detail getPersonDetailView(
+            @PathVariable("travelId") int travelId,
+            @PathVariable("personId") int personId){
+        // get person info
         PersonDto.Detail detailView = personService.getPersonToDetailView(personId);
-
-
-
-        List<EventDto.PersonView> EventList = participantService.getEventListThatPersonJoin(personId);
-        detailView.setEventList(EventList);
-        if (EventList.size()!=0) {
-            //이 여행에서 해야하는 order 프린트를 위한 list(travelrole, diff에 따라)
-            if (detailView.getTravelRole()) { // =총무 -> (여행 참여 전원) id, name, 이사람에게(받을/줄)돈
-                detailView.setPersonInTravelList(personService.getPersonListToHomeView(travelId));
-            } else { // ~총무 -> 총무id, 총무name, 내가총무에게(받을/줄)돈
-                List<PersonDto.HomeView> PersonInTravelList = new ArrayList<>();
-                PersonDto.HomeView tmp = personService.getPayerInTravel(travelId);
-                tmp.setDifference(detailView.getDifference());
-                PersonInTravelList.add(tmp);
-                detailView.setPersonInTravelList(PersonInTravelList);
-            }
+        // get event list that this person joined
+        detailView.setEventList(participantService.getEventListThatPersonJoin(personId));
+        // set order list (by person role)
+        WalloudCode orderCode = personService.getOrderCodeFromDetailView(detailView);
+        if (orderCode == MANAGER) // set all member
+            detailView.setPersonInTravelList(personService.getPersonListForOrderMessage(travelId));
+        else if (orderCode == OTHERS) { // set only manager
+            PersonDto.OrderMessage manager = personService.getManagerInTravel(travelId);
+            manager.setDifference(detailView.getDifference()); // change manager diff
+            detailView.setPersonInTravelList(List.of(manager));
         }
         return detailView;
     }
