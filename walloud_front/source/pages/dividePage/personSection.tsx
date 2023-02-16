@@ -60,6 +60,7 @@ function PersonSection(
         return PersonBox(
           selectPerson,
           selectPerson.personId,
+          selectPerson.userId,
           type,
           travelId,
           isManager,

@@ -6,6 +6,7 @@ import SetPersonSettleAPI from "../../api/setPersonSettleAPI";
 import Color from "../../layout/globalStyle/globalColor";
 import { FontSize } from "../../layout/globalStyle/globalSize";
 import { currentTravelState, PersonProps } from "../../recoils/travel";
+import axios from "axios";
 
 const PersonBoxStyle = css`
   position: relative;
@@ -113,20 +114,36 @@ const PersonBoxStyle = css`
 
 function PersonBox(
   Person: PersonProps,
-  id: number,
+  personId: number,
+  userId: number,
   type: string,
   travelId: number,
   isManager: boolean,
   personList: PersonProps[],
   setPersonList: SetterOrUpdater<PersonProps[]>
 ) {
+  console.log("userId", userId);
+  axios
+    .get(`/api/${userId}/getUserImage`)
+    .then((response) => {
+      const div = document.getElementById(`${userId}-image`);
+      div.style.backgroundImage = `url(${response.data})`;
+      div.style.backgroundSize = "cover";
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      } else {
+        alert("예기치 못한 오류가 발생했습니다");
+      }
+    });
+
   return (
-    <div css={PersonBoxStyle} key={id} className={type}>
+    <div css={PersonBoxStyle} key={personId} className={type}>
       <FilpCard>
-        <div className="front" id={id.toString() + " front"}>
-          <a>
-            <img src="/source/assets/icon/apple.svg" />
-          </a>
+        <div className="front" id={personId.toString() + " front"}>
+          <a id={`${userId}-image`}>{/* <img id={`${id}-image`} /> */}</a>
           <div className="info">
             <div>
               {Person.name}
@@ -139,18 +156,27 @@ function PersonBox(
           <div className="util">
             <a
               onClick={() => {
-                var front = document.getElementById(id.toString() + " front");
+                var front = document.getElementById(
+                  personId.toString() + " front"
+                );
                 front.style.transform = "rotateY(180deg)";
-                var back = document.getElementById(id.toString() + " back");
+                var back = document.getElementById(
+                  personId.toString() + " back"
+                );
                 back.style.transform = "rotateY(0deg)";
-                GetPersonDetailAPI(travelId, id, personList, setPersonList);
+                GetPersonDetailAPI(
+                  travelId,
+                  personId,
+                  personList,
+                  setPersonList
+                );
               }}
             >
               <img src="/source/assets/icon/details.svg" />
             </a>
           </div>
         </div>
-        <div className="back" id={id.toString() + " back"}>
+        <div className="back" id={personId.toString() + " back"}>
           <div className="info">
             <div>
               {Person.name}
@@ -170,7 +196,7 @@ function PersonBox(
               <button
                 onClick={() => {
                   SetPersonSettleAPI(
-                    id,
+                    personId,
                     Person.detail.isSettled,
                     personList,
                     setPersonList
@@ -187,9 +213,13 @@ function PersonBox(
             </button>
             <button
               onClick={() => {
-                var back = document.getElementById(id.toString() + " back");
+                var back = document.getElementById(
+                  personId.toString() + " back"
+                );
                 back.style.transform = "rotateY(-180deg)";
-                var front = document.getElementById(id.toString() + " front");
+                var front = document.getElementById(
+                  personId.toString() + " front"
+                );
                 front.style.transform = "rotateY(0deg)";
               }}
             >
