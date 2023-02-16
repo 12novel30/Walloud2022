@@ -68,7 +68,7 @@ public class TravelService {
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
     @Transactional(readOnly = true)
-    public List<TravelDto.Response> getSuperUserTravelList(Long userId){ // TODO - 어디서 쓰는지 확인 못함
+    public List<TravelDto.Response> getSuperUserTravelList(Long userId){ // TODO - 아직 확인 안했음
         List<Person> personList = personRepository.findByUser_IdAndIsSuper(userId, true);
         List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : personList)
