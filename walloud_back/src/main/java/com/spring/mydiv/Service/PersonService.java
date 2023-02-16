@@ -6,6 +6,7 @@ import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spring.mydiv.Dto.PersonDto;
@@ -49,21 +50,21 @@ public class PersonService {
                 .isSuper(superUser)
                 .isSettled(false)
                 .build();
-        personRepository.save(person);
-        return PersonDto.basic.fromEntity(person);
-//        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE))
-//                .getStatusCodeValue() == 200)
-//            return personRequest.getTravel().getTravelId().intValue();
-//        else throw new DefaultException(CREATE_FAIL);
-    } //fin
+
+
+        if (ResponseEntity.ok(personRepository.save(person)).getStatusCodeValue() == 200)
+            return PersonDto.basic.fromEntity(person);
+        else throw new DefaultException(CREATE_FAIL);
+    }
 
     @Transactional
     public void deleteJoinTravel(int personId) {
         personRepository.deleteById(Long.valueOf(personId));
     }
 
-    public boolean checkIsUserinTravel(Long userId, int travelId){
-        return personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId));
+    public void validateUserInTravel(Long userId, Long travelId){
+        if (personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId)))
+            throw new DefaultException(ALREADY_EXISTED);
     }
 
     public Person getPersonEntityByPersonId(Long id){
@@ -242,5 +243,9 @@ public class PersonService {
     public PersonDto.Request setPersonRequest(
             UserDto.Response userDto, TravelDto.Response travelDto) {
         return new PersonDto.Request(userDto, travelDto);
+    }
+
+    public int getPersonIdFromPersonDto(PersonDto.basic personDto) {
+        return personDto.getPersonId().intValue();
     }
 }

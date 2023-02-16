@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 import static com.spring.mydiv.Code.S3FolderName.DEFAULT_IMAGE;
@@ -83,7 +82,7 @@ public class UserService {
                 .orElseThrow(() -> new DefaultException(NO_USER));
     }
     @Transactional(readOnly = true)
-    public UserDto.Response getUserInfoByEmail(String email){
+    public UserDto.Response getUserResponseByEmail(String email){
         return userRepository.findByEmail(email)
                 .map(UserDto.Response::fromEntity)
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));

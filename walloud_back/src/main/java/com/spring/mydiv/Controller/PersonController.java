@@ -29,21 +29,21 @@ public class PersonController {
     private final PersonService personService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{userId}/{travelId}/createPerson2Travel")
-    public void createPerson2Travel(@PathVariable int travelId,
+    @PostMapping("/{travelId}/createPerson2Travel")
+    public int createPerson2Travel(@PathVariable int travelId,
                                     @RequestBody String user_email){
-        UserDto.Response userDetailDto = userService.getUserInfoByEmail(user_email);
-
-        if (personService.checkIsUserinTravel(userDetailDto.getUserId(), travelId))
-            throw new DefaultException(ALREADY_EXISTED);
-        PersonDto.Request request = new PersonDto.Request(
-                userDetailDto,
-                travelService.getTravelInfo(travelId));
-        PersonDto.basic personDto = personService.createPerson(request, FALSE);
-        if (personDto == null) throw new DefaultException(CREATE_FAIL);
+        UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
+        personService.validateUserInTravel(userDto.getUserId(), Long.valueOf(travelId));
+        return personService.getPersonIdFromPersonDto(
+                personService.createPerson(
+                        personService.setPersonRequest(
+                                userDto,
+                                travelService.getTravelInfo(travelId)),
+                        FALSE)
+        );
     }
 
-    @DeleteMapping("/{userId}/{travelId}/{personId}/deleteUser")
+    @DeleteMapping("/{personId}/deletePerson2Travel")
     public void deletePerson2Travel(@PathVariable("personId") int person_id){
         if (participantService.getSizeOfJoinedEventList(person_id) == 0) {
             if (!personService.isPersonSuperuser(person_id)) {
