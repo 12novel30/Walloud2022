@@ -14,7 +14,6 @@ import java.util.List;
 
 public class UserDto {
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -26,7 +25,6 @@ public class UserDto {
 	}
 
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -44,7 +42,6 @@ public class UserDto {
 	}
 
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
