@@ -68,7 +68,8 @@ public class TravelService {
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
     @Transactional(readOnly = true)
-    public List<TravelDto.Response> getSuperUserTravelList(Long userId){ // TODO - 아직 확인 안했음
+    public List<TravelDto.Response> getSuperUserTravelList(Long userId){
+        // TODO - 쓸 곳 있는지 논의할 것
         List<Person> personList = personRepository.findByUser_IdAndIsSuper(userId, true);
         List<TravelDto.Response> result = new ArrayList<>();
         for (Person p : personList)
@@ -96,9 +97,5 @@ public class TravelService {
     private Travel getTravelEntity(int userId) {
         return travelRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
-    }
-
-    public int getTravelIdFromPersonDto(PersonDto.basic personDto) {
-        return personDto.getTravel().getId().intValue();
     }
 }

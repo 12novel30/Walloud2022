@@ -1,7 +1,5 @@
 package com.spring.mydiv.Service;
 
-import javax.transaction.Transactional;
-
 import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Dto.TravelDto;
@@ -17,6 +15,7 @@ import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Repository.PersonRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +24,13 @@ import static com.spring.mydiv.Code.ErrorCode.*;
 import static com.spring.mydiv.Code.WalloudCode.*;
 import static java.lang.Boolean.*;
 
-/**
- * @author 12nov
- */
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 	private final PersonRepository personRepository;
     @Transactional
     public PersonDto.basic createPerson(PersonDto.Request request, boolean superUser) {
-        Person person = Person.builder()
+        Person person = Person.builder() // TODO - checking
         		.user(User.builder()
                         .id(request.getUser().getUserId())
                         .name(request.getUser().getName())
@@ -46,14 +42,13 @@ public class PersonService {
                         .id(request.getTravel().getTravelId())
                         .name(request.getTravel().getName())
                         .build())
-                .sumGet(0.0)
-                .sumSend(0.0)
-                .difference(0.0)
-                .role(superUser)
+                .sumGet(Double.valueOf(0))
+                .sumSend(Double.valueOf(0))
+                .difference(Double.valueOf(0))
+                .role(superUser) // 생성할 때만 1
                 .isSuper(superUser)
                 .isSettled(false)
                 .build();
-
 
         if (ResponseEntity.ok(personRepository.save(person)).getStatusCodeValue() == 200)
             return PersonDto.basic.fromEntity(person);
@@ -61,11 +56,11 @@ public class PersonService {
     }
 
     @Transactional
-    public void deletePerson2Travel(int personId) {
+    public void deletePerson2Travel(int personId) {// TODO - checking
         personRepository.deleteById(Long.valueOf(personId));
     }
-
-    public void validateUserInTravel(Long userId, Long travelId){
+    @Transactional(readOnly = true)
+    public void validateUserInTravel(Long userId, Long travelId){ // TODO - checking
         if (personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId)))
             throw new DefaultException(ALREADY_EXISTED);
     }
@@ -75,14 +70,14 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_USER));
     }
 
-    public List<PersonDto.HomeView> getPersonListToHomeView(int travelId){
+    public List<PersonDto.HomeView> getPersonListToHomeView(int travelId){// TODO - checking
         List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
         List<PersonDto.HomeView> result = new ArrayList<>();
         for (Person p : list)
             result.add(PersonDto.HomeView.fromEntity(p));
         return result;
     }
-    public List<PersonDto.OrderMessage> getPersonListForOrderMessage(int travelId){
+    public List<PersonDto.OrderMessage> getPersonListForOrderMessage(int travelId){// TODO - checking
         List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
         List<PersonDto.OrderMessage> result = new ArrayList<>();
         for (Person p : list)
@@ -94,7 +89,7 @@ public class PersonService {
         return personRepository.countDistinctByTravel_Id(Long.valueOf(travelId));
     } //fin
 
-    public PersonDto.Detail getPersonToDetailView(int personId){
+    public PersonDto.Detail getPersonToDetailView(int personId){// TODO - checking
         return PersonDto.Detail.fromEntity(getPersonEntity(personId));
     }
 
@@ -103,7 +98,7 @@ public class PersonService {
                 .orElseThrow(() -> new DefaultException(NO_USER));
     }
 
-    public PersonDto.OrderMessage getManagerInTravel(int travelId){
+    public PersonDto.OrderMessage getManagerInTravel(int travelId){// TODO - checking
         return personRepository.findByTravel_IdAndRole(Long.valueOf(travelId), true)
                 .map(PersonDto.OrderMessage::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_MANAGER));
@@ -115,7 +110,7 @@ public class PersonService {
             throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
 
-    public void validatePersonNotSuperuser(int personId){
+    public void validatePersonNotSuperuser(int personId){// TODO - checking
         if (personRepository.findById(Long.valueOf(personId)).get().getIsSuper())
             throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }
@@ -243,22 +238,18 @@ public class PersonService {
         //personRepository.updateRoleById(TRUE, currManager.getId());
     }
 
-    public PersonDto.Simple updateIsSettled(int personId, boolean isSettled){
+    public PersonDto.Simple updateIsSettled(int personId, boolean isSettled){// TODO - checking
         Person person = getPersonEntity(personId);
         person.setIsSettled(isSettled);
         return PersonDto.Simple.fromEntity(personRepository.save(person));
     }
 
-    public PersonDto.Request setPersonRequest(
+    public PersonDto.Request setPersonRequest( // TODO - checking
             UserDto.Response userDto, TravelDto.Response travelDto) {
         return new PersonDto.Request(userDto, travelDto);
     }
 
-    public int getPersonIdFromPersonDto(PersonDto.basic personDto) {
-        return personDto.getPersonId().intValue();
-    }
-
-    public WalloudCode getOrderCodeFromDetailView(PersonDto.Detail detailView) {
+    public WalloudCode getOrderCodeFromDetailView(PersonDto.Detail detailView) {// TODO - checking
         if (detailView.getEventList().size() != 0)
             if (detailView.getTravelRole()) return MANAGER;
             else return OTHERS;

@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping("/{userId}/getUserInfoExceptImage")
     public UserDto.Response getUserInfoExceptImage(
             @PathVariable("userId") int userId){
-        return userService.getUserResponseFromEntity(userId);
+        return userService.getUserResponseById(userId);
     }
 
     @DeleteMapping("/{userId}/deleteUser")

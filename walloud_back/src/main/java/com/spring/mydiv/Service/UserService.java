@@ -49,20 +49,31 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    @Transactional(readOnly = true)
     public Long login(@NonNull UserDto.Login loginUser) {
-        User entity = userRepository.findByEmail(loginUser.getEmail())
-                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
-
+        User entity = getUserEntityByEmail(loginUser.getEmail());
         if (loginUser.getPassword().equals(entity.getPassword()))
             return entity.getId();
         else throw new DefaultException(WRONG_PASSWORD);
     }
-
-    public UserDto.Response getUserResponseFromEntity(int no){
-        return UserDto.Response.fromEntity(getUserEntity(no));
+    @Transactional(readOnly = true)
+    private User getUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
     }
 
+    @Transactional(readOnly = true)
+    private User getUserEntityById(int no) {
+        return userRepository.findById(Long.valueOf(no))
+                .orElseThrow(() -> new DefaultException(NO_USER));
+    }
+
+    public UserDto.Response getUserResponseById(int no){
+        return UserDto.Response.fromEntity(getUserEntityById(no));
+    }
+
+    public UserDto.Response getUserResponseByEmail(String email){
+        return UserDto.Response.fromEntity(getUserEntityByEmail(email));
+    }
     @Transactional(readOnly = true)
     public List<TravelDto.Response> getUserJoinedTravel(int userId){
         List<Person> list = personRepository.findByUser_Id(Long.valueOf(userId));
@@ -76,21 +87,9 @@ public class UserService {
         return result;
     }
 
-    @Transactional(readOnly = true)
-    private User getUserEntity(int no) {
-        return userRepository.findById(Long.valueOf(no))
-                .orElseThrow(() -> new DefaultException(NO_USER));
-    }
-    @Transactional(readOnly = true)
-    public UserDto.Response getUserResponseByEmail(String email){
-        return userRepository.findByEmail(email)
-                .map(UserDto.Response::fromEntity)
-                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
-    }
-
     @Transactional
     public UserDto.Response updateUserInfo(int userId, UserDto.Request updateRequest){
-        User user = getUserEntity(userId);
+        User user = getUserEntityById(userId);
 
         if (updateRequest.getUser_name() != null) user.setName(updateRequest.getUser_name());
         if (updateRequest.getUser_email() != null) {
@@ -109,7 +108,7 @@ public class UserService {
 
     @Transactional
     public String updateUserImage(int userId, String imageURL){
-        User user = getUserEntity(userId);
+        User user = getUserEntityById(userId);
         // TODO - deleteUserImage(user);
         user.setInfo(imageURL);
         return userRepository.save(user).getInfo();
@@ -121,7 +120,7 @@ public class UserService {
     } // TODO - 아직 구현 안했음
 
     public String getUserImageURL(int userId){
-        return getUserEntity(userId).getInfo();
+        return getUserEntityById(userId).getInfo();
     }
     @Transactional
     public void deleteUser(int userId){

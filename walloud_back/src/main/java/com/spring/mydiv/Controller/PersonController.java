@@ -32,15 +32,15 @@ public class PersonController {
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
         // if user not in travel then throw Exception
         personService.validateUserInTravel(userDto.getUserId(), Long.valueOf(travelId));
-        // return created person id
-        return personService.getPersonIdFromPersonDto(
-                personService.createPerson( // create person
-                        personService.setPersonRequest( // set person Dto
-                                userDto,
-                                // get Travel Information
-                                travelService.getTravelInfo(travelId)),
-                        FALSE) // this person is not superUser
-        );
+        /* return created person id
+        * - set person Dto
+        * - get Travel Information
+        * - this person is not superUser */
+        return personService.createPerson(
+                personService.setPersonRequest(
+                        userDto, travelService.getTravelInfo(travelId)),
+                        FALSE)
+                .getPersonId().intValue();
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")

@@ -45,6 +45,7 @@ public class ParticipantService {
     }
 
     public List<EventDto.PersonView> getEventListThatPersonJoin(int personId){
+        // TODO - checking
         List<EventDto.PersonView> result = new ArrayList<>();
         // personid가 있는 parti를 전부 찾아서 -> 그 parti의 event id, event role를 get
         List<Participant> partiList = participantRepository.findByPerson_Id(Long.valueOf(personId));
@@ -108,7 +109,7 @@ public class ParticipantService {
         participantRepository.deleteByPersonAndEvent(p, e);
     }
 
-    public void validatePersonNotJoinedAnyEvent(int personId) {
+    public void validatePersonNotJoinedAnyEvent(int personId) {// TODO - checking
         if (participantRepository.findByPerson_Id(Long.valueOf(personId)).size() > 0)
             throw new DefaultException(INVALID_DELETE_EVENTEXISTED);
     }

@@ -1,8 +1,6 @@
 package com.spring.mydiv.Controller;
 
-import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.*;
 
 import lombok.RequiredArgsConstructor;
@@ -28,15 +26,16 @@ public class TravelController {
     @PostMapping("/{userId}/createNewTravelUserJoining")
     public int createNewTravelUserJoining(@PathVariable int userId,
                                           @RequestBody String travel_name){
-        return travelService.getTravelIdFromPersonDto( // return created travel id
-                personService.createPerson( // create person
-                        personService.setPersonRequest( // set person Dto
-                                // get User Information
-                                userService.getUserResponseFromEntity(userId),
-                                // create Travel Information
-                                travelService.createTravel(travel_name)),
-                        TRUE) // this person is superUser
-        );
+        /* return created travel id
+        * - set person Dto
+        * - get User Information
+        * - create Travel
+        * - this person is superUser */
+        return personService.createPerson(
+                personService.setPersonRequest(
+                        userService.getUserResponseById(userId), travelService.createTravel(travel_name)),
+                        TRUE)
+                .getTravel().getId().intValue();
     }
 
     @PutMapping("/{travelId}/updateTravelName")
