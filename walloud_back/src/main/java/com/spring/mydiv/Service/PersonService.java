@@ -126,36 +126,29 @@ public class PersonService {
             person.setDifference(person.getDifference() + takePrice);
             personRepository.save(person);
         }
-        else{ // 일반 참가자라면
+        else { // 일반 참가자라면
             person.setSumSend(person.getSumSend() + chargedPrice);
             person.setDifference(person.getDifference() - chargedPrice);
             personRepository.save(person);
         }
     }
 
-    public void updatePersonMoneyByDeleting(Person p, int eventPrice, Double chargedPrice, Boolean p_role){
+    public void updatePersonMoneyByDeleting(
+            ParticipantDto.detailView partiDto, int eventPrice){
 
-        Person person = personRepository.findById(p.getId())
+        Person person = personRepository.findById(partiDto.getPersonId())
                 .orElseThrow(() -> new DefaultException(NO_USER));
-
-        if(p_role){
+        Double chargedPrice = partiDto.getChargedPrice();
+        if (partiDto.isEventRole()){ // 결제자라면
             Double takePrice = eventPrice - chargedPrice;
-            p.setSumGet(p.getSumGet() - takePrice);
-            p.setDifference(p.getDifference() - takePrice);
-
-            person.setSumGet(p.getSumGet());
-            person.setDifference(p.getDifference());
+            person.setSumGet(person.getSumGet() - takePrice);
+            person.setDifference(person.getDifference() - takePrice);
             personRepository.save(person);
-            //personRepository.updateSumGetAndDifferenceById(p.getSumGet(), p.getDifference(), p.getId());
         }
-        else{
-            p.setSumSend(p.getSumSend() - chargedPrice);
-            p.setDifference(p.getDifference() + chargedPrice);
-
-            person.setSumSend(p.getSumSend());
-            person.setDifference(p.getDifference());
+        else { // 일반 참가자라면
+            person.setSumSend(person.getSumSend() - chargedPrice);
+            person.setDifference(person.getDifference() + chargedPrice);
             personRepository.save(person);
-            //personRepository.updateSumSendAndDifferenceById(p.getSumSend(), p.getDifference(), p.getId());
         }
     }
 

@@ -29,9 +29,10 @@ public class EventController {
     private final S3UploaderService s3UploaderService;
     private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    // TODO - dto 정리
     @PostMapping("/{travelId}/createEvent")
     public Long createEvent(@PathVariable int travelId,
-                            @RequestBody EventDto.Request eventRequest) throws ParseException {
+                            @RequestBody EventDto.Request eventRequest) {
 
         // get Travel Information
         eventRequest.setTravel(travelService.getTravelInfo(travelId));
@@ -56,17 +57,20 @@ public class EventController {
         return eventResponse.getEventId();
     }
 
-    @DeleteMapping("/{userid}/{travelid}/{eventid}/deleteEvent")
-    public void deleteEvent(@PathVariable("travelid") int travelId, @PathVariable("eventid") int event_id)
+    @DeleteMapping("/{travelId}/{eventId}/deleteEvent")
+    public void deleteEvent(@PathVariable("travelId") int travelId,
+                            @PathVariable("eventId") int eventId)
     {
-        for(ParticipantDto.detailView DetailView : participantService.getParticipantInEvent(event_id)){
-            personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(DetailView.getPersonId()),
-                    eventService.getEventPriceById(event_id),
-                    DetailView.getChargedPrice(),
-                    DetailView.isEventRole());
+        List<ParticipantDto.detailView> partiList = participantService.getParticipantInEvent(eventId);
+        // change person(parti) sumSend etc.
+        for (ParticipantDto.detailView partiDto : partiList){
+            personService.updatePersonMoneyByDeleting(
+                    partiDto, eventService.getEventPriceById(eventId));
         }
+        // change person(parti) role
         personService.updatePersonRole(travelId);
-        eventService.deleteEvent(event_id);
+        // delete event
+        eventService.deleteEvent(eventId);
     }
 
     @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
