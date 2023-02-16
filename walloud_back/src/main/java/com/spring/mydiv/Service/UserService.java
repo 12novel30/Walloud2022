@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
+import static com.spring.mydiv.Code.S3FolderName.DEFAULT_IMAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class UserService {
                     .password(request.getUser_password())
                     .account(request.getUser_account())
                     .bank(request.getUser_bank())
+                    .info(DEFAULT_IMAGE.getDescription())
                     .build();
             userRepository.save(user);
             return UserDto.Response.fromEntity(user);
