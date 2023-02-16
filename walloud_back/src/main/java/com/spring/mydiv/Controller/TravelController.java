@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
-import static com.spring.mydiv.Code.S3FolderName.USER_FOLDER;
 import static java.lang.Boolean.TRUE;
 
 /**
@@ -56,14 +53,15 @@ public class TravelController {
         return travelService.updateTravelImage(travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
     }
 
-    @GetMapping("/{travelId}/getTravelMainView")
-    public TravelDto.HomeView getTravelMainView(@PathVariable int travelId){
-        TravelDto.HomeView homeView = travelService.getTravelToMainView(travelId);
+    @GetMapping("/{travelId}/getTravelHomeView")
+    public TravelDto.HomeView getTravelHomeView(@PathVariable int travelId){
+        // TODO - path variable 을 long 으로 변경할 수 있는지 확인할 것
+        TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
 
-        homeView.setPersonList(personService.getPersonInfoInTravel(travelId));
-        homeView.setPersonCount(personService.getPersonCountInTravel(travelId));
+        homeView.setPersonList(personService.getPersonListToHomeView(travelId));
+        homeView.setPersonCount(homeView.getPersonList().size());
         homeView.setEventList(eventService.getEventInfoInTravel(travelId));
-        homeView.setEventCount(eventService.getEventCountInTravel(travelId));
+        homeView.setEventCount(homeView.getEventList().size());
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
         homeView.setSuperUser(eventService.getSuperUser(travelId));
 
@@ -75,7 +73,7 @@ public class TravelController {
         return travelService.getTravelImageURL(travelId);
     }
 
-    @PostMapping("/{userId}/{travelId}/deleteTravel") // TODO - delete Travel
+    @DeleteMapping("/{userId}/{travelId}/deleteTravel") // TODO - delete Travel
     public void deleteTravel(@PathVariable(value = "userId") int userId,
                              @PathVariable(value = "travelId") int travelId) {
         if (personService.isUserSuperuser(travelId, userId))

@@ -48,7 +48,7 @@ public class TravelService {
                 .orElseThrow(()-> new DefaultException(NO_TRAVEL));
     }
 
-    public TravelDto.HomeView getTravelToMainView(int travelId){
+    public TravelDto.HomeView getTravelHomeView(int travelId){
         return travelRepository.findById(Long.valueOf(travelId))
                 .map(TravelDto.HomeView::fromEntity)
                 .orElseThrow(()-> new DefaultException(NO_TRAVEL));

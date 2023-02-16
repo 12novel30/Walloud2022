@@ -1,6 +1,5 @@
 package com.spring.mydiv.Controller;
 
-import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.ParticipantService;
@@ -69,7 +68,7 @@ public class PersonController {
         if (EventList.size()!=0) {
             //이 여행에서 해야하는 order 프린트를 위한 list(travelrole, diff에 따라)
             if (detailView.getTravelRole()) { // =총무 -> (여행 참여 전원) id, name, 이사람에게(받을/줄)돈
-                detailView.setPersonInTravelList(personService.getPersonInfoInTravel(travelid));
+                detailView.setPersonInTravelList(personService.getPersonListToHomeView(travelid));
             } else { // ~총무 -> 총무id, 총무name, 내가총무에게(받을/줄)돈
                 List<PersonDto.HomeView> PersonInTravelList = new ArrayList<>();
                 PersonDto.HomeView tmp = personService.getPayerInTravel(travelid);
@@ -83,7 +82,7 @@ public class PersonController {
 
     @GetMapping("/{userId}/{travelId}/getPersonList")
     public List<PersonDto.HomeView> getAllPersonListInTravel(@PathVariable("travelId") int travelId){
-        return personService.getPersonBasicInTravel(travelId);
+        return personService.getPersonListToHomeView(travelId);
     } //List<PersonDto.HomeView> PersonList;
 
     @PostMapping("{personId}/setSettle")

@@ -1,7 +1,6 @@
 package com.spring.mydiv.Dto;
 
 import com.spring.mydiv.Entity.Travel;
-import com.spring.mydiv.Entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +20,7 @@ public class TravelDto {
     @Builder
     public static class Request {
         @NotNull
-        private String Name;
+        private String travel_name;
     }
 
     @Getter
@@ -76,23 +75,21 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String TravelName;
-        @Nullable
-        private String Imageurl;
+//        @Nullable
+//        private String Imageurl;
 
         private List<PersonDto.HomeView> PersonList;
         private int PersonCount;
-
         private List<EventDto.HomeView> EventList;
         private int EventCount;
         private String Period;
-
         private Long SuperUser;
 
         public static HomeView fromEntity(Travel travel) {
             return HomeView.builder()
                     .TravelId(travel.getId())
                     .TravelName(travel.getName())
-                    .Imageurl(travel.getImage())
+//                    .Imageurl(travel.getImage())
                     .build();
         }
     }

@@ -6,7 +6,6 @@ import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Dto.UserDto;
 import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Exception.DefaultException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.spring.mydiv.Dto.PersonDto;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 import static java.lang.Boolean.*;
@@ -64,26 +62,6 @@ public class PersonService {
         personRepository.deleteById(Long.valueOf(personId));
     }
 
-    public List<PersonDto.Simple> getPersonNameInTravel(int travelId){
-        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
-        List<PersonDto.Simple> result = new ArrayList<PersonDto.Simple>();
-        for (Person p : list){
-            PersonDto.Simple person = PersonDto.Simple.fromEntity(p);
-            result.add(person);
-        }
-        return result;
-    }
-
-    public List<PersonDto.HomeView> getPersonBasicInTravel(int travelId){
-        List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
-        List<PersonDto.HomeView> result = new ArrayList<>();
-        for (Person p : list){
-            PersonDto.HomeView person = PersonDto.HomeView.fromEntity(p);
-            result.add(person);
-        }
-        return result;
-    }
-
     public boolean checkIsUserinTravel(Long userId, int travelId){
         return personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId));
     }
@@ -93,15 +71,13 @@ public class PersonService {
                 .orElseThrow(()-> new DefaultException(NO_USER));
     }
 
-    public List<PersonDto.HomeView> getPersonInfoInTravel(int travelId){
+    public List<PersonDto.HomeView> getPersonListToHomeView(int travelId){
         List<Person> list = personRepository.findByTravel_Id(Long.valueOf(travelId));
         List<PersonDto.HomeView> result = new ArrayList<>();
-        for (Person p : list){
-            PersonDto.HomeView person = PersonDto.HomeView.fromEntity(p);
-            result.add(person);
-        }
+        for (Person p : list)
+            result.add(PersonDto.HomeView.fromEntity(p));
         return result;
-    } //fin
+    }
 
     public int getPersonCountInTravel(int travelId){
         return personRepository.countDistinctByTravel_Id(Long.valueOf(travelId));

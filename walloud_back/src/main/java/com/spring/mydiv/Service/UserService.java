@@ -72,14 +72,12 @@ public class UserService {
     public List<TravelDto.Response> getUserJoinedTravel(int userId){
         List<Person> list = personRepository.findByUser_Id(Long.valueOf(userId));
         List<TravelDto.Response> result = new ArrayList<>();
-        for (Person p : list){
-            TravelDto.Response travel = TravelDto.Response.builder()
+        for (Person p : list)
+            result.add(TravelDto.Response.builder()
                     .TravelId(p.getTravel().getId())
                     .Name(p.getTravel().getName())
                     .IsSuper(p.getIsSuper())
-                    .build();
-            result.add(travel);
-        }
+                    .build());
         return result;
     }
 
