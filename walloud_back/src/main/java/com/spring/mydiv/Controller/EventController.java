@@ -3,10 +3,8 @@ package com.spring.mydiv.Controller;
 import com.spring.mydiv.Dto.*;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.spring.mydiv.Code.ErrorCode.*;
+import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 
 @RestController
 @RequiredArgsConstructor
@@ -149,24 +147,20 @@ public class EventController {
         personService.updatePersonRole(travel_id);
     }
 
-    @GetMapping("/{eventid}/detail")
-    public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable("eventid") int eventid){
-        return participantService.getParticipantInEvent(eventid);
+    @GetMapping("/{eventId}/detail")
+    public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable int eventId){
+        return participantService.getParticipantInEvent(eventId);
     }
 
-    /************image************/
-    @GetMapping("/{eventid}/getEventImage")
-    public String getEventImage(@PathVariable int eventid){
-        return eventService.getEventImageURL(eventid);
+    @GetMapping("/{eventId}/getEventImage")
+    public String getEventImage(@PathVariable int eventId){
+        return eventService.getEventImageURL(eventId);
     }
 
-    @PutMapping("/{eventid}/uploadUserImage")
-    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(
-            @PathVariable int userId,
-            @RequestPart(value="file",required = false) MultipartFile file)
+    @PutMapping("/{eventId}/updateEventImage")
+    public String updateEventImage(@PathVariable int eventId,
+                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        String objectURL = s3UploaderService.upload(file, "test");
-        System.out.println(objectURL);
-        return ResponseEntity.ok(eventService.uploadEventImage(userId, objectURL));
+        return eventService.updateEventImage(eventId, s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
     }
 }

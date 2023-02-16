@@ -138,12 +138,12 @@ public class EventService {
     }
 
     @Transactional
-    public EventDto.ResponseWithImage uploadEventImage(int userId, String imageURL){
-        Event event = eventRepository.findById(Long.valueOf(userId))
+    public String updateEventImage(int eventId, String imageURL){
+        Event event = eventRepository.findById(Long.valueOf(eventId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
-//        deleteEventImage(event);
+        // TODO - deleteEventImage(event);
         event.setImage(imageURL);
-        return EventDto.ResponseWithImage.fromEntity(eventRepository.save(event));
+        return eventRepository.save(event).getImage();
     }
 
     public void deleteEventImage(Event event){
