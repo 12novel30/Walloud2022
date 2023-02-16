@@ -12,6 +12,8 @@ import com.spring.mydiv.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.spring.mydiv.Code.S3FolderName.USER_FOLDER;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -52,8 +54,7 @@ public class UserController {
     public String updateUserImage(@PathVariable int userId,
                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return userService.updateUserImage(
-                userId, s3UploaderService.upload(file, "test"));
+        return userService.updateUserImage(userId, s3UploaderService.upload(file, USER_FOLDER.getDescription()));
     }
 
     @GetMapping("/{userId}/getUserImage")

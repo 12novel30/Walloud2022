@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
+import static com.spring.mydiv.Code.S3FolderName.USER_FOLDER;
 import static java.lang.Boolean.TRUE;
 
 /**
@@ -51,9 +53,7 @@ public class TravelController {
     public String updateTravelImage(@PathVariable int travelId,
                                     @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return travelService.updateTravelImage(
-                travelId, s3UploaderService.upload(file, "test"));
-        // TODO - 업로드될 사진 폴더 이름 enum 화
+        return travelService.updateTravelImage(travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
     }
 
     @GetMapping("/{travelId}/getTravelMainView")
