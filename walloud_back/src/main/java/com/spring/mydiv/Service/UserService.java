@@ -74,12 +74,6 @@ public class UserService {
         return result;
     }
 
-    public UserDto.WithTravel getUserInfoWithTravel(int no){
-        UserDto.WithTravel dto = UserDto.WithTravel.fromEntity(getUserEntity(no));
-        dto.setTravelList(getUserJoinedTravel(no));
-        return dto;
-    } // TODO - 쓸지 안쓸지 결정 못함
-
     @Transactional(readOnly = true)
     private User getUserEntity(int no) {
         return userRepository.findById(Long.valueOf(no))

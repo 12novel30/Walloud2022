@@ -70,37 +70,4 @@ public class UserDto {
 					.build();
 		}
 	}
-
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class WithTravel { // TODO - 아직 확인 못함
-		@NotNull
-		private Long Id;
-		@NotNull
-		private String Name;
-		@NotNull
-		private String Email;
-		@NotNull
-		private String Password;
-		@NotNull
-		private String Account;
-		@NotNull
-		private String Bank;
-
-		private List<TravelDto.Response> TravelList;
-
-		public static WithTravel fromEntity(User user) {
-			return WithTravel.builder()
-					.Id(user.getId())
-					.Name(user.getName())
-					.Email(user.getEmail())
-					.Password(user.getPassword())
-					.Account(user.getAccount())
-					.Bank(user.getBank())
-					.build();
-		}
-	}
 }
