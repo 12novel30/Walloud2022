@@ -32,7 +32,7 @@ public class TravelController {
         * - create Travel
         * - this person is superUser */
         return personService.createPerson(
-                personService.setPersonRequest(
+                personService.setPersonRequestDto(
                         userService.getUserResponseById(userId), travelService.createTravel(travel_name)),
                         TRUE)
                 .getTravel().getId().intValue();
@@ -56,7 +56,7 @@ public class TravelController {
         // TODO - path variable 을 long 으로 변경할 수 있는지 확인할 것
         TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
 
-        homeView.setPersonList(personService.getPersonListToHomeView(travelId));
+        homeView.setPersonList(personService.getPersonHomeViewList(travelId));
         homeView.setPersonCount(homeView.getPersonList().size());
         homeView.setEventList(eventService.getEventInfoInTravel(travelId));
         homeView.setEventCount(homeView.getEventList().size());
@@ -76,7 +76,7 @@ public class TravelController {
                              @PathVariable(value = "travelId") int travelId) {
         // TODO - userId -> personId 논의
         // if this person is not superUser for this travel, then throw Exception
-        personService.validateUserSuperuser(travelId, userId);
+        personService.validateIsUserSuperuser(travelId, userId);
         // delete travel
         travelService.deleteTravel(travelId);
     }

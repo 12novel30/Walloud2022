@@ -1,8 +1,7 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +9,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
+import static com.spring.mydiv.Code.WalloudCode.NEW_PARTICIPANT;
+import static com.spring.mydiv.Code.WalloudCode.STILL_PARTICIPATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,13 +27,12 @@ public class EventController {
     private final S3UploaderService s3UploaderService;
     private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    // TODO - dto 정리
     @PostMapping("/{travelId}/createEvent")
     public Long createEvent(@PathVariable int travelId,
                             @RequestBody EventDto.Request eventRequest) {
 
         // get Travel Information
-        eventRequest.setTravel(travelService.getTravelInfo(travelId));
+        eventRequest.setTravelDto(travelService.getTravelResponse(travelId));
         // create event
         EventDto.Response eventResponse = eventService.createEvent(eventRequest);
         // if payer not in parti_list, then add payer to parti_list
@@ -46,7 +45,15 @@ public class EventController {
             participantService.createParticipant(
                     participantService.setParticipantRequest(partiDto, eventResponse));
             // change person(parti) sumSend etc.
-            personService.updatePersonMoneyByCreating(partiDto, eventRequest);
+            personService.updatePersonMoney(
+                    PersonDto.tmp.builder()
+                            .personId(partiDto.getPersonId())
+                            .eventRole(partiDto.getRole())
+                            .eventPrice(Double.valueOf(eventRequest.getPrice()))
+                            .chargedPrice(partiDto.getSpent())
+                            .isCreate(true)
+                            .build()
+            );
         }
 
         // change person role in this Travel
@@ -59,97 +66,126 @@ public class EventController {
     public void deleteEvent(@PathVariable("travelId") int travelId,
                             @PathVariable("eventId") int eventId)
     {
-        List<ParticipantDto.detailView> partiList = participantService.getParticipantInEvent(eventId);
+        List<ParticipantDto.Detail> partiList = participantService.getPartiDtoListInEvent(eventId);
         // change person(parti) sumSend etc.
-        for (ParticipantDto.detailView partiDto : partiList){
-            personService.updatePersonMoneyByDeleting(
-                    partiDto, eventService.getEventPriceById(eventId));
+        for (ParticipantDto.Detail partiDto : partiList){
+            personService.updatePersonMoney(
+                    PersonDto.tmp.builder()
+                            .personId(partiDto.getPersonId())
+                            .eventRole(partiDto.isEventRole())
+                            .eventPrice(Double.valueOf(eventService.getEventPriceById(eventId)))
+                            .chargedPrice(partiDto.getChargedPrice())
+                            .isCreate(false)
+                            .build()
+            );
         }
         // change person(parti) role
         personService.updatePersonRole(travelId);
         // delete event
         eventService.deleteEvent(eventId);
     }
+    @PostMapping("/{travelId}/{eventId}/updateEvent")
+    public Long updateEvent(
+            @PathVariable("travelId") int travelId, @PathVariable("eventId") int eventId,
+            @RequestBody EventDto.Request eventUpdateRequest){
+        // update Event
+        EventDto.Response response = eventService.updateEvent(eventId, eventUpdateRequest);
+        // if payer not in parti_list, then add payer to currPartiDtoList
+        List<ParticipantDto.CreateEvent> currPartiDtoList =
+                eventService.validatePayerInPartiList(eventUpdateRequest);
 
-    @PostMapping("/{userid}/{travelid}/{eventid}/updateEvent")
-    public void updateEvent(@PathVariable("travelid") int travel_id, @PathVariable("eventid") int event_id, @RequestBody Map map) throws ParseException{
-        //setting for event update
-        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        int prevPrice = eventService.getEventPriceById(event_id);
-        int eventPrice = Integer.parseInt(map.get("price").toString());
-        Long payerId = Long.valueOf(map.get("payer_person_id").toString());
+        // get updateRequests from prevPartiDtoList
+        Map<Long, PersonDto.MoneyUpdate> updateRequests =
+                participantService.setMoneyUpdateRequestMap(
+                        participantService.getPartiDtoListInEvent(eventId),
+                        eventService.getEventPriceById(eventId),
+                        eventUpdateRequest.getPrice());
 
-        //update eventDB
-        EventDto.Request request = EventDto.Request.builder()
-                .event_name(map.get("event_name").toString())
-                .Date(simpleDateFormat.parse(map.get("event_date").toString()))
-                .Price(eventPrice)
-                .PayerPersonId(payerId)
-                .build();
-        eventService.updateEvent(event_id, request);
-
-        //setting for participant update
-        List<ParticipantDto.detailView> prevParticipants = participantService.getParticipantInEvent(event_id);
-        Map<Long, PersonDto.MoneyUpdateRequest> updateRequests = new HashMap<Long, PersonDto.MoneyUpdateRequest>();
-
-        for(ParticipantDto.detailView prevParticipant : prevParticipants) {
-            updateRequests.put(prevParticipant.getPersonId(),
-                    PersonDto.MoneyUpdateRequest.builder()
-                            .pervEventRole(prevParticipant.isEventRole())
-                            .currEventRole(false)
-                            .prevPrice(prevPrice)
-                            .currPrice(eventPrice)
-                            .prevChargedPrice(prevParticipant.getChargedPrice())
-                            .currChargedPrice(-1.0).build());
-        }
-
-        List<Map> partiDtoList = (List)map.get("parti_list");
-        partiDtoList = eventService.validatePayerInPartiList(partiDtoList, payerId);
-        Event e = eventService.getEventEntityByEventId(Long.valueOf(event_id));
-
-        for(Map partiDto : partiDtoList){
-            Long currPersonId = Long.valueOf(partiDto.get("personId").toString());
-            Person curr_p = personService.getPersonEntityByPersonId(currPersonId);
-            Double chargedPrice = Double.valueOf(partiDto.get("spent").toString());
-            Boolean eventRole = Boolean.parseBoolean(partiDto.get("role").toString());
-            if (updateRequests.containsKey(currPersonId)){ // still participated
-                PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(currPersonId);
-                currRequest.setCurrEventRole(eventRole);
-                currRequest.setCurrChargedPrice(chargedPrice);
-                participantService.updateParticipant(eventRole, chargedPrice, curr_p, e);
-                personService.updatePersonMoney(curr_p, currRequest);
+        // for each participant,
+        for(ParticipantDto.CreateEvent partiDto : currPartiDtoList){
+            WalloudCode isParticipatedChange = participantService.validateIsParticipated(updateRequests, partiDto);
+            if (isParticipatedChange == STILL_PARTICIPATED){
+                PersonDto.MoneyUpdate currRequest = updateRequests.get(partiDto.getPersonId());
+                currRequest.setCurrEventRole(partiDto.getRole());
+                currRequest.setCurrChargedPrice(partiDto.getSpent());
+                participantService.updateParticipant(
+                        partiDto.getRole(),
+                        partiDto.getSpent(),
+                        partiDto.getPersonId(),
+                        Long.valueOf(eventId));
+                personService.updatePersonMoney(
+                        PersonDto.tmp.builder()
+                                .personId(partiDto.getPersonId())
+                                .eventRole(currRequest.isPrevEventRole())
+                                .eventPrice(Double.valueOf(currRequest.getPrevPrice()))
+                                .chargedPrice(currRequest.getPrevChargedPrice())
+                                .isCreate(false)
+                                .build()
+                );
+                personService.updatePersonMoney(
+                        PersonDto.tmp.builder()
+                                .personId(partiDto.getPersonId())
+                                .eventRole(currRequest.isCurrEventRole())
+                                .eventPrice(Double.valueOf(currRequest.getCurrPrice()))
+                                .chargedPrice(currRequest.getCurrChargedPrice())
+                                .isCreate(true)
+                                .build()
+                );
             }
-            else{ // new participants
-                ParticipantDto.Request partiRequest = ParticipantDto.Request.builder()
-                        .person(curr_p)
-                        .event(eventService.getEventEntityByEventId(Long.valueOf(event_id)))
-                        .role(eventRole)
-                        .chargedPrice(chargedPrice)
-                        .build();
-                participantService.createParticipant(partiRequest);
-                personService.updatePersonMoneyByCreating(curr_p, eventPrice, chargedPrice, eventRole);
+            else if (isParticipatedChange == NEW_PARTICIPANT) {
+                participantService.createParticipant(
+                        participantService.setParticipantRequest(partiDto, response));
+                personService.updatePersonMoney(
+                        PersonDto.tmp.builder()
+                                .personId(partiDto.getPersonId())
+                                .eventRole(partiDto.getRole())
+                                .eventPrice(Double.valueOf(eventUpdateRequest.getPrice()))
+                                .chargedPrice(partiDto.getSpent())
+                                .isCreate(true)
+                                .build()
+                );
             }
         }
 
         for(Long personId : updateRequests.keySet()){ // Deleted participant
-            PersonDto.MoneyUpdateRequest currRequest = updateRequests.get(personId);
+            PersonDto.MoneyUpdate currRequest = updateRequests.get(personId);
             if(currRequest.getCurrChargedPrice().equals(-1.0)){
-                personService.updatePersonMoneyByDeleting(personService.getPersonEntityByPersonId(personId),
-                        eventService.getEventPriceById(event_id),
-                        currRequest.getPrevChargedPrice(),
-                        currRequest.isPervEventRole());
-                Person p = personService.getPersonEntityByPersonId(personId);
-                participantService.deleteParticipant(p, e);
+                personService.updatePersonMoney(
+                        PersonDto.tmp.builder()
+                                .personId(personId)
+                                .eventRole(currRequest.isPrevEventRole())
+                                .eventPrice(Double.valueOf(eventService.getEventPriceById(eventId)))
+                                .chargedPrice(currRequest.getPrevChargedPrice())
+                                .isCreate(false)
+                                .build()
+                );
+                participantService.deleteParticipant(personId, Long.valueOf(eventId));
             }
         }
 
-        //Update Person role
-        personService.updatePersonRole(travel_id);
+        // change person role in this Travel
+        personService.updatePersonRole(travelId);
+        // return created event id
+        return response.getEventId();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @GetMapping("/{eventId}/detail")
-    public List<ParticipantDto.detailView> getDetailInEvent(@PathVariable int eventId){
-        return participantService.getParticipantInEvent(eventId);
+    public List<ParticipantDto.Detail> getDetailInEvent(@PathVariable int eventId){
+        return participantService.getPartiDtoListInEvent(eventId);
     }
 
     @GetMapping("/{eventId}/getEventImage")

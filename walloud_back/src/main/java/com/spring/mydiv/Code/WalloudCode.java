@@ -9,5 +9,7 @@ public enum WalloudCode {
     MANAGER,
     OTHERS,
     NO_EVENTS,
+    STILL_PARTICIPATED,
+    NEW_PARTICIPANT,
     ;
 }

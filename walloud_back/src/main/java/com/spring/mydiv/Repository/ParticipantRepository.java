@@ -21,16 +21,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     List<Participant> findByPerson_Id(Long id);
     List<Participant> findByEvent_Id(Long id);
     void delete(Participant participant);
-    @Transactional
-
-    long deleteByPersonAndEvent(Person person, Event event);
-
-    @Transactional
-    @Modifying
-    @Query("update Participant p set p.eventRole = ?1, p.chargedPrice = ?2 where p.person = ?3 and p.event = ?4")
-    void updateEventRoleAndChargedPriceByPersonAndEvent(Boolean eventRole, Double chargedPrice, Person person, Event event);
-
-    Optional<Participant> findByPersonAndEvent(Person person, Event event);
+    Optional<Participant> findByPerson_IdAndEvent_Id(Long id, Long id1);
 
     Optional<Participant> findByEvent_IdAndEventRole(Long id, Boolean eventRole);
 

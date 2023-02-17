@@ -20,6 +20,7 @@ public class Participant implements Serializable {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "participant_id", length = 20)
 	private Long id;
+//	protected Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "person_id", referencedColumnName = "person_id")

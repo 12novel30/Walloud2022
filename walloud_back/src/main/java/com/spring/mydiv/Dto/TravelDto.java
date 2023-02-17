@@ -1,5 +1,6 @@
 package com.spring.mydiv.Dto;
 
+import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Entity.Travel;
 
 import lombok.AllArgsConstructor;
@@ -31,6 +32,13 @@ public class TravelDto {
                     .Name(travel.getName())
                     .build();
         }
+        public static Response fromPersonEntity(Person person) {
+            return Response.builder()
+                    .TravelId(person.getTravel().getId())
+                    .Name(person.getTravel().getName())
+                    .IsSuper(person.getIsSuper())
+                    .build();
+        }
     }
 
     @Getter
@@ -51,7 +59,7 @@ public class TravelDto {
         @Nullable
         private int PersonCount;
         @Nullable
-        private List<EventDto.HomeView> EventList;
+        private List<EventDto.Detail> EventList;
         @Nullable
         private int EventCount;
         @Nullable

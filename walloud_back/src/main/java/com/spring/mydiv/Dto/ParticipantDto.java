@@ -4,7 +4,6 @@ import com.spring.mydiv.Entity.*;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public class ParticipantDto {
     @Getter
@@ -12,27 +11,25 @@ public class ParticipantDto {
     @NoArgsConstructor
     @Builder
     public static class CreateEvent {
-        @NotNull
         private Long personId;
-        @NotNull
         private Boolean role;
-        @NotNull
         private Double spent;
     }
 
-
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class basic {
+    public static class Response {
+        private Long partiId;
         private Person person;
         private Event event;
         private Boolean eventRole;
 
-        public static basic fromEntity(Participant participant) {
-            return basic.builder()
+        public static Response fromEntity(Participant participant) {
+            return Response.builder()
+                    .partiId(participant.getId())
                     .person(participant.getPerson())
                     .event(participant.getEvent())
                     .eventRole(participant.getEventRole())
@@ -41,54 +38,24 @@ public class ParticipantDto {
 
     }
 
-    @Getter
+    @Getter // TODO - controller
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class response {
-        private Long participantId;
-        private Person person;
-        private Event event;
-        private Boolean eventRole;
-
-        public static response fromEntity(Participant participant) {
-            return response.builder()
-                    .participantId(participant.getId())
-                    .person(participant.getPerson())
-                    .event(participant.getEvent())
-                    .eventRole(participant.getEventRole())
-                    .build();
-        }
-
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class peopleList {
-        @NotNull
-        private List<Person> joinedPerson;
-        @NotNull
-        private Person payer;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class detailView {
-        @NotNull
+    public static class Detail {
         private Long PersonId;
-        @NotNull
         private String Name;
-        @NotNull
         private boolean eventRole;
-        @NotNull
         private Double chargedPrice;
+        public static Detail fromEntity(Participant participant) {
+            return Detail.builder()
+                    .PersonId(participant.getPerson().getId())
+                    .Name(participant.getPerson().getUser().getName())
+                    .eventRole(participant.getEventRole())
+                    .chargedPrice(participant.getChargedPrice())
+                    .build();
+        }
     }
 
     @Getter
@@ -100,8 +67,6 @@ public class ParticipantDto {
         @NotNull
         private Person person;
         @NotNull
-        private Event event;
-        @NotNull
         private Boolean role;
         /**Boolean eventRole
          * 1, true: payer
@@ -109,6 +74,8 @@ public class ParticipantDto {
          */
         @NotNull
         private Double chargedPrice;
+        @NotNull
+        private Event event;
     }
 
 }

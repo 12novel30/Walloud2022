@@ -13,8 +13,8 @@ import com.spring.mydiv.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
 import static com.spring.mydiv.Code.S3FolderName.DEFAULT_IMAGE;
@@ -28,20 +28,18 @@ public class UserService {
 
     @Transactional
     public UserDto.Response createUser(@NonNull UserDto.Request request) {
-        if (!checkIsEmailRegistered(request.getUser_email())){
-            User user = User.builder()
-                    .name(request.getUser_name())
-                    .email(request.getUser_email())
-                    .password(request.getUser_password())
-                    .account(request.getUser_account())
-                    .bank(request.getUser_bank())
-                    .info(DEFAULT_IMAGE.getDescription())
-                    .build();
-            userRepository.save(user);
-            return UserDto.Response.fromEntity(user);
-        }
-        else
-            throw new DefaultException(ALREADY_REGISTERED);
+        if (!checkIsEmailRegistered(request.getUser_email()))
+            return UserDto.Response.fromEntity(
+                    userRepository.save(
+                            User.builder()
+                                    .name(request.getUser_name())
+                                    .email(request.getUser_email())
+                                    .password(request.getUser_password())
+                                    .account(request.getUser_account())
+                                    .bank(request.getUser_bank())
+                                    .info(DEFAULT_IMAGE.getDescription())
+                                    .build()));
+        else throw new DefaultException(ALREADY_REGISTERED);
     }
 
     @Transactional(readOnly = true)
@@ -76,15 +74,10 @@ public class UserService {
     }
     @Transactional(readOnly = true)
     public List<TravelDto.Response> getUserJoinedTravel(int userId){
-        List<Person> list = personRepository.findByUser_Id(Long.valueOf(userId));
-        List<TravelDto.Response> result = new ArrayList<>();
-        for (Person p : list)
-            result.add(TravelDto.Response.builder()
-                    .TravelId(p.getTravel().getId())
-                    .Name(p.getTravel().getName())
-                    .IsSuper(p.getIsSuper())
-                    .build());
-        return result;
+        return personRepository.findByUser_Id(Long.valueOf(userId))
+                .stream()
+                .map(TravelDto.Response::fromPersonEntity)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -92,13 +85,12 @@ public class UserService {
         User user = getUserEntityById(userId);
 
         if (updateRequest.getUser_name() != null) user.setName(updateRequest.getUser_name());
-        if (updateRequest.getUser_email() != null) {
-            if (!checkIsEmailRegistered(updateRequest.getUser_email()) ||
-                    updateRequest.getUser_email().equals(user.getEmail()))
+        if (updateRequest.getUser_email() != null)
+            if (!checkIsEmailRegistered(updateRequest.getUser_email())
+                    || updateRequest.getUser_email().equals(user.getEmail()))
                 user.setEmail(updateRequest.getUser_email());
             else
                 throw new DefaultException(ALREADY_REGISTERED);
-        }
         if (updateRequest.getUser_password() != null) user.setPassword(updateRequest.getUser_password());
         if (updateRequest.getUser_account() != null) user.setAccount(updateRequest.getUser_account());
         if (updateRequest.getUser_bank() != null) user.setBank(updateRequest.getUser_bank());
@@ -109,16 +101,16 @@ public class UserService {
     @Transactional
     public String updateUserImage(int userId, String imageURL){
         User user = getUserEntityById(userId);
-        // TODO - deleteUserImage(user);
+        /* TODO - deleteUserImage(user);
+        *
+        * public void deleteUserImage(User user){
+        * String userExistingImage = user.getInfo();
+        * s3UploaderService.deleteImage(userExistingImage);
+        * }
+        * */
         user.setInfo(imageURL);
         return userRepository.save(user).getInfo();
     }
-
-    public void deleteUserImage(User user){
-        String userExistingImage = user.getInfo();
-        s3UploaderService.deleteImage(userExistingImage);
-    } // TODO - 아직 구현 안했음
-
     public String getUserImageURL(int userId){
         return getUserEntityById(userId).getInfo();
     }
@@ -126,7 +118,6 @@ public class UserService {
     public void deleteUser(int userId){
         if(getUserJoinedTravel(userId).size() == 0)
             userRepository.deleteById(Long.valueOf(userId));
-        else
-            throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
+        else throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
     }
 }

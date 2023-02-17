@@ -1,10 +1,5 @@
 package com.spring.mydiv.Dto;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import com.spring.mydiv.Entity.Person;
@@ -22,7 +17,7 @@ import java.util.List;
 
 public class PersonDto {
 
-	@Getter
+	@Getter // TODO - service
 	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
@@ -48,37 +43,20 @@ public class PersonDto {
 		}
 	}
 
-	@Getter
+	@Getter // TODO - service
 	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
 	public static class Request {
 		@NotNull
-		private UserDto.Response User;
+		private UserDto.Response UserDto;
 		@NotNull
-		private TravelDto.Response Travel;
+		private TravelDto.Response TravelDto;
 	}
 
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class Simple {
-		private Long PersonId;
-		private String Name;
-
-		public static Simple fromEntity(Person person) {
-			return Simple.builder()
-					.PersonId(person.getId())
-					.Name(person.getUser().getName())
-					.build();
-		}
-	}
-
-	@Getter
-	@Setter
+	@Getter // TODO - controller
+	@Setter // TODO - service
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -105,8 +83,8 @@ public class PersonDto {
 		}
 	}
 
-	@Getter
-	@Setter
+	@Getter// TODO - controller
+	@Setter // TODO - service
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -126,8 +104,8 @@ public class PersonDto {
 		}
 	}
 
-	@Getter
-	@Setter
+	@Getter // TODO - controller
+	@Setter // TODO - service
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -140,11 +118,11 @@ public class PersonDto {
 		private boolean isSettled;
 		@NotNull
 		private UserDto.Response User;
-		private List<EventDto.PersonView> EventList;
+		private List<EventDto.Detail> EventList;
 		private List<OrderMessage> PersonInTravelList;
 
 		public static Detail fromEntity(Person person) {
-			return Detail.builder()
+			return PersonDto.Detail.builder()
 					.PersonId(person.getId())
 					.SumSend(person.getSumSend())
 					.SumGet(person.getSumGet())
@@ -161,12 +139,27 @@ public class PersonDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
-	public static class MoneyUpdateRequest {
-		private boolean pervEventRole;
+	public static class MoneyUpdate {
+		private boolean prevEventRole;
 		private boolean currEventRole;
 		private int prevPrice;
 		private int currPrice;
 		private Double prevChargedPrice;
 		private Double currChargedPrice;
+	}
+
+
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Builder
+	public static class tmp {
+		private Long personId;
+		private boolean eventRole;
+		private Double eventPrice;
+		private Double chargedPrice;
+		private boolean isCreate;
 	}
 }
