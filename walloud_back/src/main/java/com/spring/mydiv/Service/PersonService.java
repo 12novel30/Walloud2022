@@ -27,7 +27,7 @@ import static java.lang.Boolean.*;
 public class PersonService {
 	private final PersonRepository personRepository;
 
-    @Transactional
+    @Transactional // TODO - fin
     public PersonDto.basic createPerson(PersonDto.Request request, boolean superUser) {
         Person person = Person.builder()
         		.user(User.builder()
@@ -55,12 +55,12 @@ public class PersonService {
     }
 
     @Transactional
-    public void deletePerson(int personId) {
+    public void deletePerson(int personId) { // TODO - fin
         personRepository.deleteById(Long.valueOf(personId));
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO - fin
     public void validateIsUserNotInTravel(Long userId, Long travelId){
         if (personRepository.existsByUser_IdAndTravel_Id(userId, Long.valueOf(travelId)))
             throw new DefaultException(ALREADY_EXISTED);
@@ -71,7 +71,7 @@ public class PersonService {
                 Long.valueOf(userId), Long.valueOf(travelId)).get().getIsSuper())
             throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
-    public void validateIsPersonNotSuperUser(int personId){
+    public void validateIsPersonNotSuperUser(int personId){ // TODO - fin
         if (getPersonEntityByPersonId(Long.valueOf(personId)).getIsSuper())
             throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }
@@ -142,12 +142,15 @@ public class PersonService {
     }
 
 
-    public PersonDto.Request setPersonRequestDto(UserDto.Response userDto,
+    public PersonDto.Request setPersonRequestDto(UserDto.Response userDto, // TODO - fin
                                                  TravelDto.Response travelDto) {
-        return new PersonDto.Request(userDto, travelDto);
+        return PersonDto.Request.builder()
+                .UserDto(userDto)
+                .TravelDto(travelDto)
+                .build();
     }
 
-    public PersonDto.Detail getPersonDetail(int personId){
+    public PersonDto.Detail getPersonDetail(int personId){ // TODO - fin
         return PersonDto.Detail.fromEntity(getPersonEntityByPersonId(Long.valueOf(personId)));
     }
     public PersonDto.OrderMessage getManagerOrderMessage(int travelId){
@@ -166,7 +169,7 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO - fin
     private Person getPersonEntityByPersonId(Long personId){
         return personRepository.findById(personId)
                 .orElseThrow(()-> new DefaultException(NO_USER)); // TODO - no person 으로 바꿔야 하는지?

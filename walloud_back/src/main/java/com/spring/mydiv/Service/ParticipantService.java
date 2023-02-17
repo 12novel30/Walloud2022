@@ -93,7 +93,7 @@ public class ParticipantService {
         participantRepository.delete(getPartiEntityByPersonIdAndEventId(personId, eventId));
     }
 
-    public void validateDoesPersonNotJoinedAnyEvent(int personId) {
+    public void validateDoesPersonNotJoinedAnyEvent(int personId) { // TODO - fin
         if (getPartiListByPersonId(personId).size() > 0)
             throw new DefaultException(INVALID_DELETE_EVENT_EXISTED);
     }
@@ -103,25 +103,29 @@ public class ParticipantService {
         else return NEW_PARTICIPANT;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO - fin
     public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId){
         List<EventDto.Detail> result = new ArrayList<>();
+        // get participant list (= person)
         List<Participant> partiList = getPartiListByPersonId(personId);
         for (Participant parti : partiList) {
-            EventDto.Detail eventDto = EventDto.Detail.fromEntity(
-                    getEventEntityById(parti.getEvent().getId())
-            );
-
-            if (parti.getEventRole() == true){ // Manager
+            // TODO 근데 여기에서 가져온 parti->eventDto 에 이미 정보가 다 있는거 아닌가 .....???
+            // get eventDto that this participant join
+            EventDto.Detail eventDto =
+                    EventDto.Detail.fromEntity(getEventEntityById(parti.getEvent().getId()));
+            // if participant Event Role == Manager
+            if (parti.getEventRole() == true){
+                // set eventDto payer information
                 eventDto.setPayerId(Long.valueOf(personId));
                 eventDto.setPayerName(getPersonEntityByPersonId(Long.valueOf(personId))
                         .getUser().getName()
                 );
             }
-            else { // others
+            // if participant Event Role == others
+            else {
+                // set payer that
                 Participant payer = participantRepository.findByEvent_IdAndEventRole(
-                        eventDto.getEventId(), true).
-                        get();
+                        eventDto.getEventId(), true).get();
                 eventDto.setPayerId(payer.getId());
                 eventDto.setPayerName(payer.getPerson().getUser().getName());
             }
@@ -136,7 +140,7 @@ public class ParticipantService {
                 .map(ParticipantDto.Detail::fromEntity)
                 .collect(Collectors.toList());
     }
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO - fin
     private List<Participant> getPartiListByPersonId(int personId) {
         return participantRepository.findByPerson_Id(Long.valueOf(personId));
     }
