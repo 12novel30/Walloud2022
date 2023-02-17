@@ -1,29 +1,46 @@
 package com.spring.mydiv.Service;
 
-import com.spring.mydiv.Dto.PersonDto;
-import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Entity.Person;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.spring.mydiv.Repository.PersonRepository;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.Boolean.FALSE;
-
-@SpringBootTest
+@ExtendWith(MockitoExtension.class) // mock 테스트를 위함
 class PersonServiceTest {
-    @Autowired(required=true)
-    private PersonService personService;
-    @Autowired(required=true)
-    private UserService userService;
-    @Autowired(required=true)
-    private TravelService travelService;
-    @Autowired(required=true)
-    private EventService eventService;
+
+    @Mock //DMakerService 에 선언된 final
+    private PersonRepository personRepository;
+    @InjectMocks
+    private PersonService personService; // new DMakerService() 하지 않음
+
+//    private final Developer defaultDeveloper = Developer.builder()
+//            // 자주 사용하는 entity/dto 의 경우 미리 선언해두는 것이 좋음
+//            .developerLevel(SENIOR)
+//            .developerSkillType(BACK_END)
+//            .experienceYears(MIN_SENIOR_EXPERIENCE_YEARS + 1)
+//            .statusCode(StatusCode.EMPLOYED)
+//            .name("name")
+//            .age(32)
+//            .build();
+//
+//    private CreateDeveloper.Request getCreateRequest(
+//            DeveloperLevel developerLevel,
+//            DeveloperSkillType developerSkillType,
+//            Integer experienceYears,
+//            String memberId
+//    ){
+//        return CreateDeveloper.Request.builder()
+//                .developerLevel(developerLevel)
+//                .developerSkillType(developerSkillType)
+//                .experienceYears(experienceYears)
+//                .memberId(memberId)
+//                .name("name")
+//                .age(23)
+//                .build();
+//    }
+
 
 //    @Test
 //    @Commit
