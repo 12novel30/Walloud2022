@@ -184,7 +184,7 @@ public class EventController {
 
 
     @GetMapping("/{eventId}/detail")
-    public List<ParticipantDto.Detail> getDetailInEvent(@PathVariable int eventId){
+    public List<ParticipantDto.Detail> getDetailInEvent(@PathVariable int eventId) {
         return participantService.getPartiDtoListInEvent(eventId);
     }
 
@@ -197,6 +197,8 @@ public class EventController {
     public String updateEventImage(@PathVariable int eventId,
                                    @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return eventService.updateEventImage(eventId, s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
+        return eventService.updateEventImage(
+                eventId,
+                s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
     }
 }

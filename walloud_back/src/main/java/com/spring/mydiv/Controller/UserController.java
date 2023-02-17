@@ -54,7 +54,9 @@ public class UserController {
     public String updateUserImage(@PathVariable int userId,
                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return userService.updateUserImage(userId, s3UploaderService.upload(file, USER_FOLDER.getDescription()));
+        return userService.updateUserImage(
+                userId,
+                s3UploaderService.upload(file, USER_FOLDER.getDescription()));
     }
 
     @GetMapping("/{userId}/getUserImage")

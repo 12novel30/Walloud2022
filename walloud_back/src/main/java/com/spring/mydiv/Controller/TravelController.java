@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
-import static java.lang.Boolean.TRUE;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +29,12 @@ public class TravelController {
         * - set person Dto
         * - get User Information
         * - create Travel
-        * - this person is superUser */
+        * - this person is superUser = TRUE */
         return personService.createPerson(
                 personService.setPersonRequestDto(
-                        userService.getUserResponseById(userId), travelService.createTravel(travel_name)),
-                        TRUE)
+                        userService.getUserResponseById(userId),
+                        travelService.createTravel(travel_name)),
+                        true)
                 .getTravel().getId().intValue();
     }
 
@@ -48,7 +48,9 @@ public class TravelController {
     public String updateTravelImage(@PathVariable int travelId,
                                     @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return travelService.updateTravelImage(travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
+        return travelService.updateTravelImage(
+                travelId,
+                s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
     }
 
     @GetMapping("/{travelId}/getTravelHomeView") // TODO - postman test yet - create event, user 끝나면 진행할 것

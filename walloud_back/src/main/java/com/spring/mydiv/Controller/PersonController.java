@@ -7,14 +7,12 @@ import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.TravelService;
 import com.spring.mydiv.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.spring.mydiv.Code.WalloudCode.MANAGER;
 import static com.spring.mydiv.Code.WalloudCode.OTHERS;
-import static java.lang.Boolean.FALSE;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +29,8 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         // get User Information
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
         // if user not in travel then throw Exception
-        personService.validateIsUserNotInTravel(userDto.getUserId(), Long.valueOf(travelId));
+        personService.validateIsUserNotInTravel(
+                userDto.getUserId(), Long.valueOf(travelId));
         /* return created person id
         * - set person Dto
         * - get Travel Information
@@ -39,7 +38,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         return personService.createPerson(
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
-                        FALSE).
+                        false).
                 getPersonId().intValue();
     }
 
@@ -61,13 +60,16 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         // get person info
         PersonDto.Detail detailView = personService.getPersonDetail(personId);
         // get event list that this person joined
-        detailView.setEventList(participantService.getEventDtoListThatPersonJoin(personId));
+        detailView.setEventList(
+                participantService.getEventDtoListThatPersonJoin(personId));
         // set order list (by person role)
         WalloudCode orderCode = personService.validateIsManager(detailView);
         if (orderCode == MANAGER) // set all member
-            detailView.setPersonInTravelList(personService.getOthersOrderMessageList(travelId));
+            detailView.setPersonInTravelList(
+                    personService.getOthersOrderMessageList(travelId));
         else if (orderCode == OTHERS) { // set only manager
-            PersonDto.OrderMessage manager = personService.getManagerOrderMessage(travelId);
+            PersonDto.OrderMessage manager =
+                    personService.getManagerOrderMessage(travelId);
             manager.setDifference(detailView.getDifference()); // change manager diff
             detailView.setPersonInTravelList(List.of(manager));
         }
