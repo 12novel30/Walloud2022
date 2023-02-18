@@ -96,19 +96,34 @@ public class EventController {
                 eventService.updateEvent(eventId, eventUpdateRequest);
 
         // if new payer not in parti_list, then add payer to currPartiDtoList
-        // and delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
-        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap =
-                participantService.validateParticipatedChange(response,
+        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
+                participantService.first(
                         eventService.validatePayerInPartiList(eventUpdateRequest),
                         participantService.getPartiCRUDEventDtoListInEvent(eventId)
                 );
-        // update person(parti) sumSend etc.
-        personService.updatePersonMoneyAllType(participatedChangeMap, prevEventPrice, currEventPrice);
+        // delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
+        // and update person(parti) sumSend etc.
+        personService.second(response, participatedChangeMap, prevEventPrice, currEventPrice);
 
         // change person role in this Travel
         personService.updatePersonRole(travelId);
         // return created event id
         return response.getEventId();
+
+//        // if new payer not in parti_list, then add payer to currPartiDtoList
+//        // and delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
+//        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap =
+//                participantService.validateParticipatedChange(response,
+//                        eventService.validatePayerInPartiList(eventUpdateRequest),
+//                        participantService.getPartiCRUDEventDtoListInEvent(eventId)
+//                );
+//        // update person(parti) sumSend etc.
+//        personService.updatePersonMoneyAllType(participatedChangeMap, prevEventPrice, currEventPrice);
+//
+//        // change person role in this Travel
+//        personService.updatePersonRole(travelId);
+//        // return created event id
+//        return response.getEventId();
     }
 
 

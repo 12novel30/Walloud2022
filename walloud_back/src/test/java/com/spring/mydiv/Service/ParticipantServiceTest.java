@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Commit;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +25,40 @@ class ParticipantServiceTest {
     private PersonService personService;
     @Autowired(required = true)
     private EventService eventService;
+
+    private final EventDto.Response response =
+            new EventDto.Response(Long.valueOf(277), "testing");
+    private final List<ParticipantDto.CRUDEvent> currPartiDtoList =
+            List.of(ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(542))
+                            .role(true)
+                            .spent(Double.valueOf(100))
+                            .build(),
+                    ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(537))
+                            .role(false)
+                            .spent(Double.valueOf(200))
+                            .build());
+    private final List<ParticipantDto.CRUDEvent> prevPartiDtoList =
+            List.of(ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(537))
+                            .role(true)
+                            .spent(Double.valueOf(101))
+                            .build(),
+                    ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(553))
+                            .role(false)
+                            .spent(Double.valueOf(201))
+                            .build());
+    @Test
+    public void validateParticipatedChange(){
+        //given
+        //when
+        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
+                participantService.first(currPartiDtoList, prevPartiDtoList);
+        personService.second(response, participatedChangeMap, 300, 303);
+        //then
+    }
 
 //    @Test
 //    @Commit

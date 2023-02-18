@@ -31,6 +31,53 @@ public class ParticipantService {
     private final EventRepository eventRepository;
     private final PersonRepository personRepository;
 
+
+
+    public Map<Long, ParticipantDto.forUpdateEvent> first(
+            List<ParticipantDto.CRUDEvent> currPartiDtoList, // TODO - testing
+            List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
+        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap = new HashMap<>();
+
+        // 1st. 변경된(curr) participant 리스트를 map 에 추가
+        for (ParticipantDto.CRUDEvent currDto : currPartiDtoList)
+            participatedChangeMap.put(
+                    currDto.getPersonId(),
+                    ParticipantDto.forUpdateEvent.builder()
+                            .curr(currDto)
+                            .isParticipatedChange(NEW_PARTICIPANT)
+                            .build());
+        // 2nd. 기존(prev) participant 리스트를 map 에 추가/수정
+        for (ParticipantDto.CRUDEvent prevDto : prevPartiDtoList){
+            // 2-1. curr list 에 없는 parti 일 경우, NOW_NOT_PARTICIPATED
+            if (!participatedChangeMap.containsKey(prevDto.getPersonId())) {
+                participatedChangeMap.put(
+                        prevDto.getPersonId(),
+                        ParticipantDto.forUpdateEvent.builder()
+                                .prev(prevDto)
+                                .isParticipatedChange(NOW_NOT_PARTICIPATED)
+                                .build());
+            }
+            // 2-2. curr list 에 있는 parti 일 경우, STILL_PARTICIPATED & spent 변경
+            else {
+                ParticipantDto.forUpdateEvent changing =
+                        participatedChangeMap.get(prevDto.getPersonId());
+                changing.setPrev(prevDto);
+                changing.setIsParticipatedChange(STILL_PARTICIPATED);
+                participatedChangeMap.replace(prevDto.getPersonId(), changing);
+            }
+        }
+        return participatedChangeMap;
+    }
+
+
+
+
+
+
+
+
+
+
     @Transactional // TODO - fin
     public ParticipantDto.Response createParticipant(ParticipantDto.Request request){
         Participant participant = Participant.builder()
@@ -80,41 +127,48 @@ public class ParticipantService {
         if (getPartiListByPersonId(personId).size() > 0)
             throw new DefaultException(INVALID_DELETE_EVENT_EXISTED);
     }
-    public Map<Long, ParticipantDto.CRUDEvent> validateParticipatedChange(EventDto.Response response,
-                                                                          List<ParticipantDto.CRUDEvent> currPartiDtoList, // TODO - testing
-                                                                          List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
-        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap = new HashMap<>();
-
-        // 1st. 변경된(curr) participant 리스트를 map 에 추가
-        for (ParticipantDto.CRUDEvent currDto : currPartiDtoList){
-            currDto.setIsParticipatedChange(NEW_PARTICIPANT);
-            participatedChangeMap.put(currDto.getPersonId(), currDto);
-            // create entity
-            createParticipant(setParticipantRequest(currDto, response));
-        }
-        // 2nd. 기존(prev) participant 리스트를 map 에 추가/수정
-        for (ParticipantDto.CRUDEvent prevDto : prevPartiDtoList){
-            // 2-1. curr list 에 없는 parti 일 경우, NOW_NOT_PARTICIPATED
-            if (!participatedChangeMap.containsKey(prevDto.getPersonId())){
-                prevDto.setIsParticipatedChange(NOW_NOT_PARTICIPATED);
-                participatedChangeMap.put(prevDto.getPersonId(), prevDto);
-                // delete entity
-                deleteParticipant(prevDto.getPersonId(), response.getEventId());
-
-            }
-            // 2-2. curr list 에 있는 parti 일 경우, STILL_PARTICIPATED & spent 변경
-            else {
-                ParticipantDto.CRUDEvent changing = participatedChangeMap.get(prevDto.getPersonId());
-                changing.setIsParticipatedChange(STILL_PARTICIPATED);
-                changing.setSpent(changing.getSpent() - prevDto.getSpent());
-                changing.setRole(prevDto.getRole());
-                participatedChangeMap.replace(prevDto.getPersonId(), changing);
-                // update entity
-                updateParticipant(prevDto, response.getEventId());
-            }
-        }
-        return participatedChangeMap;
-    }
+//    public Map<Long, ParticipantDto.CRUDEvent> validateParticipatedChange(EventDto.Response response,
+//                                                                          List<ParticipantDto.CRUDEvent> currPartiDtoList, // TODO - testing
+//                                                                          List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
+//        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap = new HashMap<>();
+//
+//        // 1st. 변경된(curr) participant 리스트를 map 에 추가
+//        for (ParticipantDto.CRUDEvent currDto : currPartiDtoList){
+//            currDto.setIsParticipatedChange(NEW_PARTICIPANT);
+//            participatedChangeMap.put(currDto.getPersonId(), currDto);
+//        }
+//        // 2nd. 기존(prev) participant 리스트를 map 에 추가/수정
+//        for (ParticipantDto.CRUDEvent prevDto : prevPartiDtoList){
+//            // 2-1. curr list 에 없는 parti 일 경우, NOW_NOT_PARTICIPATED
+//            if (!participatedChangeMap.containsKey(prevDto.getPersonId())){
+//                prevDto.setIsParticipatedChange(NOW_NOT_PARTICIPATED);
+//                participatedChangeMap.put(prevDto.getPersonId(), prevDto);
+//            }
+//            // 2-2. curr list 에 있는 parti 일 경우, STILL_PARTICIPATED & spent 변경
+//            else {
+//                ParticipantDto.CRUDEvent changing = participatedChangeMap.get(prevDto.getPersonId());
+//                changing.setIsParticipatedChange(STILL_PARTICIPATED);
+//                Double currSpent = changing.getSpent();
+//                changing.setSpent(changing.getSpent() - prevDto.getSpent());
+//                changing.setRole(prevDto.getRole());
+//                participatedChangeMap.replace(prevDto.getPersonId(), changing);
+//                changing.setSpent(currSpent); // update 는 변경된걸로 제대로 해야함
+//            }
+//        }
+//
+//        // update entity
+//        for (Map.Entry<Long, ParticipantDto.CRUDEvent> entry : participatedChangeMap.entrySet()){
+//            ParticipantDto.CRUDEvent dto = entry.getValue();
+//            if (dto.getIsParticipatedChange() == NEW_PARTICIPANT) // create
+//                createParticipant(setParticipantRequest(dto, response));
+//            else if (dto.getIsParticipatedChange() == NOW_NOT_PARTICIPATED) // delete
+//                deleteParticipant(dto.getPersonId(), response.getEventId());
+//            else if (dto.getIsParticipatedChange() == STILL_PARTICIPATED) // update
+//                updateParticipant(dto, response.getEventId());
+//            // 바뀔 때 차액이 들어가면 안됨
+//        }
+//        return participatedChangeMap;
+//    }
 
     @Transactional(readOnly = true) // TODO - testing
     public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId){

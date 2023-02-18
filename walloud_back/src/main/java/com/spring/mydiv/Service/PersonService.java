@@ -27,6 +27,65 @@ import static java.lang.Boolean.*;
 @RequiredArgsConstructor
 public class PersonService {
 	private final PersonRepository personRepository;
+    private final ParticipantService participantService;
+
+
+
+
+
+
+
+    public void second( // TODO - check
+                        EventDto.Response response,
+                        Map<Long, ParticipantDto.forUpdateEvent> map,
+                                          int prevEventPrice, int currEventPrice) {
+        for (Map.Entry<Long, ParticipantDto.forUpdateEvent> entry : map.entrySet()){
+            ParticipantDto.forUpdateEvent dto = entry.getValue();
+            if (dto.getIsParticipatedChange() == NEW_PARTICIPANT){
+                // create participant
+                participantService.createParticipant(
+                        participantService.setParticipantRequest(dto.getCurr(), response));
+                // and update person(parti) sumSend etc.
+                updatePersonMoneyFromDto(setUpdateEntity(dto.getCurr(), Double.valueOf(currEventPrice), true));
+            } else if (dto.getIsParticipatedChange() == NOW_NOT_PARTICIPATED) {
+                // delete participant
+                participantService.deleteParticipant(dto.getPrev().getPersonId(), response.getEventId());
+                // and update person(parti) sumSend etc.
+                updatePersonMoneyFromDto(setUpdateEntity(dto.getPrev(), Double.valueOf(prevEventPrice), false));
+            } else if (dto.getIsParticipatedChange() == STILL_PARTICIPATED) {
+                // update participant
+                participantService.updateParticipant(dto.getCurr(), response.getEventId());
+                // and update person(parti) sumSend etc.
+                updatePersonMoneyFromDto(setUpdateEntity(dto.getPrev(), Double.valueOf(prevEventPrice), false));
+                updatePersonMoneyFromDto(setUpdateEntity(dto.getCurr(), Double.valueOf(currEventPrice), true));
+            }
+        }
+    }
+    private static PersonDto.tmp setUpdateEntity(ParticipantDto.CRUDEvent dto, Double currEventPrice, boolean isCreate) {
+        return PersonDto.tmp.builder()
+                .personId(dto.getPersonId())
+                .eventRole(dto.getRole())
+                .eventPrice(currEventPrice)
+                .chargedPrice(dto.getSpent())
+                .isCreate(isCreate)
+                .build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional // TODO - fin
     public PersonDto.basic createPerson(PersonDto.Request request, boolean superUser) {
@@ -84,30 +143,24 @@ public class PersonService {
         else return NO_EVENTS;
     }
 
-    public void updatePersonMoneyAllType( // TODO - check
-                                          Map<Long, ParticipantDto.CRUDEvent> crudEventMap,
-                                          int prevEventPrice, int currEventPrice) {
-        Boolean isCreate = true;
-        Double eventPrice = Double.valueOf(0);
-        for (Map.Entry<Long, ParticipantDto.CRUDEvent> entry : crudEventMap.entrySet()){
-            ParticipantDto.CRUDEvent dto = entry.getValue();
-            if (dto.getIsParticipatedChange() == NEW_PARTICIPANT){
-                eventPrice = Double.valueOf(currEventPrice);
-            } else if (dto.getIsParticipatedChange() == NOW_NOT_PARTICIPATED) {
-                isCreate = false;
-                eventPrice = Double.valueOf(prevEventPrice);
-            } else if (dto.getIsParticipatedChange() == STILL_PARTICIPATED) {
-                eventPrice = Double.valueOf(currEventPrice - prevEventPrice);
-            }
-            updatePersonMoneyFromDto(PersonDto.tmp.builder()
-                    .personId(dto.getPersonId())
-                    .eventRole(dto.getRole())
-                    .eventPrice(eventPrice)
-                    .chargedPrice(dto.getSpent())
-                    .isCreate(isCreate)
-                    .build());
-        }
-    }
+//    public void updatePersonMoneyAllType( // TODO - check
+//                                          Map<Long, ParticipantDto.CRUDEvent> crudEventMap,
+//                                          int prevEventPrice, int currEventPrice) {
+//        Boolean isCreate = true;
+//        Double eventPrice = Double.valueOf(0);
+//        for (Map.Entry<Long, ParticipantDto.CRUDEvent> entry : crudEventMap.entrySet()){
+//            ParticipantDto.CRUDEvent dto = entry.getValue();
+//            if (dto.getIsParticipatedChange() == NEW_PARTICIPANT){
+//                eventPrice = Double.valueOf(currEventPrice);
+//            } else if (dto.getIsParticipatedChange() == NOW_NOT_PARTICIPATED) {
+//                isCreate = false;
+//                eventPrice = Double.valueOf(prevEventPrice);
+//            } else if (dto.getIsParticipatedChange() == STILL_PARTICIPATED) {
+//                eventPrice = Double.valueOf(currEventPrice - prevEventPrice);
+//            }
+//            updatePersonMoneyFromDto(setUpdateEntity(dto, eventPrice, isCreate));
+//        }
+//    }
     @Transactional // TODO check
     public void updatePersonMoneyFromDto(PersonDto.tmp tmp) {
         Person person = getPersonEntityByPersonId(tmp.getPersonId());

@@ -16,7 +16,7 @@ public class ParticipantDto {
         private Long personId;
         private Boolean role;
         private Double spent;
-        private WalloudCode isParticipatedChange = null;
+//        private WalloudCode isParticipatedChange = null;
         public static CRUDEvent fromEntity(Participant participant) {
             return CRUDEvent.builder()
                     .personId(participant.getPerson().getId())
@@ -24,6 +24,16 @@ public class ParticipantDto {
                     .spent(participant.getChargedPrice())
                     .build();
         }
+    }
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class forUpdateEvent {
+        private CRUDEvent prev;
+        private CRUDEvent curr;
+        private WalloudCode isParticipatedChange = null;
     }
     @Getter
     @Setter
