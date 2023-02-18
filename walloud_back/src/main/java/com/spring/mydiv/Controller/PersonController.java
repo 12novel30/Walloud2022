@@ -50,7 +50,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         personService.deletePerson(person_id);
     }
 
-    @GetMapping("{travelId}/{personId}/getPersonDetailView") // TODO - fin
+    @GetMapping("/{travelId}/{personId}/getPersonDetailView")
     public PersonDto.Detail getPersonDetailView(
             @PathVariable("travelId") int travelId,
             @PathVariable("personId") int personId){
@@ -80,9 +80,9 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         return personService.getPersonHomeViewList(travelId);
     }
 
-    @PutMapping("{personId}/updateIsSettled")
-    public int updateIsSettled( // TODO - fin
-            @PathVariable int personId, @RequestBody String isSettled){
-        return personService.updateIsSettled(personId, Boolean.valueOf(isSettled));
+    @PutMapping("/{personId}/updateIsSettled")
+    public int updateIsSettled(
+            @PathVariable int personId, @RequestBody Boolean isSettled){
+        return personService.updateIsSettled(personId, isSettled);
     }
 }

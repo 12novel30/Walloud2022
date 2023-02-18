@@ -24,7 +24,7 @@ public class EventController {
     private final S3UploaderService s3UploaderService;
     private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    @PostMapping("/{travelId}/createEvent") // TODO check
+    @PostMapping("/{travelId}/createEvent")
     public Long createEvent(@PathVariable int travelId,
                             @RequestBody EventDto.Request eventRequest) {
         // get Travel Information
@@ -84,7 +84,7 @@ public class EventController {
         eventService.deleteEvent(eventId);
     }
     @PostMapping("/{travelId}/{eventId}/updateEvent")
-    public Long updateEvent(
+    public Long updateEvent( // TODO check
             @PathVariable("travelId") int travelId, @PathVariable("eventId") int eventId,
             @RequestBody EventDto.Request eventUpdateRequest){
         // get prev & curr price of event
@@ -112,26 +112,22 @@ public class EventController {
     }
 
 
-
-
-
-
-    @GetMapping("/{eventId}/getPartiListInEvent") // TODO - fin
+    @GetMapping("/{eventId}/getPartiListInEvent")
     public List<ParticipantDto.Detail> getPartiListInEvent(@PathVariable int eventId) {
         return participantService.getPartiDetailDtoListInEvent(eventId);
     }
-    @GetMapping("/{eventId}/getEventDetail") // TODO - fin
+    @GetMapping("/{eventId}/getEventDetail")
     public EventDto.Detail getEventDetail(@PathVariable int eventId) {
         return eventService.getEventDetail(eventId);
     }
 
-    @GetMapping("/{eventId}/getEventImage") // TODO - fin
+    @GetMapping("/{eventId}/getEventImage")
     public String getEventImage(@PathVariable int eventId){
         return eventService.getEventImageURL(eventId);
     }
 
     // TODO - image 관련 메소드 하나로 합치기
-    @PutMapping("/{eventId}/updateEventImage") // TODO - fin
+    @PutMapping("/{eventId}/updateEventImage")
     public String updateEventImage(@PathVariable int eventId,
                                    @RequestPart(value="file") MultipartFile file)
             throws IOException {
