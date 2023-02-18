@@ -54,30 +54,13 @@ public class ParticipantService {
                 .chargedPrice(partiDto.getSpent())
                 .build();
     }
-    public Map<Long, PersonDto.MoneyUpdate> setMoneyUpdateRequestMap(
-            List<ParticipantDto.Detail> prevPartiDtoList,
-            int prevPrice, int currPrice) {
-        Map<Long, PersonDto.MoneyUpdate> updateRequests = new HashMap<>();
-        for(ParticipantDto.Detail prevParticipant : prevPartiDtoList) {
-            updateRequests.put(
-                    prevParticipant.getPersonId(), // key
-                    PersonDto.MoneyUpdate.builder() // value
-                            .prevEventRole(prevParticipant.isEventRole())
-                            .currEventRole(false)
-                            .prevPrice(prevPrice)
-                            .currPrice(currPrice)
-                            .prevChargedPrice(prevParticipant.getChargedPrice())
-                            .currChargedPrice(-1.0)
-                            .build());
-        }
-        return updateRequests;
+
+    public Double calculateChargedPrice(int eventPrice, int partiSize) // TODO - 추후 업데이트에 따라 로직 변경 가능
+    {
+        return (double) eventPrice / partiSize;
     }
 
-    public Double calculateChargedPrice(int eventPrice, int partiSize){
-        return (double) eventPrice / partiSize; // 추후 업데이트에 따라 로직 변경 가능
-    }
-
-    @Transactional
+    @Transactional // TODO - testing
     public void updateParticipant(ParticipantDto.CRUDEvent partiDto, Long eventId){
         Participant participant = getPartiEntityByPersonIdAndEventId(partiDto.getPersonId(), eventId);
 
@@ -87,91 +70,19 @@ public class ParticipantService {
         participantRepository.save(participant);
     }
 
-    @Transactional
+    @Transactional // TODO - testing
     public void deleteParticipant(Long personId, Long eventId){
         participantRepository.delete(getPartiEntityByPersonIdAndEventId(personId, eventId));
     }
 
-    public void validateDoesPersonNotJoinedAnyEvent(int personId) { // TODO - fin
+    public void validateDoesPersonNotJoinedAnyEvent(int personId) // TODO - fin
+    {
         if (getPartiListByPersonId(personId).size() > 0)
             throw new DefaultException(INVALID_DELETE_EVENT_EXISTED);
     }
-    public WalloudCode validateIsParticipated(Map<Long, PersonDto.MoneyUpdate> updateRequests,
-                                              ParticipantDto.CRUDEvent partiDto){
-        if (updateRequests.containsKey(partiDto.getPersonId())) return STILL_PARTICIPATED;
-        else return NEW_PARTICIPANT;
-    }
-
-    @Transactional(readOnly = true) // TODO - testing
-    public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId){
-        List<EventDto.Detail> result = new ArrayList<>();
-        // get participant list (= person)
-        List<Participant> partiList = getPartiListByPersonId(personId);
-        for (Participant parti : partiList) {
-            // TODO 근데 여기에서 가져온 parti->eventDto 에 이미 정보가 다 있는거 아닌가 .....???
-            // get eventDto that this participant join
-            EventDto.Detail eventDto = EventDto.Detail.fromEntity(
-                    getEventEntityById(parti.getEvent().getId()));
-            eventDto.setPayerName(
-                    getPersonEntityByPersonId(Long.valueOf(eventDto.getPayerId()))
-                            .getUser().getName());
-//            // if participant Event Role == Manager
-//            if (parti.getEventRole() == true){
-//                // set eventDto payer information
-//                eventDto.setPayerId(Long.valueOf(personId));
-//                eventDto.setPayerName(getPersonEntityByPersonId(Long.valueOf(personId))
-//                        .getUser().getName()
-//                );
-//            }
-//            // if participant Event Role == others
-//            else {
-//                // set payer that
-//                Participant payer = participantRepository.findByEvent_IdAndEventRole(
-//                        eventDto.getEventId(), true).get();
-//                eventDto.setPayerId(payer.getId());
-//                eventDto.setPayerName(payer.getPerson().getUser().getName());
-//            }
-            result.add(eventDto);
-        }
-        return result;
-    }
-    @Transactional(readOnly = true) // TODO - fin
-    public List<ParticipantDto.CRUDEvent> getPartiCRUDEventDtoListInEvent(int eventId){
-        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
-                .stream()
-                .map(ParticipantDto.CRUDEvent::fromEntity)
-                .collect(Collectors.toList());
-    }
-    @Transactional(readOnly = true) // TODO - fin
-    public List<ParticipantDto.Detail> getPartiDetailDtoListInEvent(int eventId){
-        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
-                .stream()
-                .map(ParticipantDto.Detail::fromEntity)
-                .collect(Collectors.toList());
-    }
-    @Transactional(readOnly = true) // TODO - fin
-    private List<Participant> getPartiListByPersonId(int personId) {
-        return participantRepository.findByPerson_Id(Long.valueOf(personId));
-    }
-    @Transactional(readOnly = true)
-    private Person getPersonEntityByPersonId(Long personId) {
-        return personRepository.findById(personId)
-                .orElseThrow(() -> new DefaultException(NO_USER)); // TODO - no person 으로 바꿔야 하는지?
-    }
-    @Transactional(readOnly = true)
-    private Event getEventEntityById(Long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() -> new DefaultException(NO_EVENT));
-    }
-    @Transactional(readOnly = true)
-    private Participant getPartiEntityByPersonIdAndEventId(Long personId, Long eventId) {
-        return participantRepository.findByPerson_IdAndEvent_Id(personId, eventId)
-                .orElseThrow(() -> new DefaultException(NO_USER));
-    }
-
     public Map<Long, ParticipantDto.CRUDEvent> validateParticipatedChange(EventDto.Response response,
-            List<ParticipantDto.CRUDEvent> currPartiDtoList,
-            List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
+                                                                          List<ParticipantDto.CRUDEvent> currPartiDtoList, // TODO - testing
+                                                                          List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
         Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap = new HashMap<>();
 
         // 1st. 변경된(curr) participant 리스트를 map 에 추가
@@ -205,4 +116,70 @@ public class ParticipantService {
         return participatedChangeMap;
     }
 
+    @Transactional(readOnly = true) // TODO - testing
+    public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId){
+        List<EventDto.Detail> result = new ArrayList<>();
+        // get participant list (= person)
+        List<Participant> partiList = getPartiListByPersonId(personId);
+        for (Participant parti : partiList) {
+            // get eventDto that this participant join
+            EventDto.Detail eventDto = EventDto.Detail.fromEntity(
+                    getEventEntityById(parti.getEvent().getId()));
+            eventDto.setPayerName(
+                    getPersonEntityByPersonId(Long.valueOf(eventDto.getPayerId()))
+                            .getUser().getName());
+            // TODO 근데 여기에서 가져온 parti->eventDto 에 이미 정보가 다 있는거 아닌가 .....???
+//            // if participant Event Role == Manager
+//            if (parti.getEventRole() == true){
+//                // set eventDto payer information
+//                eventDto.setPayerId(Long.valueOf(personId));
+//                eventDto.setPayerName(getPersonEntityByPersonId(Long.valueOf(personId))
+//                        .getUser().getName()
+//                );
+//            }
+//            // if participant Event Role == others
+//            else {
+//                // set payer that
+//                Participant payer = participantRepository.findByEvent_IdAndEventRole(
+//                        eventDto.getEventId(), true).get();
+//                eventDto.setPayerId(payer.getId());
+//                eventDto.setPayerName(payer.getPerson().getUser().getName());
+//            }
+            result.add(eventDto);
+        }
+        return result;
+    }
+    @Transactional(readOnly = true) // TODO - testing
+    public List<ParticipantDto.CRUDEvent> getPartiCRUDEventDtoListInEvent(int eventId){
+        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
+                .stream()
+                .map(ParticipantDto.CRUDEvent::fromEntity)
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    public List<ParticipantDto.Detail> getPartiDetailDtoListInEvent(int eventId){
+        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
+                .stream()
+                .map(ParticipantDto.Detail::fromEntity)
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    private List<Participant> getPartiListByPersonId(int personId) {
+        return participantRepository.findByPerson_Id(Long.valueOf(personId));
+    }
+    @Transactional(readOnly = true) // TODO - testing
+    private Person getPersonEntityByPersonId(Long personId) {
+        return personRepository.findById(personId)
+                .orElseThrow(() -> new DefaultException(NO_USER)); // TODO - no person 으로 바꿔야 하는지?
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    private Event getEventEntityById(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new DefaultException(NO_EVENT));
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    private Participant getPartiEntityByPersonIdAndEventId(Long personId, Long eventId) {
+        return participantRepository.findByPerson_IdAndEvent_Id(personId, eventId)
+                .orElseThrow(() -> new DefaultException(NO_USER));
+    }
 }

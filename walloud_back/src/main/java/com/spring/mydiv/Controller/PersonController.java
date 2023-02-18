@@ -59,6 +59,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         // get event list that this person joined
         detailView.setEventList(
                 participantService.getEventDtoListThatPersonJoin(personId));
+
         // set order list (by person role)
         WalloudCode orderCode = personService.validateIsManager(detailView);
         if (orderCode == MANAGER) // set all member

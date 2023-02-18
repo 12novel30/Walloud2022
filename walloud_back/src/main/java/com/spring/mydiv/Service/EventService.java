@@ -23,7 +23,6 @@ public class EventService {
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
     private final PersonRepository personRepository;
-    private final S3UploaderService s3UploaderService;
     @Transactional // TODO - fin
     public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
@@ -40,6 +39,7 @@ public class EventService {
             return EventDto.Response.fromEntity(event);
         else throw new DefaultException(CREATE_EVENT_FAIL);
     }
+
     @Transactional // TODO - fin
     public EventDto.Response updateEvent(int eventId, EventDto.Request eventUpdateRequest){
         Event event = getEventEntityById(eventId);
@@ -48,6 +48,19 @@ public class EventService {
         if (eventUpdateRequest.getPrice() != 0) event.setPrice(eventUpdateRequest.getPrice());
         if (eventUpdateRequest.getPayer_person_id() != null) event.setPayerPersonid(eventUpdateRequest.getPayer_person_id());
         return EventDto.Response.fromEntity(eventRepository.save(event));
+    }
+    @Transactional // TODO - fin
+    public String updateEventImage(int eventId, String imageURL){
+        Event event = getEventEntityById(eventId);
+        /* TODO - deleteEventImage(event);
+         *
+         * public void deleteEventImage(Event event){
+         * String eventExistingImage = event.getImage();
+         * s3UploaderService.deleteImage(eventExistingImage);
+         * }
+         * */
+        event.setImage(imageURL);
+        return eventRepository.save(event).getImage();
     }
 
     public List<ParticipantDto.CRUDEvent> validatePayerInPartiList( // TODO - fin
@@ -67,7 +80,47 @@ public class EventService {
             }
         return partiList;
     }
-    @Transactional(readOnly = true)
+
+    @Transactional // TODO - fin
+    public void deleteEvent(int eventId){
+        List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
+        for(Participant participant : participantList)
+            participantRepository.delete(participant);
+        eventRepository.deleteById(Long.valueOf(eventId));
+    }
+
+    public int getEventPriceById(int eventId) // TODO - fin
+    {
+        return getEventEntityById(eventId).getPrice();
+    }
+    public String getEventImageURL(int userId)// TODO - fin
+    {
+        return getEventEntityById(userId).getImage();
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    public String getTravelPeriod(int travelId, int eventCount){
+        if (eventCount == 0) return null;
+        else {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date format1 = eventRepository.findFirstByTravel_IdOrderByDateDesc(Long.valueOf(travelId))
+                    .getDate(); //latest
+            Date format2 = eventRepository.findFirstByTravel_IdOrderByDateAsc(Long.valueOf(travelId))
+                    .getDate(); //oldest
+            long diffSec = (format1.getTime() - format2.getTime()) / 1000;
+            long diffDays = diffSec / (24*60*60);
+            String periodFormat =
+                    dateFormat.format(format2) + " ~ " + dateFormat.format(format1) + ", "
+                            + diffDays + " days";
+            return periodFormat;
+        }
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    public Long getSuperUser(int travelId){
+        return personRepository.findByTravel_IdAndIsSuper(Long.valueOf(travelId), true)
+                .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
+                .getId();
+    }
+    @Transactional(readOnly = true) // TODO - fin
     public List<EventDto.Detail> getEventInfoInTravel(int travelId){
         List<Event> list = eventRepository.findByTravel_Id(Long.valueOf(travelId));
         List<EventDto.Detail> result = new ArrayList<>();
@@ -81,46 +134,8 @@ public class EventService {
         }
         return result;
     }
-
-    public int getEventPriceById(int eventId){ // TODO - fin
-        return getEventEntityById(eventId).getPrice();
-    }
-    @Transactional(readOnly = true)
-    public String getTravelPeriod(int travelId, int eventCount){
-        if (eventCount == 0) return null;
-        else {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            Date format1 = eventRepository.findFirstByTravel_IdOrderByDateDesc(Long.valueOf(travelId))
-                    .getDate(); //latest
-            Date format2 = eventRepository.findFirstByTravel_IdOrderByDateAsc(Long.valueOf(travelId))
-                    .getDate(); //oldest
-            long diffSec = (format1.getTime() - format2.getTime()) / 1000;
-            long diffDays = diffSec / (24*60*60);
-            String periodFormat =
-                    dateFormat.format(format2) + " ~ " + dateFormat.format(format1) + ", "
-                    + diffDays + " days";
-            return periodFormat;
-        }
-    }
-    @Transactional(readOnly = true)
-    public Long getSuperUser(int travelId){
-        return personRepository.findByTravel_IdAndIsSuper(Long.valueOf(travelId), true)
-                .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
-                .getId();
-    }
-    @Transactional // TODO - fin
-    public void deleteEvent(int eventId){
-        List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
-        for(Participant participant : participantList)
-            participantRepository.delete(participant);
-        eventRepository.deleteById(Long.valueOf(eventId));
-    }
-
-    public String getEventImageURL(int userId){ // TODO - fin
-        return getEventEntityById(userId).getImage();
-    }
-    @Transactional(readOnly = true)
-    public EventDto.Detail getEventDetail(int userId){ // TODO - fin
+    @Transactional(readOnly = true) // TODO - fin
+    public EventDto.Detail getEventDetail(int userId){
         EventDto.Detail eventDto = EventDto.Detail.fromEntity(getEventEntityById(userId));
         eventDto.setPayerName(
                 personRepository.findById(Long.valueOf(eventDto.getPayerId()))
@@ -128,20 +143,7 @@ public class EventService {
                         .getUser().getName());
         return eventDto;
     }
-    @Transactional // TODO - fin
-    public String updateEventImage(int eventId, String imageURL){
-        Event event = getEventEntityById(eventId);
-        /* TODO - deleteEventImage(event);
-        *
-        * public void deleteEventImage(Event event){
-        * String eventExistingImage = event.getImage();
-        * s3UploaderService.deleteImage(eventExistingImage);
-        * }
-        * */
-        event.setImage(imageURL);
-        return eventRepository.save(event).getImage();
-    }
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // TODO - fin
     private Event getEventEntityById(int eventId) {
         return eventRepository.findById(Long.valueOf(eventId))
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
