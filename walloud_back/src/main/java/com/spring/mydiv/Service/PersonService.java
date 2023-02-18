@@ -140,12 +140,11 @@ public class PersonService {
     {
         // update current MANAGER to OTHERS
         Person currManager = getManagerEntityByTravelId(travelId);
-        updatePersonRoleToWhat(currManager, OTHERS);
 
         // set new MANAGER
         List<Person> People = getPersonListByTravelId(travelId);
         Double maxDifference = currManager.getDifference();
-        Long newManagerId = Long.valueOf(0);
+        Long newManagerId = currManager.getId();
         for(Person p : People) {
             Double currDifference = p.getDifference();
             if (currDifference > maxDifference) {
@@ -155,6 +154,7 @@ public class PersonService {
         }
 
         // update new MANAGER
+        updatePersonRoleToWhat(currManager, OTHERS);
         updatePersonRoleToWhat(getPersonEntityByPersonId(newManagerId), MANAGER);
     }
     @Transactional // TODO - fin

@@ -68,16 +68,19 @@ public class EventService {
         List<ParticipantDto.CRUDEvent> partiList = eventRequest.getParti_list();
         Long payerId = eventRequest.getPayer_person_id();
         // partiList 에 payer 가 없으면 -> partiList 에 추가할 필요가 있음
+        Boolean isPayerParticipated = false;
         for (ParticipantDto.CRUDEvent parti : partiList)
             if (parti.getPersonId().equals(payerId)) {
-                partiList.add(
-                        ParticipantDto.CRUDEvent.builder()
-                                .personId(payerId)
-                                .role(true)
-                                .spent(Double.valueOf(0))
-                                .build());
+                isPayerParticipated = true;
                 break;
             }
+        if (!isPayerParticipated)
+            partiList.add(
+                    ParticipantDto.CRUDEvent.builder()
+                            .personId(payerId)
+                            .role(true)
+                            .spent(Double.valueOf(0))
+                            .build());
         return partiList;
     }
 

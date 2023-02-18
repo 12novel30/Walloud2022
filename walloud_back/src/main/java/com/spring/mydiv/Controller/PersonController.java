@@ -23,7 +23,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
     private final PersonService personService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{travelId}/createPerson2Travel") // TODO - fin
+    @PostMapping("/{travelId}/createPerson2Travel")
     public int createPerson2Travel(@PathVariable int travelId,
                                    @RequestBody String user_email){
         // get User Information
@@ -36,11 +36,11 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
                         false). // this person is not superUser
-                getPersonId().intValue();
+                getPersonId().intValue(); // TODO - userid를 리턴해야할지도?
     }
 
-    @DeleteMapping("/{personId}/deletePerson2Travel") // TODO - fin
-    public void deletePerson2Travel(@PathVariable int person_id){
+    @DeleteMapping("/{personId}/deletePerson2Travel")
+    public void deletePerson2Travel(@PathVariable(value = "personId") int person_id){
         // if this person joined any event, then throw Exception
         participantService.validateDoesPersonNotJoinedAnyEvent(person_id);
         // if this person is superUser for this travel, then throw Exception
@@ -73,7 +73,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         return detailView;
     }
 
-    @GetMapping("/{travelId}/getPersonListToHomeView") // TODO - fin
+    @GetMapping("/{travelId}/getPersonListToHomeView")
     public List<PersonDto.HomeView> getPersonListToHomeView(
             @PathVariable int travelId){
         // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
