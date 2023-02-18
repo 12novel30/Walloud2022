@@ -116,34 +116,52 @@ function PersonBox(
   Person: PersonProps,
   personId: number,
   userId: number,
+  imageUrl: string,
   type: string,
   travelId: number,
   isManager: boolean,
   personList: PersonProps[],
   setPersonList: SetterOrUpdater<PersonProps[]>
 ) {
-  console.log("userId", userId);
-  axios
-    .get(`/api/${userId}/getUserImage`)
-    .then((response) => {
-      const div = document.getElementById(`${userId}-image`);
-      div.style.backgroundImage = `url(${response.data})`;
-      div.style.backgroundSize = "cover";
-    })
-    .catch((error) => {
-      console.log(error);
-      if (error.response.data.status === 500) {
-        alert(error.response.data.message);
-      } else {
-        alert("예기치 못한 오류가 발생했습니다");
-      }
-    });
+  // axios
+  //   .get(`/api/${userId}/getUserImage`)
+  //   .then((response) => {
+  //     const div = document.getElementById(`${userId}-image`);
+  //     div.style.backgroundImage = `url(${response.data})`;
+  //     div.style.backgroundSize = "cover";
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     if (error.response.data.status === 500) {
+  //       alert(error.response.data.message);
+  //     } else {
+  //       alert("예기치 못한 오류가 발생했습니다");
+  //     }
+  //   });
+  // const div = document.getElementById(`${userId}-image`);
+  // console.log(div);
+  // if (imageUrl == "") {
+  //   imageUrl =
+  //     https://walloud-bucket-ver2.s3.ap-northeast-2.amazonaws.com/test/ac28ab47-ad36-49ba-84ab-0398f3324ee9gang.jpg;
+  // }
+  // div.style.backgroundImage = `url(${imageUrl})`;
+  // div.style.backgroundSize = "cover";
 
   return (
     <div css={PersonBoxStyle} key={personId} className={type}>
       <FilpCard>
         <div className="front" id={personId.toString() + " front"}>
-          <a id={`${userId}-image`}>{/* <img id={`${id}-image`} /> */}</a>
+          <a
+            id={`${userId}-image`}
+            style={{
+              backgroundImage: imageUrl
+                ? `url(${imageUrl})`
+                : `url(https://walloud-bucket-ver2.s3.ap-northeast-2.amazonaws.com/test/ac28ab47-ad36-49ba-84ab-0398f3324ee9gang.jpg)`,
+              backgroundSize: "cover",
+            }}
+          >
+            {/* <img id={`${id}-image`} /> */}
+          </a>
           <div className="info">
             <div>
               {Person.name}

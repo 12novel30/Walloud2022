@@ -91,6 +91,7 @@ function TravelBox(
   isSuper: boolean,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
+  onClickDelete: { (id: number, travelName: string): void },
   isEditMode: number | null,
   travelList: TravelProps[],
   setTravelList: SetterOrUpdater<TravelProps[]>
@@ -184,10 +185,7 @@ function TravelBox(
           </button>
           <button
             onClick={() => {
-              isSuper
-                ? DeleteTravelAPI(id, travelList, setTravelList)
-                : // : DeletePersonAPI();
-                  null;
+              isSuper ? onClickDelete(id, travelName) : null;
             }}
           >
             <img alt="delete" src="source/assets/icon/delete.svg" />

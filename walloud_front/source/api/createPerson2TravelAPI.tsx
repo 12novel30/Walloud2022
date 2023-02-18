@@ -1,11 +1,14 @@
 import axios from "axios";
-import { SetterOrUpdater } from "recoil";
 
 const CreatePerson2TravelAPI = async (travelId: number, email: string) => {
+  console.log(email);
   return axios
     .post(`/api/${travelId}/createPerson2Travel`, null, {
       params: {
         email: email,
+      },
+      headers: {
+        contentType: "application/json",
       },
     })
     .then((response) => {

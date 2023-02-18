@@ -30,10 +30,11 @@ public class PersonController {
     private final PersonService personService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{userId}/{travelId}/createUser")
+    @PostMapping("/{travelId}/createPerson2Travel")
     public void createPerson2Travel(@PathVariable int travelId,
-                                      @RequestBody Map map){
-        String user_email = map.get("user_email").toString();
+                                      @RequestParam String email){
+        System.out.println(email);
+        String user_email = email;
         UserDto.Response userDetailDto = userService.getUserInfoByEmail(user_email);
         if (userDetailDto == null) throw new DefaultException(WRONG_EMAIL);
         else {

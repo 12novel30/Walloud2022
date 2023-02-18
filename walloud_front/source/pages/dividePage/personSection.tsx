@@ -1,8 +1,11 @@
 import { css } from "@emotion/react";
 import { useSetRecoilState } from "recoil";
 import PersonBox from "../../component/box/personBox";
+import SignInput from "../../component/input/signInput";
+import BasicButton from "../../component/button/basicButton";
 import { FontSize, ScreenSize } from "../../layout/globalStyle/globalSize";
 import { personListState } from "../../recoils/travel";
+import CreatePerson2TravelAPI from "../../api/createPerson2TravelAPI";
 
 const CreateBotton = css`
   opacity: 0.5;
@@ -61,6 +64,7 @@ function PersonSection(
           selectPerson,
           selectPerson.personId,
           selectPerson.userId,
+          selectPerson.imageurl,
           type,
           travelId,
           isManager,
@@ -80,6 +84,23 @@ function PersonSection(
         {PersonType("Manager")}
         {PersonType("Recieve")}
       </div>
+      <h4>Add new User</h4>
+      <input id="new-user-email" type="text" placeholder="user email" />
+      <BasicButton
+        text="여행 만들기"
+        onClick={() => {
+          const emailInput = document.getElementById(
+            "new-user-email"
+          ) as HTMLInputElement;
+          const email = emailInput.value;
+          if (email !== "") {
+            CreatePerson2TravelAPI(travelId, email);
+          } else {
+            alert("이름을 입력하세요");
+          }
+          emailInput.value = "";
+        }}
+      />
     </div>
   );
 }

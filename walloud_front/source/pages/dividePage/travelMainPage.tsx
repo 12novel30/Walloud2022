@@ -58,6 +58,7 @@ function TravelMainPage() {
 
   const onClickDelete = (travelId: number, travelName: string) => {
     if (window.confirm(`Are you sure to delete travel ${travelName}`)) {
+      console.log("no!");
       DeleteTravelAPI(travelId, travelList, setTravelList);
       const newTravelList = travelList.filter((e) => e.travelId !== travelId);
       console.log(newTravelList);
@@ -66,8 +67,6 @@ function TravelMainPage() {
       alert("Canceled");
     }
   };
-
-  console.log(travelList);
 
   useEffect(() => {
     GetTravelListAPI(id, setTravelList);
@@ -84,6 +83,7 @@ function TravelMainPage() {
           travel.isSuper,
           setCurrentTravel,
           onClickEdit,
+          onClickDelete,
           isEditMode,
           travelList,
           setTravelList
