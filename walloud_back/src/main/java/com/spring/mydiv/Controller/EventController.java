@@ -58,7 +58,7 @@ public class EventController {
         return eventResponse.getEventId();
     }
 
-    @DeleteMapping("/{travelId}/{eventId}/deleteEvent") // TODO check
+    @DeleteMapping("/{travelId}/{eventId}/deleteEvent")
     public void deleteEvent(@PathVariable("travelId") int travelId,
                             @PathVariable("eventId") int eventId)
     {
