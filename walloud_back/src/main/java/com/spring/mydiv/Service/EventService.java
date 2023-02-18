@@ -24,7 +24,7 @@ public class EventService {
     private final ParticipantRepository participantRepository;
     private final PersonRepository personRepository;
     private final S3UploaderService s3UploaderService;
-    @Transactional
+    @Transactional // TODO - fin
     public EventDto.Response createEvent(EventDto.Request request) {
         Event event = Event.builder()
                 .name(request.getEvent_name())
@@ -40,7 +40,7 @@ public class EventService {
             return EventDto.Response.fromEntity(event);
         else throw new DefaultException(CREATE_EVENT_FAIL);
     }
-    @Transactional
+    @Transactional // TODO - fin
     public EventDto.Response updateEvent(int eventId, EventDto.Request eventUpdateRequest){
         Event event = getEventEntityById(eventId);
         if (eventUpdateRequest.getEvent_name() != null) event.setName(eventUpdateRequest.getEvent_name());
@@ -50,14 +50,15 @@ public class EventService {
         return EventDto.Response.fromEntity(eventRepository.save(event));
     }
 
-    public List<ParticipantDto.CreateEvent> validatePayerInPartiList(EventDto.Request eventRequest){
-        List<ParticipantDto.CreateEvent> partiList = eventRequest.getParti_list();
+    public List<ParticipantDto.CRUDEvent> validatePayerInPartiList( // TODO - fin
+                                                                    EventDto.Request eventRequest) {
+        List<ParticipantDto.CRUDEvent> partiList = eventRequest.getParti_list();
         Long payerId = eventRequest.getPayer_person_id();
         // partiList 에 payer 가 없으면 -> partiList 에 추가할 필요가 있음
-        for (ParticipantDto.CreateEvent parti : partiList)
+        for (ParticipantDto.CRUDEvent parti : partiList)
             if (parti.getPersonId().equals(payerId)) {
                 partiList.add(
-                        ParticipantDto.CreateEvent.builder()
+                        ParticipantDto.CRUDEvent.builder()
                                 .personId(payerId)
                                 .role(true)
                                 .spent(Double.valueOf(0))
@@ -81,7 +82,7 @@ public class EventService {
         return result;
     }
 
-    public int getEventPriceById(int eventId){
+    public int getEventPriceById(int eventId){ // TODO - fin
         return getEventEntityById(eventId).getPrice();
     }
     @Transactional(readOnly = true)
@@ -107,7 +108,7 @@ public class EventService {
                 .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
                 .getId();
     }
-    @Transactional
+    @Transactional // TODO - fin
     public void deleteEvent(int eventId){
         List<Participant> participantList = participantRepository.findByEvent_Id(Long.valueOf(eventId));
         for(Participant participant : participantList)
@@ -115,11 +116,19 @@ public class EventService {
         eventRepository.deleteById(Long.valueOf(eventId));
     }
 
-    public String getEventImageURL(int userId){
+    public String getEventImageURL(int userId){ // TODO - fin
         return getEventEntityById(userId).getImage();
     }
-
-    @Transactional
+    @Transactional(readOnly = true)
+    public EventDto.Detail getEventDetail(int userId){ // TODO - fin
+        EventDto.Detail eventDto = EventDto.Detail.fromEntity(getEventEntityById(userId));
+        eventDto.setPayerName(
+                personRepository.findById(Long.valueOf(eventDto.getPayerId()))
+                        .orElseThrow(() -> new DefaultException(NO_USER))
+                        .getUser().getName());
+        return eventDto;
+    }
+    @Transactional // TODO - fin
     public String updateEventImage(int eventId, String imageURL){
         Event event = getEventEntityById(eventId);
         /* TODO - deleteEventImage(event);

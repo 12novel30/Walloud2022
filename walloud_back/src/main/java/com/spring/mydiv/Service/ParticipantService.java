@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
-import static com.spring.mydiv.Code.WalloudCode.NEW_PARTICIPANT;
-import static com.spring.mydiv.Code.WalloudCode.STILL_PARTICIPATED;
+import static com.spring.mydiv.Code.WalloudCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class ParticipantService {
     private final EventRepository eventRepository;
     private final PersonRepository personRepository;
 
-    @Transactional
+    @Transactional // TODO - fin
     public ParticipantDto.Response createParticipant(ParticipantDto.Request request){
         Participant participant = Participant.builder()
                 .person(request.getPerson())
@@ -46,7 +45,7 @@ public class ParticipantService {
         else throw new DefaultException(CREATE_PARTICIPANT_FAIL);
     }
 
-    public ParticipantDto.Request setParticipantRequest(ParticipantDto.CreateEvent partiDto,
+    public ParticipantDto.Request setParticipantRequest(ParticipantDto.CRUDEvent partiDto, // TODO - fin
                                                         EventDto.Response eventResponse) {
         return ParticipantDto.Request.builder()
                 .person(getPersonEntityByPersonId(partiDto.getPersonId()))
@@ -79,11 +78,11 @@ public class ParticipantService {
     }
 
     @Transactional
-    public void updateParticipant(Boolean eventRole, Double chargedPrice, Long personId, Long eventId){
-        Participant participant = getPartiEntityByPersonIdAndEventId(personId, eventId);
+    public void updateParticipant(ParticipantDto.CRUDEvent partiDto, Long eventId){
+        Participant participant = getPartiEntityByPersonIdAndEventId(partiDto.getPersonId(), eventId);
 
-        participant.setEventRole(eventRole);
-        participant.setChargedPrice(chargedPrice);
+        participant.setEventRole(partiDto.getRole());
+        participant.setChargedPrice(partiDto.getSpent());
 
         participantRepository.save(participant);
     }
@@ -98,12 +97,12 @@ public class ParticipantService {
             throw new DefaultException(INVALID_DELETE_EVENT_EXISTED);
     }
     public WalloudCode validateIsParticipated(Map<Long, PersonDto.MoneyUpdate> updateRequests,
-                                              ParticipantDto.CreateEvent partiDto){
+                                              ParticipantDto.CRUDEvent partiDto){
         if (updateRequests.containsKey(partiDto.getPersonId())) return STILL_PARTICIPATED;
         else return NEW_PARTICIPANT;
     }
 
-    @Transactional(readOnly = true) // TODO - fin
+    @Transactional(readOnly = true) // TODO - testing
     public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId){
         List<EventDto.Detail> result = new ArrayList<>();
         // get participant list (= person)
@@ -111,30 +110,40 @@ public class ParticipantService {
         for (Participant parti : partiList) {
             // TODO 근데 여기에서 가져온 parti->eventDto 에 이미 정보가 다 있는거 아닌가 .....???
             // get eventDto that this participant join
-            EventDto.Detail eventDto =
-                    EventDto.Detail.fromEntity(getEventEntityById(parti.getEvent().getId()));
-            // if participant Event Role == Manager
-            if (parti.getEventRole() == true){
-                // set eventDto payer information
-                eventDto.setPayerId(Long.valueOf(personId));
-                eventDto.setPayerName(getPersonEntityByPersonId(Long.valueOf(personId))
-                        .getUser().getName()
-                );
-            }
-            // if participant Event Role == others
-            else {
-                // set payer that
-                Participant payer = participantRepository.findByEvent_IdAndEventRole(
-                        eventDto.getEventId(), true).get();
-                eventDto.setPayerId(payer.getId());
-                eventDto.setPayerName(payer.getPerson().getUser().getName());
-            }
+            EventDto.Detail eventDto = EventDto.Detail.fromEntity(
+                    getEventEntityById(parti.getEvent().getId()));
+            eventDto.setPayerName(
+                    getPersonEntityByPersonId(Long.valueOf(eventDto.getPayerId()))
+                            .getUser().getName());
+//            // if participant Event Role == Manager
+//            if (parti.getEventRole() == true){
+//                // set eventDto payer information
+//                eventDto.setPayerId(Long.valueOf(personId));
+//                eventDto.setPayerName(getPersonEntityByPersonId(Long.valueOf(personId))
+//                        .getUser().getName()
+//                );
+//            }
+//            // if participant Event Role == others
+//            else {
+//                // set payer that
+//                Participant payer = participantRepository.findByEvent_IdAndEventRole(
+//                        eventDto.getEventId(), true).get();
+//                eventDto.setPayerId(payer.getId());
+//                eventDto.setPayerName(payer.getPerson().getUser().getName());
+//            }
             result.add(eventDto);
         }
         return result;
     }
-    @Transactional(readOnly = true)
-    public List<ParticipantDto.Detail> getPartiDtoListInEvent(int eventId){
+    @Transactional(readOnly = true) // TODO - fin
+    public List<ParticipantDto.CRUDEvent> getPartiCRUDEventDtoListInEvent(int eventId){
+        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
+                .stream()
+                .map(ParticipantDto.CRUDEvent::fromEntity)
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true) // TODO - fin
+    public List<ParticipantDto.Detail> getPartiDetailDtoListInEvent(int eventId){
         return participantRepository.findByEvent_Id(Long.valueOf(eventId))
                 .stream()
                 .map(ParticipantDto.Detail::fromEntity)
@@ -159,4 +168,41 @@ public class ParticipantService {
         return participantRepository.findByPerson_IdAndEvent_Id(personId, eventId)
                 .orElseThrow(() -> new DefaultException(NO_USER));
     }
+
+    public Map<Long, ParticipantDto.CRUDEvent> validateParticipatedChange(EventDto.Response response,
+            List<ParticipantDto.CRUDEvent> currPartiDtoList,
+            List<ParticipantDto.CRUDEvent> prevPartiDtoList) {
+        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap = new HashMap<>();
+
+        // 1st. 변경된(curr) participant 리스트를 map 에 추가
+        for (ParticipantDto.CRUDEvent currDto : currPartiDtoList){
+            currDto.setIsParticipatedChange(NEW_PARTICIPANT);
+            participatedChangeMap.put(currDto.getPersonId(), currDto);
+            // create entity
+            createParticipant(setParticipantRequest(currDto, response));
+        }
+        // 2nd. 기존(prev) participant 리스트를 map 에 추가/수정
+        for (ParticipantDto.CRUDEvent prevDto : prevPartiDtoList){
+            // 2-1. curr list 에 없는 parti 일 경우, NOW_NOT_PARTICIPATED
+            if (!participatedChangeMap.containsKey(prevDto.getPersonId())){
+                prevDto.setIsParticipatedChange(NOW_NOT_PARTICIPATED);
+                participatedChangeMap.put(prevDto.getPersonId(), prevDto);
+                // delete entity
+                deleteParticipant(prevDto.getPersonId(), response.getEventId());
+
+            }
+            // 2-2. curr list 에 있는 parti 일 경우, STILL_PARTICIPATED & spent 변경
+            else {
+                ParticipantDto.CRUDEvent changing = participatedChangeMap.get(prevDto.getPersonId());
+                changing.setIsParticipatedChange(STILL_PARTICIPATED);
+                changing.setSpent(changing.getSpent() - prevDto.getSpent());
+                changing.setRole(prevDto.getRole());
+                participatedChangeMap.replace(prevDto.getPersonId(), changing);
+                // update entity
+                updateParticipant(prevDto, response.getEventId());
+            }
+        }
+        return participatedChangeMap;
+    }
+
 }

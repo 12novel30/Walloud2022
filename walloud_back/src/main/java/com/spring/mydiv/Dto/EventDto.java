@@ -23,7 +23,7 @@ public class EventDto {
         @NotNull
         private Long payer_person_id;
         private TravelDto.Response TravelDto;
-        private List<ParticipantDto.CreateEvent> parti_list;
+        private List<ParticipantDto.CRUDEvent> parti_list;
         private String Image;
     }
 
@@ -60,7 +60,7 @@ public class EventDto {
         private java.util.Date Date;
         @NotNull
         private int Price;
-        @Nullable
+        @NotNull
         private Long PayerId;
         @Nullable
         private String PayerName;
@@ -73,6 +73,7 @@ public class EventDto {
                     .EventName(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
+                    .PayerId(event.getPayerPersonid())
                     .build();
         }
     }

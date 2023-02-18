@@ -1,4 +1,6 @@
 package com.spring.mydiv.Controller;
+import com.spring.mydiv.Dto.PersonDto;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PersonControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private UserService userService;
     @MockBean
@@ -42,44 +46,4 @@ class PersonControllerTest {
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
             StandardCharsets.UTF_8);
-    @Autowired(required=true)
-    private PersonController personController;
-
-
-
-
-//    @Test
-//    void getAllDevelopers() throws Exception{
-//
-//        DeveloperDto juniorDeveloperDto = DeveloperDto.builder()
-//                .developerLevel(JUNIOR)
-//                .developerSkillType(BACK_END)
-//                .memberId("memberId1")
-//                .build();
-//        DeveloperDto seniorDeveloperDto = DeveloperDto.builder()
-//                .developerLevel(SENIOR)
-//                .developerSkillType(BACK_END)
-//                .memberId("memberId2")
-//                .build();
-//        given(dMakerService.getAllEmployedDevelopers())
-//                .willReturn(Arrays.asList(
-//                        juniorDeveloperDto, seniorDeveloperDto));
-//
-//        mockMvc.perform(get("/developers").contentType(contentType))
-//                .andExpect(status().isOk())
-//                .andDo(print()) // 출력까지!
-//                .andExpect(
-//                        jsonPath("$.[0].developerSkillType",
-//                                is(BACK_END.name()))
-//                ).andExpect(
-//                        jsonPath("$.[0].developerLevel",
-//                                is(JUNIOR.name()))
-//                ).andExpect(
-//                        jsonPath("$.[1].developerSkillType",
-//                                is(BACK_END.name()))
-//                ).andExpect(
-//                        jsonPath("$.[1].developerLevel",
-//                                is(SENIOR.name()))
-//                );
-//    }
 }

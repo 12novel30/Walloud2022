@@ -1,46 +1,46 @@
 package com.spring.mydiv.Service;
 
+import com.spring.mydiv.Dto.PersonDto;
 import com.spring.mydiv.Repository.PersonRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 
-@ExtendWith(MockitoExtension.class) // mock 테스트를 위함
+@ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
-    @Mock //DMakerService 에 선언된 final
+    @Mock
     private PersonRepository personRepository;
     @InjectMocks
-    private PersonService personService; // new DMakerService() 하지 않음
+    private PersonService personService;
 
-//    private final Developer defaultDeveloper = Developer.builder()
-//            // 자주 사용하는 entity/dto 의 경우 미리 선언해두는 것이 좋음
-//            .developerLevel(SENIOR)
-//            .developerSkillType(BACK_END)
-//            .experienceYears(MIN_SENIOR_EXPERIENCE_YEARS + 1)
-//            .statusCode(StatusCode.EMPLOYED)
-//            .name("name")
-//            .age(32)
-//            .build();
-//
-//    private CreateDeveloper.Request getCreateRequest(
-//            DeveloperLevel developerLevel,
-//            DeveloperSkillType developerSkillType,
-//            Integer experienceYears,
-//            String memberId
-//    ){
-//        return CreateDeveloper.Request.builder()
-//                .developerLevel(developerLevel)
-//                .developerSkillType(developerSkillType)
-//                .experienceYears(experienceYears)
-//                .memberId(memberId)
-//                .name("name")
-//                .age(23)
-//                .build();
-//    }
+    private String printPersonDtoDetail(PersonDto.Detail detailView) {
+        return "PersonId;\n" + detailView.getPersonId() +
+                "SumSend;\n" + detailView.getSumSend() +
+                "SumGet;\n" + detailView.getSumGet() +
+                "Difference;\n" + detailView.getDifference() +
+                "TravelRole;\n" + detailView.getTravelRole() +
+                "isSettled;\n" + " " +
+                "User;\n" + detailView.getPersonId() +
+                "EventList;\n" + detailView.getPersonId() +
+                "PersonInTravelList;" + detailView.getPersonId();
+    }
+    @Test
+    void getPersonDetail(){
+        //given
+        int personId = 510;
 
+        //when
+        PersonDto.Detail detailView = personService.getPersonDetail(personId);
+
+        //then
+        System.out.println(printPersonDtoDetail(detailView));
+
+    }
 
 //    @Test
 //    @Commit

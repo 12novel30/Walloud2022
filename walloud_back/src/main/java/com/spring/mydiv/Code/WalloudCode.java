@@ -11,5 +11,6 @@ public enum WalloudCode {
     NO_EVENTS,
     STILL_PARTICIPATED,
     NEW_PARTICIPANT,
+    NOW_NOT_PARTICIPATED,
     ;
 }

@@ -116,9 +116,10 @@ public class PersonDto {
 		private Double Difference;
 		private Boolean TravelRole;
 		private boolean isSettled;
-		@NotNull
 		private UserDto.Response User;
+		@NotNull
 		private List<EventDto.Detail> EventList;
+		@NotNull
 		private List<OrderMessage> PersonInTravelList;
 
 		public static Detail fromEntity(Person person) {

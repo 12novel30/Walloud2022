@@ -23,7 +23,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
     private final PersonService personService;
     private final ParticipantService participantService;
 
-    @PostMapping("/{travelId}/createPerson2Travel")
+    @PostMapping("/{travelId}/createPerson2Travel") // TODO - fin
     public int createPerson2Travel(@PathVariable int travelId,
                                    @RequestBody String user_email){
         // get User Information
@@ -31,18 +31,15 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         // if user not in travel then throw Exception
         personService.validateIsUserNotInTravel(
                 userDto.getUserId(), Long.valueOf(travelId));
-        /* return created person id
-        * - set person Dto
-        * - get Travel Information
-        * - this person is not superUser */
+        // create person entity with user & travel information
         return personService.createPerson(
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
-                        false).
+                        false). // this person is not superUser
                 getPersonId().intValue();
     }
 
-    @DeleteMapping("/{personId}/deletePerson2Travel")
+    @DeleteMapping("/{personId}/deletePerson2Travel") // TODO - fin
     public void deletePerson2Travel(@PathVariable int person_id){
         // if this person joined any event, then throw Exception
         participantService.validateDoesPersonNotJoinedAnyEvent(person_id);
@@ -53,7 +50,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         personService.deletePerson(person_id);
     }
 
-    @GetMapping("{travelId}/{personId}/getPersonDetailView")
+    @GetMapping("{travelId}/{personId}/getPersonDetailView") // TODO - fin
     public PersonDto.Detail getPersonDetailView(
             @PathVariable("travelId") int travelId,
             @PathVariable("personId") int personId){
@@ -68,15 +65,14 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
             detailView.setPersonInTravelList(
                     personService.getOthersOrderMessageList(travelId));
         else if (orderCode == OTHERS) { // set only manager
-            PersonDto.OrderMessage manager =
-                    personService.getManagerOrderMessage(travelId);
+            PersonDto.OrderMessage manager = personService.getManagerOrderMessage(travelId);
             manager.setDifference(detailView.getDifference()); // change manager diff
             detailView.setPersonInTravelList(List.of(manager));
         }
         return detailView;
     }
 
-    @GetMapping("/{travelId}/getPersonListToHomeView")
+    @GetMapping("/{travelId}/getPersonListToHomeView") // TODO - fin
     public List<PersonDto.HomeView> getPersonListToHomeView(
             @PathVariable int travelId){
         // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
@@ -84,7 +80,7 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
     }
 
     @PutMapping("{personId}/updateIsSettled")
-    public int updateIsSettled(
+    public int updateIsSettled( // TODO - fin
             @PathVariable int personId, @RequestBody String isSettled){
         return personService.updateIsSettled(personId, Boolean.valueOf(isSettled));
     }
