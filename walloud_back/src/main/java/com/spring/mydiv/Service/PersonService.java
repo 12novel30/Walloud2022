@@ -61,7 +61,7 @@ public class PersonService {
             }
         }
     }
-    private static PersonDto.tmp setUpdateEntity(ParticipantDto.CRUDEvent dto, Double currEventPrice, boolean isCreate) {
+    public static PersonDto.tmp setUpdateEntity(ParticipantDto.CRUDEvent dto, Double currEventPrice, boolean isCreate) {
         return PersonDto.tmp.builder()
                 .personId(dto.getPersonId())
                 .eventRole(dto.getRole())

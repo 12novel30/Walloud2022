@@ -21,11 +21,6 @@ public class UserController {
     private final UserService userService;
     private final S3UploaderService s3UploaderService;
 
-    @PostMapping(value = "/login")
-    public Long login(@RequestBody UserDto.Login loginUser) {
-        return userService.login(loginUser);
-    }
-
     @PostMapping("/register")
     public ResponseEntity<UserDto.Response> createUser(
             @RequestBody UserDto.Request request) {
@@ -33,20 +28,15 @@ public class UserController {
         // TODO - discuss; userId만 리턴할지 정할 것
     }
 
-    @GetMapping("/{userId}/getUserInfoExceptImage")
-    public UserDto.Response getUserInfoExceptImage(
-            @PathVariable("userId") int userId){
-        return userService.getUserResponseById(userId);
-    }
-
     @DeleteMapping("/{userId}/deleteUser")
-    public void deleteUser(@PathVariable("userId") int userId){
+    public void deleteUser(@PathVariable("userId") int userId) {
         userService.deleteUser(userId);
     }
 
     @PutMapping("/{userId}/updateUserInfoExceptImage")
     public ResponseEntity<UserDto.Response> updateUserInfoExceptImage(
-            @PathVariable int userId, @RequestBody UserDto.Request request) {
+            @PathVariable int userId,
+            @RequestBody UserDto.Request request) {
         return ResponseEntity.ok(userService.updateUserInfo(userId, request));
     }
 
@@ -55,8 +45,7 @@ public class UserController {
                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
         return userService.updateUserImage(
-                userId,
-                s3UploaderService.upload(file, USER_FOLDER.getDescription()));
+                userId, s3UploaderService.upload(file, USER_FOLDER.getDescription()));
     }
 
     @GetMapping("/{userId}/getUserImage")
@@ -64,8 +53,20 @@ public class UserController {
         return userService.getUserImageURL(userId);
     }
 
+    @GetMapping("/{userId}/getUserInfoExceptImage")
+    public UserDto.Response getUserInfoExceptImage(
+            @PathVariable("userId") int userId){
+        return userService.getUserResponseById(userId);
+    }
+
     @GetMapping("/{userId}/getTravelListUserJoined")
-    public List<TravelDto.Response> getTravelListUserJoined(@PathVariable int userId){
+    public List<TravelDto.Response> getTravelListUserJoined(
+            @PathVariable int userId) {
         return userService.getUserJoinedTravel(userId);
+    }
+
+    @PostMapping(value = "/login")
+    public Long login(@RequestBody UserDto.Login loginUser) {
+        return userService.login(loginUser);
     }
 }

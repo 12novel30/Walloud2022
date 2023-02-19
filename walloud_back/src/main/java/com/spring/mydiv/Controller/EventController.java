@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
@@ -22,7 +20,6 @@ public class EventController {
     private final TravelService travelService;
     private final ParticipantService participantService;
     private final S3UploaderService s3UploaderService;
-    private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @PostMapping("/{travelId}/createEvent")
     public Long createEvent(@PathVariable int travelId,
@@ -41,15 +38,10 @@ public class EventController {
             participantService.createParticipant(
                     participantService.setParticipantRequest(partiDto, eventResponse));
             // update person(parti) sumSend etc.
-            personService.updatePersonMoneyFromDto( // TODO check
-                    PersonDto.tmp.builder()
-                            .personId(partiDto.getPersonId())
-                            .eventRole(partiDto.getRole())
-                            .eventPrice(Double.valueOf(eventRequest.getPrice()))
-                            .chargedPrice(partiDto.getSpent())
-                            .isCreate(true)
-                            .build()
-            );
+            personService.updatePersonMoneyFromDto(
+                    personService.setUpdateEntity(partiDto,
+                            Double.valueOf(eventRequest.getPrice()),
+                            true));
         }
 
         // update person role for this Travel
@@ -57,7 +49,6 @@ public class EventController {
         // return created event id
         return eventResponse.getEventId();
     }
-
     @DeleteMapping("/{travelId}/{eventId}/deleteEvent")
     public void deleteEvent(@PathVariable("travelId") int travelId,
                             @PathVariable("eventId") int eventId)
@@ -68,15 +59,9 @@ public class EventController {
         // update all person(participant) sumSend etc. in this travel before deleting
         for (ParticipantDto.CRUDEvent partiDto : partiList){
             personService.updatePersonMoneyFromDto(
-                    PersonDto.tmp.builder() // TODO check
-                            .personId(partiDto.getPersonId())
-                            .eventRole(partiDto.getRole())
-                            .eventPrice(Double.valueOf(
-                                    eventService.getEventPriceById(eventId)))
-                            .chargedPrice(partiDto.getSpent())
-                            .isCreate(false)
-                            .build()
-            );
+                    personService.setUpdateEntity(partiDto,
+                            Double.valueOf(eventService.getEventPriceById(eventId)),
+                            false));
         }
         // update person role for this Travel
         personService.updatePersonRole(travelId);
@@ -84,9 +69,9 @@ public class EventController {
         eventService.deleteEvent(eventId);
     }
     @PostMapping("/{travelId}/{eventId}/updateEvent")
-    public Long updateEvent( // TODO check
-            @PathVariable("travelId") int travelId, @PathVariable("eventId") int eventId,
-            @RequestBody EventDto.Request eventUpdateRequest){
+    public Long updateEvent(@PathVariable("travelId") int travelId,
+                            @PathVariable("eventId") int eventId,
+                            @RequestBody EventDto.Request eventUpdateRequest){
         // get prev & curr price of event
         int prevEventPrice = eventService.getEventPriceById(eventId);
         int currEventPrice = eventUpdateRequest.getPrice();
@@ -103,45 +88,15 @@ public class EventController {
                 );
         // delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
         // and update person(parti) sumSend etc.
-        personService.second(response, participatedChangeMap, prevEventPrice, currEventPrice);
+        personService.second(
+                response, participatedChangeMap,
+                prevEventPrice, currEventPrice);
 
         // change person role in this Travel
         personService.updatePersonRole(travelId);
         // return created event id
         return response.getEventId();
-
-//        // if new payer not in parti_list, then add payer to currPartiDtoList
-//        // and delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
-//        Map<Long, ParticipantDto.CRUDEvent> participatedChangeMap =
-//                participantService.validateParticipatedChange(response,
-//                        eventService.validatePayerInPartiList(eventUpdateRequest),
-//                        participantService.getPartiCRUDEventDtoListInEvent(eventId)
-//                );
-//        // update person(parti) sumSend etc.
-//        personService.updatePersonMoneyAllType(participatedChangeMap, prevEventPrice, currEventPrice);
-//
-//        // change person role in this Travel
-//        personService.updatePersonRole(travelId);
-//        // return created event id
-//        return response.getEventId();
     }
-
-
-    @GetMapping("/{eventId}/getPartiListInEvent")
-    public List<ParticipantDto.Detail> getPartiListInEvent(@PathVariable int eventId) {
-        return participantService.getPartiDetailDtoListInEvent(eventId);
-    }
-    @GetMapping("/{eventId}/getEventDetail")
-    public EventDto.Detail getEventDetail(@PathVariable int eventId) {
-        return eventService.getEventDetail(eventId);
-    }
-
-    @GetMapping("/{eventId}/getEventImage")
-    public String getEventImage(@PathVariable int eventId){
-        return eventService.getEventImageURL(eventId);
-    }
-
-    // TODO - image 관련 메소드 하나로 합치기
     @PutMapping("/{eventId}/updateEventImage")
     public String updateEventImage(@PathVariable int eventId,
                                    @RequestPart(value="file") MultipartFile file)
@@ -150,4 +105,20 @@ public class EventController {
                 eventId,
                 s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
     }
+
+    @GetMapping("/{eventId}/getPartiListInEvent")
+    public List<ParticipantDto.Detail> getPartiListInEvent(
+            @PathVariable int eventId) {
+        return participantService.getPartiDetailDtoListInEvent(eventId);
+    }
+    @GetMapping("/{eventId}/getEventDetail")
+    public EventDto.Detail getEventDetail(@PathVariable int eventId) {
+        return eventService.getEventDetail(eventId);
+    }
+    @GetMapping("/{eventId}/getEventImage")
+    public String getEventImage(@PathVariable int eventId){
+        return eventService.getEventImageURL(eventId);
+    }
+
+    // TODO - image 관련 메소드 하나로 합치기
 }

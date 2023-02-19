@@ -17,7 +17,8 @@ import static com.spring.mydiv.Code.WalloudCode.OTHERS;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class PersonController { // TODO - superUser 변경할 수 있는 메소드 만들어둘지 논의
+public class PersonController {
+    // TODO - superUser 변경할 수 있는 메소드 만들어둘지 논의
     private final UserService userService;
     private final TravelService travelService;
     private final PersonService personService;
@@ -36,7 +37,8 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
                         false). // this person is not superUser
-                getPersonId().intValue(); // TODO - userid를 리턴해야할지도?
+                getPersonId().intValue();
+        // TODO - userId 를 리턴해야할지도?
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")
@@ -45,9 +47,9 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
         participantService.validateDoesPersonNotJoinedAnyEvent(person_id);
         // if this person is superUser for this travel, then throw Exception
         personService.validateIsPersonNotSuperUser(person_id);
-        // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
         // delete person
         personService.deletePerson(person_id);
+        // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
     }
 
     @GetMapping("/{travelId}/{personId}/getPersonDetailView")
@@ -66,7 +68,8 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
             detailView.setPersonInTravelList(
                     personService.getOthersOrderMessageList(travelId));
         else if (orderCode == OTHERS) { // set only manager
-            PersonDto.OrderMessage manager = personService.getManagerOrderMessage(travelId);
+            PersonDto.OrderMessage manager =
+                    personService.getManagerOrderMessage(travelId);
             manager.setDifference(detailView.getDifference()); // change manager diff
             detailView.setPersonInTravelList(List.of(manager));
         }
@@ -81,8 +84,8 @@ public class PersonController { // TODO - superUser 변경할 수 있는 메소�
     }
 
     @PutMapping("/{personId}/updateIsSettled")
-    public int updateIsSettled(
-            @PathVariable int personId, @RequestBody Boolean isSettled){
+    public int updateIsSettled(@PathVariable int personId,
+                               @RequestBody Boolean isSettled){
         return personService.updateIsSettled(personId, isSettled);
     }
 }

@@ -24,12 +24,8 @@ public class TravelController {
 
     @PostMapping("/{userId}/createNewTravelUserJoining")
     public int createNewTravelUserJoining(@PathVariable int userId,
-                                          @RequestBody String travel_name){
-        /* return created travel id
-        * - set person Dto
-        * - get User Information
-        * - create Travel
-        * - this person is superUser = TRUE */
+                                          @RequestBody String travel_name) {
+        // create travel -> person entity & return person id
         return personService.createPerson(
                 personService.setPersonRequestDto(
                         userService.getUserResponseById(userId),
@@ -41,7 +37,8 @@ public class TravelController {
     @PutMapping("/{travelId}/updateTravelName")
     public ResponseEntity<TravelDto.Response> updateTravelName(
             @PathVariable int travelId, @RequestBody String travel_name) {
-        return ResponseEntity.ok(travelService.updateTravelInfo(travelId, travel_name));
+        return ResponseEntity.ok(
+                travelService.updateTravelInfo(travelId, travel_name));
     }
 
     @PutMapping("/{travelId}/updateTravelImage")
