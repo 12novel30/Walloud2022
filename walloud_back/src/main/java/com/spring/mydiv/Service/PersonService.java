@@ -59,24 +59,24 @@ public class PersonService {
     }
 
     @Transactional
-    public void deletePerson(int personId) {
-        personRepository.deleteById(Long.valueOf(personId));
+    public void deletePerson(Long personId) {
+        personRepository.deleteById(personId);
     }
 
     @Transactional(readOnly = true)
     public void validateIsUserNotInTravel(Long userId, Long travelId){
-        if (personRepository.existsByUser_IdAndTravel_Id(
-                userId, Long.valueOf(travelId)))
+        if (personRepository.existsByUser_IdAndTravel_Id(userId, travelId))
             throw new DefaultException(ALREADY_EXISTED);
     }
     @Transactional(readOnly = true)
-    public void validateIsUserSuperuser(int travelId, int userId){
-        if (!personRepository.findByUser_IdAndTravel_Id(
-                Long.valueOf(userId), Long.valueOf(travelId)).get().getIsSuper())
+    public void validateIsUserSuperuser(Long travelId, Long userId){
+        if (!personRepository.findByUser_IdAndTravel_Id(userId, travelId)
+                .orElseThrow(()-> new DefaultException(NO_USER))
+                .getIsSuper())
             throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
     }
-    public void validateIsPersonNotSuperUser(int personId) {
-        if (getPersonEntityByPersonId(Long.valueOf(personId)).getIsSuper())
+    public void validateIsPersonNotSuperUser(Long personId) {
+        if (getPersonEntityByPersonId(personId).getIsSuper())
             throw new DefaultException(INVALID_DELETE_SUPERUSER);
     }
     public WalloudCode validateIsManager(PersonDto.Detail detailView) {
@@ -86,7 +86,7 @@ public class PersonService {
         else return NO_EVENTS;
     }
 
-    public void updatePersonRole(int travelId) {
+    public void updatePersonRole(Long travelId) {
         // update current MANAGER to OTHERS
         Person currManager = getManagerEntityByTravelId(travelId);
 
@@ -176,8 +176,8 @@ public class PersonService {
         personRepository.save(updatePerson);
     }
     @Transactional
-    public int updateIsSettled(int personId, boolean isSettled){
-        Person person = getPersonEntityByPersonId(Long.valueOf(personId));
+    public int updateIsSettled(Long personId, boolean isSettled){
+        Person person = getPersonEntityByPersonId(personId);
         person.setIsSettled(isSettled);
         return ResponseEntity.ok(personRepository.save(person)).getStatusCodeValue();
     }
@@ -201,20 +201,19 @@ public class PersonService {
                 .build();
     }
 
-    public PersonDto.Detail getPersonDetail(int personId) {
-        return PersonDto.Detail.fromEntity(
-                getPersonEntityByPersonId(Long.valueOf(personId)));
+    public PersonDto.Detail getPersonDetail(Long personId) {
+        return PersonDto.Detail.fromEntity(getPersonEntityByPersonId(personId));
     }
-    public PersonDto.OrderMessage getManagerOrderMessage(int travelId) {
+    public PersonDto.OrderMessage getManagerOrderMessage(Long travelId) {
         return PersonDto.OrderMessage.fromEntity(getManagerEntityByTravelId(travelId));
     }
-    public List<PersonDto.OrderMessage> getOthersOrderMessageList(int travelId) {
+    public List<PersonDto.OrderMessage> getOthersOrderMessageList(Long travelId) {
         return getPersonListByTravelId(travelId)
                 .stream()
                 .map(PersonDto.OrderMessage::fromEntity)
                 .collect(Collectors.toList());
     }
-    public List<PersonDto.HomeView> getPersonHomeViewList(int travelId) {
+    public List<PersonDto.HomeView> getPersonHomeViewList(Long travelId) {
         return getPersonListByTravelId(travelId)
                 .stream()
                 .map(PersonDto.HomeView::fromEntity)
@@ -227,13 +226,12 @@ public class PersonService {
         // TODO - no person 으로 바꿔야 하는지?
     }
     @Transactional(readOnly = true)
-    private Person getManagerEntityByTravelId(int travelId) {
-        return personRepository.findByTravel_IdAndRole(
-                Long.valueOf(travelId), true) // manager role is true
+    private Person getManagerEntityByTravelId(Long travelId) {
+        return personRepository.findByTravel_IdAndRole(travelId, true) // manager role is true
                 .orElseThrow(() -> new DefaultException(NO_MANAGER));
     }
     @Transactional(readOnly = true)
-    private List<Person> getPersonListByTravelId(int travelId) {
-        return personRepository.findByTravel_Id(Long.valueOf(travelId));
+    private List<Person> getPersonListByTravelId(Long travelId) {
+        return personRepository.findByTravel_Id(travelId);
     }
 }

@@ -44,7 +44,7 @@ public class EventService {
     }
 
     @Transactional
-    public EventDto.Response updateEvent(int eventId,
+    public EventDto.Response updateEvent(Long eventId,
                                          EventDto.Request eventUpdateRequest){
         Event event = getEventEntityById(eventId);
 
@@ -60,7 +60,7 @@ public class EventService {
         return EventDto.Response.fromEntity(eventRepository.save(event));
     }
     @Transactional
-    public String updateEventImage(int eventId, String imageURL){
+    public String updateEventImage(Long eventId, String imageURL){
         Event event = getEventEntityById(eventId);
         /* TODO - deleteEventImage(event);
          *
@@ -97,31 +97,31 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(int eventId) {
+    public void deleteEvent(Long eventId) {
         List<Participant> participantList =
-                participantRepository.findByEvent_Id(Long.valueOf(eventId));
+                participantRepository.findByEvent_Id(eventId);
         for(Participant participant : participantList)
             participantRepository.delete(participant);
-        eventRepository.deleteById(Long.valueOf(eventId));
+        eventRepository.deleteById(eventId);
     }
 
-    public int getEventPriceById(int eventId) {
+    public int getEventPriceById(Long eventId) {
         return getEventEntityById(eventId).getPrice();
     }
-    public String getEventImageURL(int userId) {
+    public String getEventImageURL(Long userId) {
         return getEventEntityById(userId).getImage();
     }
     @Transactional(readOnly = true)
-    public String getTravelPeriod(int travelId, int eventCount){
+    public String getTravelPeriod(Long travelId, int eventCount){
         if (eventCount == 0) return null;
         else {
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date latestDate =
-                    eventRepository.findFirstByTravel_IdOrderByDateDesc(
-                            Long.valueOf(travelId)).getDate();
+                    eventRepository.findFirstByTravel_IdOrderByDateDesc(travelId)
+                            .getDate();
             Date oldestDate =
-                    eventRepository.findFirstByTravel_IdOrderByDateAsc(
-                            Long.valueOf(travelId)).getDate();
+                    eventRepository.findFirstByTravel_IdOrderByDateAsc(travelId)
+                            .getDate();
             long diffSec = (latestDate.getTime() - oldestDate.getTime()) / 1000;
             long diffDays = diffSec / (24*60*60);
             String periodFormat = dateFormat.format(oldestDate) + " ~ " +
@@ -131,15 +131,14 @@ public class EventService {
         }
     }
     @Transactional(readOnly = true)
-    public Long getSuperUser(int travelId) {
-        return personRepository.findByTravel_IdAndIsSuper(
-                Long.valueOf(travelId), true)
+    public Long getSuperUser(Long travelId) {
+        return personRepository.findByTravel_IdAndIsSuper(travelId, true)
                 .orElseThrow(()-> new DefaultException(NO_SUPERUSER))
                 .getId();
     }
     @Transactional(readOnly = true)
-    public List<EventDto.Detail> getEventInfoInTravel(int travelId){
-        List<Event> list = eventRepository.findByTravel_Id(Long.valueOf(travelId));
+    public List<EventDto.Detail> getEventInfoInTravel(Long travelId){
+        List<Event> list = eventRepository.findByTravel_Id(travelId);
         List<EventDto.Detail> result = new ArrayList<>();
         for (Event e : list){
             EventDto.Detail event = EventDto.Detail.fromEntity(e);
@@ -152,19 +151,19 @@ public class EventService {
         return result;
     }
     @Transactional(readOnly = true)
-    public EventDto.Detail getEventDetail(int userId){
+    public EventDto.Detail getEventDetail(Long userId){
         EventDto.Detail eventDto = EventDto.Detail.fromEntity(
                 getEventEntityById(userId));
         eventDto.setPayerName(
                 personRepository.findById(
-                        Long.valueOf(eventDto.getPayerId()))
+                        eventDto.getPayerId())
                         .orElseThrow(() -> new DefaultException(NO_USER))
                         .getUser().getName());
         return eventDto;
     }
     @Transactional(readOnly = true)
-    private Event getEventEntityById(int eventId) {
-        return eventRepository.findById(Long.valueOf(eventId))
+    private Event getEventEntityById(Long eventId) {
+        return eventRepository.findById(eventId)
                 .orElseThrow(() -> new DefaultException(NO_EVENT));
     }
 }

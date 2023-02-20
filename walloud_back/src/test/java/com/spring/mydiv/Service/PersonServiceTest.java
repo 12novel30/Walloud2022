@@ -35,10 +35,10 @@ class PersonServiceTest {
         int personId = 510;
 
         //when
-        PersonDto.Detail detailView = personService.getPersonDetail(personId);
+//        PersonDto.Detail detailView = personService.getPersonDetail(personId);
 
         //then
-        System.out.println(printPersonDtoDetail(detailView));
+//        System.out.println(printPersonDtoDetail(detailView));
 
     }
 

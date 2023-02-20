@@ -25,25 +25,25 @@ public class PersonController {
     private final ParticipantService participantService;
 
     @PostMapping("/{travelId}/createPerson2Travel")
-    public int createPerson2Travel(@PathVariable int travelId,
+    public Long createPerson2Travel(@PathVariable Long travelId,
                                    @RequestBody String user_email){
         // get User Information
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
         // if user not in travel then throw Exception
         personService.validateIsUserNotInTravel(
-                userDto.getUserId(), Long.valueOf(travelId));
+                userDto.getUserId(), travelId);
         // create person entity with user & travel information
         // and return person id
         return personService.createPerson(
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
                         false) // this person is not superUser
-                .getPersonId().intValue();
+                .getPersonId();
         // TODO - userId 를 리턴해야할지도?
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")
-    public void deletePerson2Travel(@PathVariable(value = "personId") int person_id){
+    public void deletePerson2Travel(@PathVariable(value = "personId") Long person_id){
         // if this person joined any event, then throw Exception
         participantService.validateDoesPersonNotJoinedAnyEvent(person_id);
         // if this person is superUser for this travel, then throw Exception
@@ -55,8 +55,8 @@ public class PersonController {
 
     @GetMapping("/{travelId}/{personId}/getPersonDetailView")
     public PersonDto.Detail getPersonDetailView(
-            @PathVariable("travelId") int travelId,
-            @PathVariable("personId") int personId){
+            @PathVariable("travelId") Long travelId,
+            @PathVariable("personId") Long personId){
         // get person info
         PersonDto.Detail detailView = personService.getPersonDetail(personId);
         // get event list that this person joined
@@ -79,13 +79,13 @@ public class PersonController {
 
     @GetMapping("/{travelId}/getPersonListToHomeView")
     public List<PersonDto.HomeView> getPersonListToHomeView(
-            @PathVariable int travelId){
+            @PathVariable Long travelId){
         // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
         return personService.getPersonHomeViewList(travelId);
     }
 
     @PutMapping("/{personId}/updateIsSettled")
-    public int updateIsSettled(@PathVariable int personId,
+    public int updateIsSettled(@PathVariable Long personId,
                                @RequestBody Boolean isSettled){
         return personService.updateIsSettled(personId, isSettled);
     }

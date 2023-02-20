@@ -37,30 +37,30 @@ public class TravelService {
     }
 
     @Transactional
-    public void deleteTravel(int travelId){
+    public void deleteTravel(Long travelId){
         // delete event
         List<Event> eventList =
-                eventRepository.findByTravel_Id(Long.valueOf(travelId));
+                eventRepository.findByTravel_Id(travelId);
         for(Event event : eventList)
-            eventService.deleteEvent(event.getId().intValue());
+            eventService.deleteEvent(event.getId());
 
         // delete person
         List<Person> personList =
-                personRepository.findByTravel_Id(Long.valueOf(travelId));
+                personRepository.findByTravel_Id(travelId);
         for(Person person : personList) personRepository.delete(person);
 
         // delete travel
-        travelRepository.deleteById(Long.valueOf(travelId));
+        travelRepository.deleteById(travelId);
     }
 
     @Transactional
-    public TravelDto.Response updateTravelInfo(int travelId, String travelName){
+    public TravelDto.Response updateTravelInfo(Long travelId, String travelName){
         Travel travel = getTravelEntity(travelId);
         if (travelName != null) travel.setName(travelName);
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
     @Transactional
-    public String updateTravelImage(int userId, String imageURL){
+    public String updateTravelImage(Long userId, String imageURL){
         Travel travel = getTravelEntity(userId);
         /* TODO - deleteTravelImage(travel);
         *
@@ -72,13 +72,13 @@ public class TravelService {
         return travelRepository.save(travel).getImage();
     }
 
-    public String getTravelImageURL(int travelId) {
+    public String getTravelImageURL(Long travelId) {
         return getTravelEntity(travelId).getImage();
     }
-    public TravelDto.Response getTravelResponse(int travelId){
+    public TravelDto.Response getTravelResponse(Long travelId){
         return TravelDto.Response.fromEntity(getTravelEntity(travelId));
     }
-    public TravelDto.HomeView getTravelHomeView(int travelId){
+    public TravelDto.HomeView getTravelHomeView(Long travelId){
         return TravelDto.HomeView.fromEntity(getTravelEntity(travelId));
     }
     @Transactional(readOnly = true) // TODO - 쓸 곳 있는지 논의할 것
@@ -89,8 +89,8 @@ public class TravelService {
                 .collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
-    private Travel getTravelEntity(int travelId) {
-        return travelRepository.findById(Long.valueOf(travelId))
+    private Travel getTravelEntity(Long travelId) {
+        return travelRepository.findById(travelId)
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
     }
 }

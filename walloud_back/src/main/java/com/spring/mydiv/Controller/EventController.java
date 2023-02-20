@@ -14,7 +14,7 @@ import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class EventController {
+public class EventController { // TODO - double!
     private final EventService eventService;
     private final PersonService personService;
     private final TravelService travelService;
@@ -22,7 +22,7 @@ public class EventController {
     private final S3UploaderService s3UploaderService;
 
     @PostMapping("/{travelId}/createEvent")
-    public Long createEvent(@PathVariable int travelId,
+    public Long createEvent(@PathVariable Long travelId,
                             @RequestBody EventDto.Request eventRequest) {
         // get Travel Information
         eventRequest.setTravelDto(travelService.getTravelResponse(travelId));
@@ -50,8 +50,8 @@ public class EventController {
         return eventResponse.getEventId();
     }
     @DeleteMapping("/{travelId}/{eventId}/deleteEvent")
-    public void deleteEvent(@PathVariable("travelId") int travelId,
-                            @PathVariable("eventId") int eventId)
+    public void deleteEvent(@PathVariable("travelId") Long travelId,
+                            @PathVariable("eventId") Long eventId)
     {
         // get participant list in this event
         List<ParticipantDto.CRUDEvent> partiList =
@@ -69,8 +69,8 @@ public class EventController {
         eventService.deleteEvent(eventId);
     }
     @PostMapping("/{travelId}/{eventId}/updateEvent")
-    public Long updateEvent(@PathVariable("travelId") int travelId,
-                            @PathVariable("eventId") int eventId,
+    public Long updateEvent(@PathVariable("travelId") Long travelId,
+                            @PathVariable("eventId") Long eventId,
                             @RequestBody EventDto.Request eventUpdateRequest){
         // get prev & curr price of event
         int prevEventPrice = eventService.getEventPriceById(eventId);
@@ -98,7 +98,7 @@ public class EventController {
         return response.getEventId();
     }
     @PutMapping("/{eventId}/updateEventImage")
-    public String updateEventImage(@PathVariable int eventId,
+    public String updateEventImage(@PathVariable Long eventId,
                                    @RequestPart(value="file") MultipartFile file)
             throws IOException {
         return eventService.updateEventImage(
@@ -108,15 +108,15 @@ public class EventController {
 
     @GetMapping("/{eventId}/getPartiListInEvent")
     public List<ParticipantDto.CRUDEvent> getPartiListInEvent(
-            @PathVariable int eventId) {
+            @PathVariable Long eventId) {
         return participantService.getPartiDtoDetailVerListInEvent(eventId);
     }
     @GetMapping("/{eventId}/getEventDetail")
-    public EventDto.Detail getEventDetail(@PathVariable int eventId) {
+    public EventDto.Detail getEventDetail(@PathVariable Long eventId) {
         return eventService.getEventDetail(eventId);
     }
     @GetMapping("/{eventId}/getEventImage")
-    public String getEventImage(@PathVariable int eventId){
+    public String getEventImage(@PathVariable Long eventId){
         return eventService.getEventImageURL(eventId);
     }
 

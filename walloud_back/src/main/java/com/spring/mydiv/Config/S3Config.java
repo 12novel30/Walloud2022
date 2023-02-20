@@ -1,4 +1,4 @@
-package com.spring.mydiv.config;
+package com.spring.mydiv.Config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

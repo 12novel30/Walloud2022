@@ -32,19 +32,19 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/deleteUser")
-    public void deleteUser(@PathVariable("userId") int userId) {
+    public void deleteUser(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
     }
 
     @PutMapping("/{userId}/updateUserInfoExceptImage")
     public ResponseEntity<UserDto.Response> updateUserInfoExceptImage(
-            @PathVariable int userId,
+            @PathVariable Long userId,
             @RequestBody UserDto.Request request) {
         return ResponseEntity.ok(userService.updateUserInfo(userId, request));
     }
 
     @PutMapping("/{userId}/updateUserImage")
-    public String updateUserImage(@PathVariable int userId,
+    public String updateUserImage(@PathVariable Long userId,
                                   @RequestPart(value="file") MultipartFile file)
             throws IOException {
         return userService.updateUserImage(
@@ -52,19 +52,19 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/getUserImage")
-    public String getUserImage(@PathVariable int userId){
+    public String getUserImage(@PathVariable Long userId){
         return userService.getUserImageURL(userId);
     }
 
     @GetMapping("/{userId}/getUserInfoExceptImage")
     public UserDto.Response getUserInfoExceptImage(
-            @PathVariable("userId") int userId){
+            @PathVariable("userId") Long userId){
         return userService.getUserResponseById(userId);
     }
 
     @GetMapping("/{userId}/getTravelListUserJoined")
     public List<TravelDto.Response> getTravelListUserJoined(
-            @PathVariable int userId) {
+            @PathVariable Long userId) {
         return userService.getUserJoinedTravel(userId);
     }
 

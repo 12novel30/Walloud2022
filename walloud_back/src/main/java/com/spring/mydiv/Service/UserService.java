@@ -53,14 +53,14 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(int userId) {
+    public void deleteUser(Long userId) {
         if(getUserJoinedTravel(userId).size() == 0)
-            userRepository.deleteById(Long.valueOf(userId));
+            userRepository.deleteById(userId);
         else throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
     }
 
     @Transactional
-    public UserDto.Response updateUserInfo(int userId,
+    public UserDto.Response updateUserInfo(Long userId,
                                            @Nullable UserDto.Request updateRequest) {
         User user = getUserEntityById(userId);
 
@@ -82,7 +82,7 @@ public class UserService {
         return UserDto.Response.fromEntity(userRepository.save(user));
     }
     @Transactional
-    public String updateUserImage(int userId, String imageURL) {
+    public String updateUserImage(Long userId, String imageURL) {
         User user = getUserEntityById(userId);
         /* TODO - deleteUserImage(user);
         *
@@ -96,17 +96,17 @@ public class UserService {
     }
 
 
-    public String getUserImageURL(int userId){
+    public String getUserImageURL(Long userId){
         return getUserEntityById(userId).getInfo();
     }
     @Transactional(readOnly = true)
-    public List<TravelDto.Response> getUserJoinedTravel(int userId) {
-        return personRepository.findByUser_Id(Long.valueOf(userId))
+    public List<TravelDto.Response> getUserJoinedTravel(Long userId) {
+        return personRepository.findByUser_Id(userId)
                 .stream()
                 .map(TravelDto.Response::fromPersonEntity)
                 .collect(Collectors.toList());
     }
-    public UserDto.Response getUserResponseById(int userId) {
+    public UserDto.Response getUserResponseById(Long userId) {
         return UserDto.Response.fromEntity(getUserEntityById(userId));
     }
     public UserDto.Response getUserResponseByEmail(String email) {
@@ -118,8 +118,8 @@ public class UserService {
                 .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
     }
     @Transactional(readOnly = true)
-    private User getUserEntityById(int userId) {
-        return userRepository.findById(Long.valueOf(userId))
+    private User getUserEntityById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(NO_USER));
     }
 }

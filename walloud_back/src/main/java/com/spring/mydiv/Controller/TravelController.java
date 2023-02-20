@@ -16,6 +16,9 @@ import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class TravelController {
+
+    // TODO - path variable -> long, Integer, double 으로 변경할 수 있는지 확인할 것
+
     private final UserService userService;
     private final TravelService travelService;
     private final PersonService personService;
@@ -23,7 +26,7 @@ public class TravelController {
     private final S3UploaderService s3UploaderService;
 
     @PostMapping("/{userId}/createNewTravelUserJoining")
-    public int createNewTravelUserJoining(@PathVariable int userId,
+    public Long createNewTravelUserJoining(@PathVariable Long userId,
                                           @RequestBody String travel_name) {
         // create travel -> person entity & return travel id
         return personService.createPerson(
@@ -31,18 +34,18 @@ public class TravelController {
                         userService.getUserResponseById(userId),
                         travelService.createTravel(travel_name)),
                         true)
-                .getTravelId().intValue();
+                .getTravelId();
     }
 
     @PutMapping("/{travelId}/updateTravelName")
     public ResponseEntity<TravelDto.Response> updateTravelName(
-            @PathVariable int travelId, @RequestBody String travel_name) {
+            @PathVariable Long travelId, @RequestBody String travel_name) {
         return ResponseEntity.ok(
                 travelService.updateTravelInfo(travelId, travel_name));
     }
 
     @PutMapping("/{travelId}/updateTravelImage")
-    public String updateTravelImage(@PathVariable int travelId,
+    public String updateTravelImage(@PathVariable Long travelId,
                                     @RequestPart(value="file") MultipartFile file)
             throws IOException {
         return travelService.updateTravelImage(
@@ -51,8 +54,7 @@ public class TravelController {
     }
 
     @GetMapping("/{travelId}/getTravelHomeView")
-    public TravelDto.HomeView getTravelHomeView(@PathVariable int travelId){
-        // TODO - path variable 을 long 으로 변경할 수 있는지 확인할 것
+    public TravelDto.HomeView getTravelHomeView(@PathVariable Long travelId){
         TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
 
         homeView.setPersonList(personService.getPersonHomeViewList(travelId));
@@ -66,13 +68,13 @@ public class TravelController {
     }
 
     @GetMapping("/{travelId}/getTravelImage")
-    public String getTravelImage(@PathVariable int travelId){
+    public String getTravelImage(@PathVariable Long travelId){
         return travelService.getTravelImageURL(travelId);
     }
 
     @DeleteMapping("/{userId}/{travelId}/deleteTravel")
-    public void deleteTravel(@PathVariable(value = "userId") int userId,
-                             @PathVariable(value = "travelId") int travelId) {
+    public void deleteTravel(@PathVariable(value = "userId") Long userId,
+                             @PathVariable(value = "travelId") Long travelId) {
         // TODO - userId -> personId 논의
         // if this person is not superUser for this travel, then throw Exception
         personService.validateIsUserSuperuser(travelId, userId);

@@ -1,4 +1,4 @@
-package com.spring.mydiv.config;
+package com.spring.mydiv.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

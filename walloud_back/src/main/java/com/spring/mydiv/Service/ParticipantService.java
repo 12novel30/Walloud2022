@@ -111,13 +111,13 @@ public class ParticipantService {
                 getPartiEntityByPersonIdAndEventId(personId, eventId));
     }
 
-    public void validateDoesPersonNotJoinedAnyEvent(int personId) {
+    public void validateDoesPersonNotJoinedAnyEvent(Long personId) {
         if (getPartiListByPersonId(personId).size() > 0)
             throw new DefaultException(INVALID_DELETE_EVENT_EXISTED);
     }
 
     @Transactional(readOnly = true)
-    public List<EventDto.Detail> getEventDtoListThatPersonJoin(int personId) {
+    public List<EventDto.Detail> getEventDtoListThatPersonJoin(Long personId) {
         List<EventDto.Detail> result = new ArrayList<>();
         // get participant list (= person)
         List<Participant> partiList = getPartiListByPersonId(personId);
@@ -127,30 +127,29 @@ public class ParticipantService {
             // +) 별도로 role 에 따라 새로 payer 를 재설정할 필요 없다.
             EventDto.Detail eventDto = EventDto.Detail.fromEntity(
                     getEventEntityById(parti.getEvent().getId()));
-            eventDto.setPayerName(
-                    getPersonEntityByPersonId(Long.valueOf(eventDto.getPayerId()))
-                            .getUser().getName());
+            eventDto.setPayerName(getPersonEntityByPersonId(eventDto.getPayerId())
+                    .getUser().getName());
             result.add(eventDto);
         }
         return result;
     }
     @Transactional(readOnly = true)
-    public List<ParticipantDto.CRUDEvent> getPartiDtoListInEvent(int eventId){
-        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
+    public List<ParticipantDto.CRUDEvent> getPartiDtoListInEvent(Long eventId){
+        return participantRepository.findByEvent_Id(eventId)
                 .stream()
                 .map(ParticipantDto.CRUDEvent::fromEntity)
                 .collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
-    public List<ParticipantDto.CRUDEvent> getPartiDtoDetailVerListInEvent(int eventId){
-        return participantRepository.findByEvent_Id(Long.valueOf(eventId))
+    public List<ParticipantDto.CRUDEvent> getPartiDtoDetailVerListInEvent(Long eventId){
+        return participantRepository.findByEvent_Id(eventId)
                 .stream()
                 .map(ParticipantDto.CRUDEvent::fromEntityDetailVer)
                 .collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
-    private List<Participant> getPartiListByPersonId(int personId) {
-        return participantRepository.findByPerson_Id(Long.valueOf(personId));
+    private List<Participant> getPartiListByPersonId(Long personId) {
+        return participantRepository.findByPerson_Id(personId);
     }
     @Transactional(readOnly = true)
     private Person getPersonEntityByPersonId(Long personId) {
