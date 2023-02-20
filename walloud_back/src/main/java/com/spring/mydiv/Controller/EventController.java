@@ -14,7 +14,11 @@ import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class EventController { // TODO - double!
+public class EventController {
+    // TODO - double!
+    // TODO - image 관련 메소드 하나로 합치기
+    // TODO - 에러 코드 체크해야함
+
     private final EventService eventService;
     private final PersonService personService;
     private final TravelService travelService;
@@ -119,7 +123,4 @@ public class EventController { // TODO - double!
     public String getEventImage(@PathVariable Long eventId){
         return eventService.getEventImageURL(eventId);
     }
-
-    // TODO - image 관련 메소드 하나로 합치기
-    // TODO - 에러 코드 체크해야함
 }

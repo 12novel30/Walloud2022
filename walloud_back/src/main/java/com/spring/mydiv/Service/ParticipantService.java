@@ -89,11 +89,6 @@ public class ParticipantService {
                 .build();
     }
 
-    public Double calculateChargedPrice(int eventPrice, int partiSize) {
-        // TODO - 추후 업데이트에 따라 로직 변경 가능
-        return (double) eventPrice / partiSize;
-    }
-
     @Transactional
     public void updateParticipant(ParticipantDto.CRUDEvent partiDto, Long eventId) {
         Participant participant =
@@ -167,5 +162,11 @@ public class ParticipantService {
                                                            Long eventId) {
         return participantRepository.findByPerson_IdAndEvent_Id(personId, eventId)
                 .orElseThrow(() -> new DefaultException(NO_USER));
+    }
+
+
+    // TODO - 추후 업데이트에 따라 로직 변경 가능
+    public Double calculateChargedPrice(int eventPrice, int partiSize) {
+        return (double) eventPrice / partiSize;
     }
 }
