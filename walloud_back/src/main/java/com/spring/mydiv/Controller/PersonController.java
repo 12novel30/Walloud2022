@@ -33,11 +33,12 @@ public class PersonController {
         personService.validateIsUserNotInTravel(
                 userDto.getUserId(), Long.valueOf(travelId));
         // create person entity with user & travel information
+        // and return person id
         return personService.createPerson(
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
-                        false). // this person is not superUser
-                getPersonId().intValue();
+                        false) // this person is not superUser
+                .getPersonId().intValue();
         // TODO - userId 를 리턴해야할지도?
     }
 

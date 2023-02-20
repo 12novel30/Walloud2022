@@ -1,20 +1,12 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Person;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.Commit;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ParticipantServiceTest {
@@ -55,8 +47,8 @@ class ParticipantServiceTest {
         //given
         //when
         Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
-                participantService.first(currPartiDtoList, prevPartiDtoList);
-        personService.second(response, participatedChangeMap, 300, 303);
+                participantService.setPartiChangeMap(currPartiDtoList, prevPartiDtoList);
+        personService.updatePersonAndParticipant(response, participatedChangeMap, 300, 303);
         //then
     }
 

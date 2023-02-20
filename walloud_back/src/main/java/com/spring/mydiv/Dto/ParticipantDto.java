@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 
 public class ParticipantDto {
     @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -16,7 +15,7 @@ public class ParticipantDto {
         private Long personId;
         private Boolean role;
         private Double spent;
-//        private WalloudCode isParticipatedChange = null;
+        private String Name;
         public static CRUDEvent fromEntity(Participant participant) {
             return CRUDEvent.builder()
                     .personId(participant.getPerson().getId())
@@ -24,7 +23,16 @@ public class ParticipantDto {
                     .spent(participant.getChargedPrice())
                     .build();
         }
+        public static CRUDEvent fromEntityDetailVer(Participant participant) {
+            return CRUDEvent.builder()
+                    .personId(participant.getPerson().getId())
+                    .role(participant.getEventRole())
+                    .spent(participant.getChargedPrice())
+                    .Name(participant.getPerson().getUser().getName())
+                    .build();
+        }
     }
+
     @Getter
     @Setter
     @AllArgsConstructor
@@ -34,47 +42,6 @@ public class ParticipantDto {
         private CRUDEvent prev;
         private CRUDEvent curr;
         private WalloudCode isParticipatedChange = null;
-    }
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Response {
-        private Long partiId;
-        private Person person;
-        private Event event;
-        private Boolean eventRole;
-
-        public static Response fromEntity(Participant participant) {
-            return Response.builder()
-                    .partiId(participant.getId())
-                    .person(participant.getPerson())
-                    .event(participant.getEvent())
-                    .eventRole(participant.getEventRole())
-                    .build();
-        }
-
-    }
-
-    @Getter // TODO - controller
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Detail {
-        private Long PersonId;
-        private String Name;
-        private boolean eventRole;
-        private Double chargedPrice;
-        public static Detail fromEntity(Participant participant) {
-            return Detail.builder()
-                    .PersonId(participant.getPerson().getId())
-                    .Name(participant.getPerson().getUser().getName())
-                    .eventRole(participant.getEventRole())
-                    .chargedPrice(participant.getChargedPrice())
-                    .build();
-        }
     }
 
     @Getter

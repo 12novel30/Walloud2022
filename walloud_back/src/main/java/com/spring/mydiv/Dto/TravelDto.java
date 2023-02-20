@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class TravelDto {
+
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor

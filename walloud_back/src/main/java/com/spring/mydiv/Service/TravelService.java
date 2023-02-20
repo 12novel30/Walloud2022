@@ -14,7 +14,6 @@ import com.spring.mydiv.Repository.TravelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,6 @@ public class TravelService {
 	private final TravelRepository travelRepository;
     private final EventRepository eventRepository;
     private final PersonRepository personRepository;
-    private final S3UploaderService s3UploaderService;
 
     @Transactional
     public TravelDto.Response createTravel(String travelName) {
@@ -38,25 +36,19 @@ public class TravelService {
                                 .build()));
     }
 
-    public TravelDto.Response getTravelResponse(int no){
-        return TravelDto.Response.fromEntity(getTravelEntity(no));
-    }
-    public TravelDto.HomeView getTravelHomeView(int travelId){
-        return TravelDto.HomeView.fromEntity(getTravelEntity(travelId));
-    }
-    public String getTravelImageURL(int travelId){
-        return getTravelEntity(travelId).getImage();
-    }
-
-
     @Transactional
     public void deleteTravel(int travelId){
         // delete event
-        List<Event> eventList = eventRepository.findByTravel_Id(Long.valueOf(travelId));
-        for(Event event : eventList) eventService.deleteEvent(event.getId().intValue());
+        List<Event> eventList =
+                eventRepository.findByTravel_Id(Long.valueOf(travelId));
+        for(Event event : eventList)
+            eventService.deleteEvent(event.getId().intValue());
+
         // delete person
-        List<Person> personList = personRepository.findByTravel_Id(Long.valueOf(travelId));
+        List<Person> personList =
+                personRepository.findByTravel_Id(Long.valueOf(travelId));
         for(Person person : personList) personRepository.delete(person);
+
         // delete travel
         travelRepository.deleteById(Long.valueOf(travelId));
     }
@@ -67,15 +59,6 @@ public class TravelService {
         if (travelName != null) travel.setName(travelName);
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
-    @Transactional(readOnly = true)
-    public List<TravelDto.Response> getSuperUserTravelList(Long userId){
-        // TODO - 쓸 곳 있는지 논의할 것
-        return personRepository.findByUser_IdAndIsSuper(userId, true)
-                .stream()
-                .map(TravelDto.Response::fromPersonEntity)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public String updateTravelImage(int userId, String imageURL){
         Travel travel = getTravelEntity(userId);
@@ -89,9 +72,25 @@ public class TravelService {
         return travelRepository.save(travel).getImage();
     }
 
+    public String getTravelImageURL(int travelId) {
+        return getTravelEntity(travelId).getImage();
+    }
+    public TravelDto.Response getTravelResponse(int travelId){
+        return TravelDto.Response.fromEntity(getTravelEntity(travelId));
+    }
+    public TravelDto.HomeView getTravelHomeView(int travelId){
+        return TravelDto.HomeView.fromEntity(getTravelEntity(travelId));
+    }
+    @Transactional(readOnly = true) // TODO - 쓸 곳 있는지 논의할 것
+    public List<TravelDto.Response> getSuperUserTravelList(Long userId){
+        return personRepository.findByUser_IdAndIsSuper(userId, true)
+                .stream()
+                .map(TravelDto.Response::fromPersonEntity)
+                .collect(Collectors.toList());
+    }
     @Transactional(readOnly = true)
-    private Travel getTravelEntity(int userId) {
-        return travelRepository.findById(Long.valueOf(userId))
+    private Travel getTravelEntity(int travelId) {
+        return travelRepository.findById(Long.valueOf(travelId))
                 .orElseThrow(() -> new DefaultException(NO_TRAVEL));
     }
 }

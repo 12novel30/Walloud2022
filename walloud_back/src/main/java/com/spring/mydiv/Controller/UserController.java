@@ -12,6 +12,9 @@ import com.spring.mydiv.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import javax.validation.Valid;
+
 import static com.spring.mydiv.Code.S3FolderName.USER_FOLDER;
 
 @RestController
@@ -23,7 +26,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto.Response> createUser(
-            @RequestBody UserDto.Request request) {
+            @Valid @RequestBody UserDto.Request request) {
         return ResponseEntity.ok(userService.createUser(request));
         // TODO - discuss; userId만 리턴할지 정할 것
     }

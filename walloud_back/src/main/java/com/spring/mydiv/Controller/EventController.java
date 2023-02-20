@@ -36,7 +36,7 @@ public class EventController {
         for (ParticipantDto.CRUDEvent partiDto : partiDtoList){
             // create participant
             participantService.createParticipant(
-                    participantService.setParticipantRequest(partiDto, eventResponse));
+                    participantService.setPartiRequest(partiDto, eventResponse));
             // update person(parti) sumSend etc.
             personService.updatePersonMoneyFromDto(
                     personService.setUpdateEntity(partiDto,
@@ -55,7 +55,7 @@ public class EventController {
     {
         // get participant list in this event
         List<ParticipantDto.CRUDEvent> partiList =
-                participantService.getPartiCRUDEventDtoListInEvent(eventId);
+                participantService.getPartiDtoListInEvent(eventId);
         // update all person(participant) sumSend etc. in this travel before deleting
         for (ParticipantDto.CRUDEvent partiDto : partiList){
             personService.updatePersonMoneyFromDto(
@@ -82,13 +82,13 @@ public class EventController {
 
         // if new payer not in parti_list, then add payer to currPartiDtoList
         Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
-                participantService.first(
+                participantService.setPartiChangeMap(
                         eventService.validatePayerInPartiList(eventUpdateRequest),
-                        participantService.getPartiCRUDEventDtoListInEvent(eventId)
+                        participantService.getPartiDtoListInEvent(eventId)
                 );
         // delete NOW_NOT_PARTICIPATED, create NEW_PARTICIPANT, update STILL_PARTICIPATED
         // and update person(parti) sumSend etc.
-        personService.second(
+        personService.updatePersonAndParticipant(
                 response, participatedChangeMap,
                 prevEventPrice, currEventPrice);
 
@@ -107,9 +107,9 @@ public class EventController {
     }
 
     @GetMapping("/{eventId}/getPartiListInEvent")
-    public List<ParticipantDto.Detail> getPartiListInEvent(
+    public List<ParticipantDto.CRUDEvent> getPartiListInEvent(
             @PathVariable int eventId) {
-        return participantService.getPartiDetailDtoListInEvent(eventId);
+        return participantService.getPartiDtoDetailVerListInEvent(eventId);
     }
     @GetMapping("/{eventId}/getEventDetail")
     public EventDto.Detail getEventDetail(@PathVariable int eventId) {
@@ -121,4 +121,5 @@ public class EventController {
     }
 
     // TODO - image 관련 메소드 하나로 합치기
+    // TODO - 에러 코드 체크해야함
 }
