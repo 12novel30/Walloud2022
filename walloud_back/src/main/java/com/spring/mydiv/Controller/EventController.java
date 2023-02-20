@@ -16,7 +16,6 @@ import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 @RequestMapping("/api")
 public class EventController {
     // TODO - double!
-    // TODO - image 관련 메소드 하나로 합치기
     // TODO - 에러 코드 체크해야함
 
     private final EventService eventService;
@@ -105,9 +104,10 @@ public class EventController {
     public String updateEventImage(@PathVariable Long eventId,
                                    @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return eventService.updateEventImage(
-                eventId,
-                s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
+        S3Dto.ImageUrls urls = eventService.updateEventImage(
+                eventId, s3UploaderService.upload(file, EVENT_FOLDER.getDescription()));
+        s3UploaderService.deleteImage(urls.getDeleteImage());
+        return urls.getNewImage();
     }
 
     @GetMapping("/{eventId}/getPartiListInEvent")

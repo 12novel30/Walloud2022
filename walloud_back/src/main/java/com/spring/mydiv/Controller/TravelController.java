@@ -1,5 +1,6 @@
 package com.spring.mydiv.Controller;
 
+import com.spring.mydiv.Dto.S3Dto;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Service.*;
 
@@ -48,9 +49,10 @@ public class TravelController {
     public String updateTravelImage(@PathVariable Long travelId,
                                     @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        return travelService.updateTravelImage(
-                travelId,
-                s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
+        S3Dto.ImageUrls urls = travelService.updateTravelImage(
+                travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
+        s3UploaderService.deleteImage(urls.getDeleteImage());
+        return urls.getNewImage();
     }
 
     @GetMapping("/{travelId}/getTravelHomeView")

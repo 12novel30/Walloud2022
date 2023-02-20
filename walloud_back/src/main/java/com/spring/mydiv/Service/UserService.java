@@ -82,19 +82,15 @@ public class UserService {
         return UserDto.Response.fromEntity(userRepository.save(user));
     }
     @Transactional
-    public String updateUserImage(Long userId, String imageURL) {
+    public S3Dto.ImageUrls updateUserImage(Long userId, String imageURL) {
         User user = getUserEntityById(userId);
-        /* TODO - deleteUserImage(user);
-        *
-        * public void deleteUserImage(User user){
-        * String userExistingImage = user.getInfo();
-        * s3UploaderService.deleteImage(userExistingImage);
-        * }
-        * */
+        String prevImage = user.getInfo();
         user.setInfo(imageURL);
-        return userRepository.save(user).getInfo();
+        return S3Dto.ImageUrls.builder()
+                .newImage(userRepository.save(user).getInfo())
+                .deleteImage(prevImage)
+                .build();
     }
-
 
     public String getUserImageURL(Long userId){
         return getUserEntityById(userId).getInfo();

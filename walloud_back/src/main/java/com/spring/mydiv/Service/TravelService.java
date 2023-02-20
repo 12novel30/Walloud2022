@@ -1,8 +1,10 @@
 package com.spring.mydiv.Service;
 
+import com.spring.mydiv.Dto.S3Dto;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.PersonRepository;
@@ -60,18 +62,15 @@ public class TravelService {
         return TravelDto.Response.fromEntity(travelRepository.save(travel));
     }
     @Transactional
-    public String updateTravelImage(Long userId, String imageURL){
+    public S3Dto.ImageUrls updateTravelImage(Long userId, String imageURL){
         Travel travel = getTravelEntity(userId);
-        /* TODO - deleteTravelImage(travel);
-        *
-        * public void deleteTravelImage(Travel travel){
-        * s3UploaderService.deleteImage(travel.getImage());
-        * }
-        * */
+        String prevImage = travel.getImage();
         travel.setImage(imageURL);
-        return travelRepository.save(travel).getImage();
+        return S3Dto.ImageUrls.builder()
+                .newImage(travelRepository.save(travel).getImage())
+                .deleteImage(prevImage)
+                .build();
     }
-
     public String getTravelImageURL(Long travelId) {
         return getTravelEntity(travelId).getImage();
     }

@@ -60,17 +60,14 @@ public class EventService {
         return EventDto.Response.fromEntity(eventRepository.save(event));
     }
     @Transactional
-    public String updateEventImage(Long eventId, String imageURL){
+    public S3Dto.ImageUrls updateEventImage(Long eventId, String imageURL){
         Event event = getEventEntityById(eventId);
-        /* TODO - deleteEventImage(event);
-         *
-         * public void deleteEventImage(Event event){
-         * String eventExistingImage = event.getImage();
-         * s3UploaderService.deleteImage(eventExistingImage);
-         * }
-         * */
+        String prevImage = event.getImage();
         event.setImage(imageURL);
-        return eventRepository.save(event).getImage();
+        return S3Dto.ImageUrls.builder()
+                .newImage(eventRepository.save(event).getImage())
+                .deleteImage(prevImage)
+                .build();
     }
 
     public List<ParticipantDto.CRUDEvent> validatePayerInPartiList(
