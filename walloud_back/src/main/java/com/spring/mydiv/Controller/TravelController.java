@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
+import static com.spring.mydiv.Code.S3Code.TRAVEL_FOLDER;
 
 @RestController
 @RequiredArgsConstructor

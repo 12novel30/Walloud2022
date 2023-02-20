@@ -41,7 +41,7 @@ public class ParticipantService {
 
         if (ResponseEntity.ok(participantRepository.save(participant))
                 .getStatusCodeValue() != 200)
-            throw new DefaultException(CREATE_PARTICIPANT_FAIL);
+            throw new DefaultException(CREATE_FAIL);
     }
 
     public Map<Long, ParticipantDto.forUpdateEvent> setPartiChangeMap(
@@ -149,7 +149,7 @@ public class ParticipantService {
     @Transactional(readOnly = true)
     private Person getPersonEntityByPersonId(Long personId) {
         return personRepository.findById(personId)
-                .orElseThrow(() -> new DefaultException(NO_USER));
+                .orElseThrow(() -> new DefaultException(NO_PERSON));
         // TODO - no person 으로 바꿔야 하는지?
     }
     @Transactional(readOnly = true)
@@ -161,7 +161,7 @@ public class ParticipantService {
     private Participant getPartiEntityByPersonIdAndEventId(Long personId,
                                                            Long eventId) {
         return participantRepository.findByPerson_IdAndEvent_Id(personId, eventId)
-                .orElseThrow(() -> new DefaultException(NO_USER));
+                .orElseThrow(() -> new DefaultException(NO_PARTI));
     }
 
 

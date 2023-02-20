@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum S3FolderName {
+public enum S3Code {
     USER_FOLDER("user_test"),
     TRAVEL_FOLDER("travel_test"),
     EVENT_FOLDER("event_test"),

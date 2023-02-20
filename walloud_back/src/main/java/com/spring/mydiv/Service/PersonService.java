@@ -224,8 +224,7 @@ public class PersonService {
     @Transactional(readOnly = true)
     private Person getPersonEntityByPersonId(Long personId) {
         return personRepository.findById(personId)
-                .orElseThrow(()-> new DefaultException(NO_USER));
-        // TODO - no person 으로 바꿔야 하는지?
+                .orElseThrow(()-> new DefaultException(NO_PERSON));
     }
     @Transactional(readOnly = true)
     private Person getManagerEntityByTravelId(Long travelId) {

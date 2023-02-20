@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
-import static com.spring.mydiv.Code.S3FolderName.DEFAULT_IMAGE;
+import static com.spring.mydiv.Code.S3Code.DEFAULT_IMAGE;
 
 @Service
 @RequiredArgsConstructor

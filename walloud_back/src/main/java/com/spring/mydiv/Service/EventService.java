@@ -40,7 +40,7 @@ public class EventService {
         if (ResponseEntity.ok(eventRepository.save(event))
                 .getStatusCodeValue() == 200)
             return EventDto.Response.fromEntity(event);
-        else throw new DefaultException(CREATE_EVENT_FAIL);
+        else throw new DefaultException(CREATE_FAIL);
     }
 
     @Transactional

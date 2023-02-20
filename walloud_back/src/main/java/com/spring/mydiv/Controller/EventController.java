@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
-import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
+import static com.spring.mydiv.Code.S3Code.EVENT_FOLDER;
 
 @RestController
 @RequiredArgsConstructor

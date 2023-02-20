@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-import static com.spring.mydiv.Code.S3FolderName.USER_FOLDER;
+import static com.spring.mydiv.Code.S3Code.USER_FOLDER;
 
 @RestController
 @RequiredArgsConstructor

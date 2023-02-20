@@ -4,7 +4,6 @@ import com.spring.mydiv.Dto.S3Dto;
 import com.spring.mydiv.Dto.TravelDto;
 import com.spring.mydiv.Entity.Event;
 import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Repository.EventRepository;
 import com.spring.mydiv.Repository.PersonRepository;
