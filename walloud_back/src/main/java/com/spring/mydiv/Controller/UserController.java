@@ -54,13 +54,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/getUserImage")
-    public String getUserImage(@PathVariable Long userId){
+    public String getUserImage(@PathVariable Long userId) {
         return userService.getUserImageURL(userId);
     }
 
     @GetMapping("/{userId}/getUserInfoExceptImage")
-    public UserDto.Response getUserInfoExceptImage(
-            @PathVariable("userId") Long userId){
+    public UserDto.Response getUserInfoExceptImage(@PathVariable("userId") Long userId) {
         return userService.getUserResponseById(userId);
     }
 

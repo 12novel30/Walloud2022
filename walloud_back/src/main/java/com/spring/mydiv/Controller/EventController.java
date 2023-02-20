@@ -15,8 +15,6 @@ import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class EventController {
-    // TODO - 에러 코드 체크해야함
-
     private final EventService eventService;
     private final PersonService personService;
     private final TravelService travelService;
@@ -53,8 +51,7 @@ public class EventController {
     }
     @DeleteMapping("/{travelId}/{eventId}/deleteEvent")
     public void deleteEvent(@PathVariable("travelId") Long travelId,
-                            @PathVariable("eventId") Long eventId)
-    {
+                            @PathVariable("eventId") Long eventId) {
         // get participant list in this event
         List<ParticipantDto.CRUDEvent> partiList =
                 participantService.getPartiDtoListInEvent(eventId);
@@ -73,7 +70,7 @@ public class EventController {
     @PostMapping("/{travelId}/{eventId}/updateEvent")
     public Long updateEvent(@PathVariable("travelId") Long travelId,
                             @PathVariable("eventId") Long eventId,
-                            @RequestBody EventDto.Request eventUpdateRequest){
+                            @RequestBody EventDto.Request eventUpdateRequest) {
         // get prev & curr price of event
         int prevEventPrice = eventService.getEventPriceById(eventId);
         int currEventPrice = eventUpdateRequest.getPrice();

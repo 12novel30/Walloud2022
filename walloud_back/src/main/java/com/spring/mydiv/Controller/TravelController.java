@@ -54,7 +54,7 @@ public class TravelController {
     }
 
     @GetMapping("/{travelId}/getTravelHomeView")
-    public TravelDto.HomeView getTravelHomeView(@PathVariable Long travelId){
+    public TravelDto.HomeView getTravelHomeView(@PathVariable Long travelId) {
         TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
 
         homeView.setPersonList(personService.getPersonHomeViewList(travelId));
@@ -68,7 +68,7 @@ public class TravelController {
     }
 
     @GetMapping("/{travelId}/getTravelImage")
-    public String getTravelImage(@PathVariable Long travelId){
+    public String getTravelImage(@PathVariable Long travelId) {
         return travelService.getTravelImageURL(travelId);
     }
 
