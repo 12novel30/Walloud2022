@@ -15,7 +15,6 @@ import static com.spring.mydiv.Code.S3FolderName.EVENT_FOLDER;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class EventController {
-    // TODO - double!
     // TODO - 에러 코드 체크해야함
 
     private final EventService eventService;
@@ -93,7 +92,7 @@ public class EventController {
         // and update person(parti) sumSend etc.
         personService.updatePersonAndParticipant(
                 response, participatedChangeMap,
-                prevEventPrice, currEventPrice);
+                Double.valueOf(prevEventPrice), Double.valueOf(currEventPrice));
 
         // change person role in this Travel
         personService.updatePersonRole(travelId);

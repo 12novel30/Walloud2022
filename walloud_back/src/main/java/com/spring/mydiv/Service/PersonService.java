@@ -28,6 +28,7 @@ import static java.lang.Boolean.*;
 public class PersonService {
 	private final PersonRepository personRepository;
     private final ParticipantService participantService;
+    Double zero = Double.valueOf(0);
 
     @Transactional
     public PersonDto.ResponseIds createPerson(PersonDto.Request request,
@@ -44,9 +45,9 @@ public class PersonService {
                         .id(request.getTravelDto().getTravelId())
                         .name(request.getTravelDto().getName())
                         .build())
-                .sumGet(Double.valueOf(0))
-                .sumSend(Double.valueOf(0))
-                .difference(Double.valueOf(0))
+                .sumGet(zero)
+                .sumSend(zero)
+                .difference(zero)
                 .isSuper(superUser) // 생성하는 user 가 superuser
                 .role(superUser) // 초기 세팅: superuser = manager
                 .isSettled(false) // 정산 미완료
@@ -108,7 +109,8 @@ public class PersonService {
     }
     public void updatePersonAndParticipant(EventDto.Response response,
                                            Map<Long, ParticipantDto.forUpdateEvent> map,
-                                           int prevEventPrice, int currEventPrice) {
+                                           Double prevEventPrice,
+                                           Double currEventPrice) {
         for (Map.Entry<Long, ParticipantDto.forUpdateEvent> entry : map.entrySet()){
             ParticipantDto.forUpdateEvent dto = entry.getValue();
 
@@ -118,26 +120,26 @@ public class PersonService {
                         participantService.setPartiRequest(
                                 dto.getCurr(),response));
                 // and update person(parti) sumSend etc.
-                updatePersonMoneyFromDto(setUpdateEntity(
-                        dto.getCurr(),Double.valueOf(currEventPrice), true));
+                updatePersonMoneyFromDto(
+                        setUpdateEntity(dto.getCurr(), currEventPrice, true));
             }
             else if (dto.getIsParticipatedChange() == NOW_NOT_PARTICIPATED) {
                 // delete participant
                 participantService.deleteParticipant(
                         dto.getPrev().getPersonId(), response.getEventId());
                 // and update person(parti) sumSend etc.
-                updatePersonMoneyFromDto(setUpdateEntity(
-                        dto.getPrev(), Double.valueOf(prevEventPrice), false));
+                updatePersonMoneyFromDto(
+                        setUpdateEntity(dto.getPrev(), prevEventPrice, false));
             }
             else if (dto.getIsParticipatedChange() == STILL_PARTICIPATED) {
                 // update participant
                 participantService.updateParticipant(
                         dto.getCurr(), response.getEventId());
                 // and update person(parti) sumSend etc.
-                updatePersonMoneyFromDto(setUpdateEntity(
-                        dto.getPrev(), Double.valueOf(prevEventPrice), false));
-                updatePersonMoneyFromDto(setUpdateEntity(
-                        dto.getCurr(), Double.valueOf(currEventPrice), true));
+                updatePersonMoneyFromDto(
+                        setUpdateEntity(dto.getPrev(), prevEventPrice, false));
+                updatePersonMoneyFromDto(
+                        setUpdateEntity(dto.getCurr(), currEventPrice, true));
             }
         }
     }

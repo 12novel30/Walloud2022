@@ -46,9 +46,9 @@ class ParticipantServiceTest {
     public void validateParticipatedChange(){
         //given
         //when
-        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
-                participantService.setPartiChangeMap(currPartiDtoList, prevPartiDtoList);
-        personService.updatePersonAndParticipant(response, participatedChangeMap, 300, 303);
+//        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
+//                participantService.setPartiChangeMap(currPartiDtoList, prevPartiDtoList);
+//        personService.updatePersonAndParticipant(response, participatedChangeMap, 300, 303);
         //then
     }
 

@@ -18,8 +18,6 @@ import static com.spring.mydiv.Code.S3FolderName.TRAVEL_FOLDER;
 @RequestMapping("/api")
 public class TravelController {
 
-    // TODO - path variable -> long, Integer, double 으로 변경할 수 있는지 확인할 것
-
     private final UserService userService;
     private final TravelService travelService;
     private final PersonService personService;
