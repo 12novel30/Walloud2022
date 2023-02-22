@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
     private final S3UploaderService s3UploaderService;
 
-    @PostMapping("/register")
+    @PostMapping(path = "/register") // consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     public ResponseEntity<UserDto.Response> createUser(
             @Valid @RequestBody UserDto.Request request) {
         return ResponseEntity.ok(userService.createUser(request));
