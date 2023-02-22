@@ -1,98 +1,78 @@
 package com.spring.mydiv.Controller;
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Exception.DefaultException;
-import com.spring.mydiv.Service.PersonService;
 import com.spring.mydiv.Service.S3UploaderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.spring.mydiv.Service.TravelService;
 import com.spring.mydiv.Service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.spring.mydiv.Code.ErrorCode.*;
-import static java.lang.Boolean.TRUE;
+
+import javax.validation.Valid;
+
+import static com.spring.mydiv.Code.S3Code.USER_FOLDER;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
-    private final UserService userservice;
-    private final TravelService travelservice;
-    private final PersonService personservice;
+    private final UserService userService;
     private final S3UploaderService s3UploaderService;
 
-    /* --------------- not image zone --------------- */
-    @PostMapping(value = "/register")
-    public ResponseEntity<UserDto.Response> createUser(UserDto.Request request) {
-        if (!userservice.checkIsEmailRegistered(request.getEmail())) {
-            return ResponseEntity.ok(userservice.createUser(request));
-        } else throw new DefaultException(ALREADY_REGISTERED);
+    @PostMapping(path = "/register") // consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    public ResponseEntity<UserDto.Response> createUser(
+            @Valid @RequestBody UserDto.Request request) {
+        System.out.println("!!!!!!");
+        System.out.println(request);
+        return ResponseEntity.ok(userService.createUser(request));
+        // TODO - discuss; userId만 리턴할지 정할 것
     }
 
-    @DeleteMapping("/{userId}/deregister")
-    public void deregister(@PathVariable("userId") int user_id){
-        if(userservice.getUserJoinedTravel(user_id).size() == 0){
-            userservice.deleteUser(user_id);
-        } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
+    @DeleteMapping("/{userId}/deleteUser")
+    public void deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUser(userId);
     }
 
-    @PostMapping("/{userId}/createTravel")
-    public int createTravel(@PathVariable int userId, String travel_name){
-        TravelDto.Request travelRequest = new TravelDto.Request(travel_name);
-        PersonDto.Request personRequest = new PersonDto.Request(
-                userservice.getUserInfo(userId),
-                travelservice.createTravel(travelRequest));
-        if (ResponseEntity.ok(personservice.createPerson(personRequest, TRUE)).getStatusCodeValue() == 200)
-            return personRequest.getTravel().getTravelId().intValue();
-        else throw new DefaultException(CREATE_FAIL);
-    }
-
-    @PutMapping("/{userId}/updateUserInfo")
-    public ResponseEntity<UserDto.Response> updateUser(@PathVariable int userId, @RequestBody Map map) {
-        if (map.containsKey("user_info")){
-            return null;
-        } else {
-            UserDto.Request updateRequest = new UserDto.Request(
-                    map.get("user_name").toString(),
-                    map.get("user_email").toString(),
-                    map.get("user_password").toString(),
-                    map.get("user_account").toString(),
-                    map.get("user_bank").toString());
-            return ResponseEntity.ok(userservice.updateUserInfo(userId, updateRequest)
-            );
-        }
-    }
-
-
-
-    /* --------------- not image zone --------------- */
-
-    @PostMapping(value = "/login")
-    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
-        return userservice.login(loginUser);
-    }
-
-    @GetMapping("/{userId}/getUserImage")
-    public String getUserImage(@PathVariable int userId){
-        return userservice.getUserImageURL(userId);
+    @PutMapping("/{userId}/updateUserInfoExceptImage")
+    public ResponseEntity<UserDto.Response> updateUserInfoExceptImage(
+            @PathVariable Long userId,
+            @RequestBody UserDto.Request request) {
+        return ResponseEntity.ok(userService.updateUserInfo(userId, request));
     }
 
     @PutMapping("/{userId}/updateUserImage")
-    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(
-            @PathVariable int userId,
-            @RequestPart(value="file",required = false) MultipartFile file)
+    public String updateUserImage(@PathVariable Long userId,
+                                  @RequestPart(value="file") MultipartFile file)
             throws IOException {
-        String objectURL = s3UploaderService.upload(file, "test");
-        System.out.println(objectURL);
-        return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));
+        S3Dto.ImageUrls urls = userService.updateUserImage(
+                userId, s3UploaderService.upload(file, USER_FOLDER.getDescription()));
+        s3UploaderService.deleteImage(urls.getDeleteImage());
+        return urls.getNewImage();
     }
 
+    @GetMapping("/{userId}/getUserImage")
+    public String getUserImage(@PathVariable Long userId) {
+        return userService.getUserImageURL(userId);
+    }
+
+    @GetMapping("/{userId}/getUserInfoExceptImage")
+    public UserDto.Response getUserInfoExceptImage(@PathVariable("userId") Long userId) {
+        return userService.getUserResponseById(userId);
+    }
+
+    @GetMapping("/{userId}/getTravelListUserJoined")
+    public List<TravelDto.Response> getTravelListUserJoined(
+            @PathVariable Long userId) {
+        return userService.getUserJoinedTravel(userId);
+    }
+
+    @PostMapping(value = "/login")
+    public UserDto.Response login(@RequestBody UserDto.Login loginUser) {
+        return userService.login(loginUser);
+    }
 }

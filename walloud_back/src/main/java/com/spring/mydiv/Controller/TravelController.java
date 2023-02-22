@@ -1,9 +1,7 @@
 package com.spring.mydiv.Controller;
 
-import com.spring.mydiv.Code.ErrorCode;
+import com.spring.mydiv.Dto.S3Dto;
 import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Dto.UserDto;
-import com.spring.mydiv.Exception.DefaultException;
 import com.spring.mydiv.Service.*;
 
 import lombok.RequiredArgsConstructor;
@@ -12,81 +10,76 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-/**
- * @author 12nov
- */
+import static com.spring.mydiv.Code.S3Code.TRAVEL_FOLDER;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class TravelController {
-    private final UserService userservice;
-    private final TravelService travelservice;
+
+    private final UserService userService;
+    private final TravelService travelService;
     private final PersonService personService;
     private final EventService eventService;
     private final S3UploaderService s3UploaderService;
 
-    @GetMapping("/{userId}/{travelId}") //return empty
-    public TravelDto.HomeView getTravelToMainView(@PathVariable int travelId){
-        System.out.println("_________________________1");
-        TravelDto.HomeView homeView = travelservice.getTravelToMainView(travelId);
-        System.out.println("_________________________2");
-        homeView.setPersonList(personService.getPersonInfoInTravel(travelId));
-        System.out.println("_________________________3");
-        //homeView.setPersonCount(personService.getPersonCountInTravel(travelId));
-        //System.out.println("_________________________4");
+    @PostMapping("/{userId}/createNewTravelUserJoining")
+    public Long createNewTravelUserJoining(@PathVariable Long userId,
+                                          @RequestBody String travel_name) {
+        // create travel -> person entity & return travel id
+        return personService.createPerson(
+                personService.setPersonRequestDto(
+                        userService.getUserResponseById(userId),
+                        travelService.createTravel(travel_name)),
+                        true)
+                .getTravelId();
+    }
+
+    @PutMapping("/{travelId}/updateTravelName")
+    public ResponseEntity<TravelDto.Response> updateTravelName(
+            @PathVariable Long travelId, @RequestBody String travel_name) {
+        return ResponseEntity.ok(
+                travelService.updateTravelInfo(travelId, travel_name));
+    }
+
+    @PutMapping("/{travelId}/updateTravelImage")
+    public String updateTravelImage(@PathVariable Long travelId,
+                                    @RequestPart(value="file") MultipartFile file)
+            throws IOException {
+        S3Dto.ImageUrls urls = travelService.updateTravelImage(
+                travelId, s3UploaderService.upload(file, TRAVEL_FOLDER.getDescription()));
+        s3UploaderService.deleteImage(urls.getDeleteImage());
+        return urls.getNewImage();
+    }
+
+    @GetMapping("/{travelId}/getTravelHomeView")
+    public TravelDto.HomeView getTravelHomeView(@PathVariable Long travelId) {
+        TravelDto.HomeView homeView = travelService.getTravelHomeView(travelId);
+
+        homeView.setPersonList(personService.getPersonHomeViewList(travelId));
+        homeView.setPersonCount(homeView.getPersonList().size());
         homeView.setEventList(eventService.getEventInfoInTravel(travelId));
-        System.out.println("_________________________5");
-        //homeView.setEventCount(eventService.getEventCountInTravel(travelId));
-        //System.out.println("_________________________6");
+        homeView.setEventCount(homeView.getEventList().size());
         homeView.setPeriod(eventService.getTravelPeriod(travelId, homeView.getEventCount()));
-        System.out.println("_________________________7");
-        //homeView.setSuperUser(eventService.getSuperUser(travelId));
+        homeView.setSuperUserPersonId(eventService.getSuperUser(travelId));
+
         return homeView;
     }
 
-    @GetMapping("/{userId}/getUserInfoTmp")
-    public List<TravelDto.Response> getUserInfo(@PathVariable int userId){
-        return userservice.getUserJoinedTravel(userId);
+    @GetMapping("/{travelId}/getTravelImage")
+    public String getTravelImage(@PathVariable Long travelId) {
+        return travelService.getTravelImageURL(travelId);
     }
 
-    @GetMapping("/{userId}/{travelId}/getTravelImage")
-    public String getTravelImage(@PathVariable int travelId){
-        return travelservice.getTravelImageURL(travelId);
-    }
-    @PutMapping("/{userId}/{travelId}/updateTravelImage")
-    public ResponseEntity<TravelDto.ResponseWithImage> uploadTravelImage(
-            @PathVariable int travelId,
-            @RequestPart(value="file",required = false) MultipartFile file)
-            throws IOException {
-        String objectURL = s3UploaderService.upload(file, "test");
-        System.out.println(objectURL);
-        return ResponseEntity.ok(travelservice.updateTravelImage(travelId, objectURL));
-    }
-    @PutMapping("/{userId}/{travelId}/updateTravelInfo")
-    public ResponseEntity<TravelDto.Response> updateTravel(@PathVariable int travelId, @RequestBody Map map) {
-        TravelDto.Request updateRequest = new TravelDto.Request(map.get("travel_name").toString());
-        return ResponseEntity.ok(travelservice.updateTravelInfo(travelId, updateRequest)
-        );
-    }
-
-
-    // 여행을 생성한 user가 여행 자체를 삭제하는 메소드 --> 안 사용
-    @PostMapping("/{userId}/deleteTravel")
-    public void deleteTravel(@PathVariable int userId, @RequestBody Map map) {
-        int travelId = Integer.parseInt(map.get("travel_id").toString());
-        if (personService.isUserSuperuser(travelId, userId)) {
-            travelservice.deleteTravel(travelId);
-        }
-        else throw new DefaultException(ErrorCode.INVALID_DELETE_NOTSUPERUSER);
-    }
-
-    //NEW
-    @DeleteMapping("/{travelId}/delete")
-    public void deleteTravel2(@PathVariable int travelId) {
-        travelservice.deleteTravel(travelId);
+    @DeleteMapping("/{userId}/{travelId}/deleteTravel")
+    public void deleteTravel(@PathVariable(value = "userId") Long userId,
+                             @PathVariable(value = "travelId") Long travelId) {
+        // TODO - userId -> personId 논의
+        // if this person is not superUser for this travel, then throw Exception
+        personService.validateIsUserSuperuser(travelId, userId);
+        // delete travel
+        travelService.deleteTravel(travelId);
     }
 
 }

@@ -1,18 +1,12 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Person;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.Commit;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Map;
 
 @SpringBootTest
 class ParticipantServiceTest {
@@ -23,6 +17,40 @@ class ParticipantServiceTest {
     private PersonService personService;
     @Autowired(required = true)
     private EventService eventService;
+
+    private final EventDto.Response response =
+            new EventDto.Response(Long.valueOf(277), "testing");
+    private final List<ParticipantDto.CRUDEvent> currPartiDtoList =
+            List.of(ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(542))
+                            .role(true)
+                            .spent(Double.valueOf(100))
+                            .build(),
+                    ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(537))
+                            .role(false)
+                            .spent(Double.valueOf(200))
+                            .build());
+    private final List<ParticipantDto.CRUDEvent> prevPartiDtoList =
+            List.of(ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(537))
+                            .role(true)
+                            .spent(Double.valueOf(101))
+                            .build(),
+                    ParticipantDto.CRUDEvent.builder()
+                            .personId(Long.valueOf(553))
+                            .role(false)
+                            .spent(Double.valueOf(201))
+                            .build());
+    @Test
+    public void validateParticipatedChange(){
+        //given
+        //when
+//        Map<Long, ParticipantDto.forUpdateEvent> participatedChangeMap =
+//                participantService.setPartiChangeMap(currPartiDtoList, prevPartiDtoList);
+//        personService.updatePersonAndParticipant(response, participatedChangeMap, 300, 303);
+        //then
+    }
 
 //    @Test
 //    @Commit

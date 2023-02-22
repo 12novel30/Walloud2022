@@ -13,9 +13,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-/**
- * @author 12nov
- */
 @Getter
 @Setter
 @Builder
