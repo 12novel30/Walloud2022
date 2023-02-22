@@ -31,7 +31,7 @@ public class PersonService {
     Double zero = Double.valueOf(0);
 
     @Transactional
-    public PersonDto.ResponseIds createPerson(PersonDto.Request request,
+    public PersonDto.HomeView createPerson(PersonDto.Request request,
                                               boolean superUser) {
         Person person = Person.builder()
         		.user(User.builder()
@@ -55,7 +55,7 @@ public class PersonService {
 
         if (ResponseEntity.ok(personRepository.save(person))
                 .getStatusCodeValue() == 200)
-            return PersonDto.ResponseIds.fromEntity(person);
+            return PersonDto.HomeView.fromEntity(person);
         else throw new DefaultException(CREATE_FAIL);
     }
 

@@ -25,8 +25,8 @@ public class PersonController {
     private final ParticipantService participantService;
 
     @PostMapping("/{travelId}/createPerson2Travel")
-    public Long createPerson2Travel(@PathVariable Long travelId,
-                                   @RequestBody String user_email) {
+    public PersonDto.HomeView createPerson2Travel(@PathVariable Long travelId,
+                                                  @RequestBody String user_email) {
         // get User Information
         System.out.println("!@(!@($@$(!");
         System.out.println(user_email);
@@ -40,9 +40,7 @@ public class PersonController {
         return personService.createPerson(
                 personService.setPersonRequestDto(userDto,
                         travelService.getTravelResponse(travelId)),
-                        false) // this person is not superUser
-                .getPersonId();
-        // TODO - userId 를 리턴해야할지도?
+                        false); // this person is not superUser
     }
 
     @DeleteMapping("/{personId}/deletePerson2Travel")
