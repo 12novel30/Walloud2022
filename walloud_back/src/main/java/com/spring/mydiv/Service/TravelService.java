@@ -80,7 +80,7 @@ public class TravelService {
     public TravelDto.HomeView getTravelHomeView(Long travelId){
         return TravelDto.HomeView.fromEntity(getTravelEntity(travelId));
     }
-    @Transactional(readOnly = true) // TODO - 쓸 곳 있는지 논의할 것
+    @Transactional(readOnly = true)
     public List<TravelDto.Response> getSuperUserTravelList(Long userId){
         return personRepository.findByUser_IdAndIsSuper(userId, true)
                 .stream()

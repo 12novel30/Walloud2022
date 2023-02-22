@@ -150,7 +150,6 @@ public class ParticipantService {
     private Person getPersonEntityByPersonId(Long personId) {
         return personRepository.findById(personId)
                 .orElseThrow(() -> new DefaultException(NO_PERSON));
-        // TODO - no person 으로 바꿔야 하는지?
     }
     @Transactional(readOnly = true)
     private Event getEventEntityById(Long eventId) {
