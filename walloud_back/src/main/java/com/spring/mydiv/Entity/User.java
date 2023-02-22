@@ -2,8 +2,6 @@ package com.spring.mydiv.Entity;
 
 import javax.persistence.*;
 
-//import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
 
-/**
- * @author 12nov
- */
 @Getter
 @Setter
 @Builder
@@ -50,4 +44,6 @@ public class User implements Serializable {
 
 	@Column(name = "user_info", nullable = true)
 	private String info;
+	
+	// TODO - AuditingEntityListener 사용해야함
 }
