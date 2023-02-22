@@ -43,6 +43,7 @@ public class PersonDto {
 		}
 	}
 
+	@Getter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
