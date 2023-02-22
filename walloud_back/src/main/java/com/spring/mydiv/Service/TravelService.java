@@ -30,6 +30,7 @@ public class TravelService {
 
     @Transactional
     public TravelDto.Response createTravel(String travelName) {
+        travelName = travelName.substring(1, travelName.length()-1);
         return TravelDto.Response.fromEntity(
                 travelRepository.save(
                         Travel.builder()

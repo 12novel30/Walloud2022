@@ -10,9 +10,9 @@ const CreateTravelAPI = async (
   setTravelList: SetterOrUpdater<TravelProps[]>
 ) => {
   return axios
-    .post(`/api/${userId}/createTravel`, null, {
-      params: {
-        travel_name: travelName,
+    .post(`/api/${userId}/createNewTravelUserJoining`, travelName, {
+      headers: {
+        "Content-Type": "application/json",
       },
     })
     .then((response) => {

@@ -11,17 +11,14 @@ const CreatePerson2TravelAPI = async (
 ) => {
   console.log(email);
   return axios
-    .post(`/api/${travelId}/createPerson2Travel`, null, {
-      params: {
-        email: email,
-      },
+    .post(`/api/${travelId}/createPerson2Travel`, email, {
       headers: {
-        contentType: "application/json",
+        "Content-Type": "application/json",
       },
     })
     .then((response) => {
       console.log(response);
-      //   GetPersonListToHomeView(travelId, personList, setPersonList);
+      GetPersonListToHomeView(travelId, personList, setPersonList);
       location.reload();
     })
     .catch((error) => {

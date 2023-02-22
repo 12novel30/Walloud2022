@@ -28,6 +28,9 @@ public class PersonController {
     public Long createPerson2Travel(@PathVariable Long travelId,
                                    @RequestBody String user_email) {
         // get User Information
+        System.out.println("!@(!@($@$(!");
+        System.out.println(user_email);
+        user_email = user_email.substring(1, user_email.length()-1);
         UserDto.Response userDto = userService.getUserResponseByEmail(user_email);
         // if user not in travel then throw Exception
         personService.validateIsUserNotInTravel(

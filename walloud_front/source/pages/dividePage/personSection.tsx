@@ -64,7 +64,7 @@ function PersonSection(
           selectPerson,
           selectPerson.personId,
           selectPerson.userId,
-          selectPerson.imageurl,
+          selectPerson.imageUrl,
           type,
           travelId,
           isManager,
