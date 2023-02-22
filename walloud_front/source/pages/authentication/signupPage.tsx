@@ -54,7 +54,7 @@ function SignUpPage() {
         <SignInput name = {name} text = "ex) 홍길동" setType = {SetName} message = "name" required = {true}/> { name ? null : <span css = {{color: Color.white, fontSize: 13, textAlign:'center'}}>이름을 입력하세요</span>}
         <SignInput name = {email} text = "ex) mywalloud@usage.com" setType = {SetEmail} message = "email" required = {true}/> { email ? null : <span css = {{color: Color.white, fontSize: 13, textAlign:'center'}}>이메일을 입력하세요</span>}
         <SignInput name = {password} text = "영문, 숫자, 특수문자 중 2종류 조합: 8~16자" setType = {SetPassword} message = "password" required = {true}></SignInput>
-        <SignInput name = {confirmpassword} text = "영문, 숫자, 특수문자 중 2종류 조합: 8~16자" setType = {SetConfirmPassword} message = "password" required = {true}/> { (password === confirmpassword) && password ? null : <span css = {{color: Color.white, fontSize: 13, textAlign:'center'}}>비밀번호가 일치하지 않습니다</span>}
+        <SignInput name = {confirmpassword} text = "영문, 숫자, 특수문자 중 2종류 조합: 8~16자" setType = {SetConfirmPassword} message = "confirm password" required = {true}/> { (password === confirmpassword) && password ? null : <span css = {{color: Color.white, fontSize: 13, textAlign:'center'}}>비밀번호가 일치하지 않습니다</span>}
         <SignInput name = {account} text = "ex) 1004365828210" setType = {SetAccount} message = "account" required = {true}/> { account ? null : <span css = {{color: Color.white, fontSize: 13, textAlign:'center'}}>계좌번호를 입력하세요</span>}
         <SelectInput message="Bank" typeList = {BankList.map((bank, idx) => {
           return bank.name;

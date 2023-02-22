@@ -71,7 +71,7 @@ function PersonSection(personList: any[], travelId: number, isManager: boolean) 
             <div> 
                 Person
             </div>
-            {/* <button css = {CreateBotton} onClick={() => {setOpenEventModal(true)}}>+</button> */}
+            <button css = {CreateBotton} onClick={() => {}}>+</button>
             <div>
                 {PersonType("Send")}
                 {PersonType("Manager")}
