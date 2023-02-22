@@ -27,13 +27,15 @@ public class TravelController {
     @PostMapping("/{userId}/createNewTravelUserJoining")
     public Long createNewTravelUserJoining(@PathVariable Long userId,
                                           @RequestBody String travel_name) {
-        // create travel -> person entity & return travel id
-        return personService.createPerson(
+        // create travel
+        TravelDto.Response travelDto = travelService.createTravel(travel_name);
+        // create person entity
+        personService.createPerson(
                 personService.setPersonRequestDto(
-                        userService.getUserResponseById(userId),
-                        travelService.createTravel(travel_name)),
-                        true)
-                .getTravelId();
+                        userService.getUserResponseById(userId), travelDto),
+                        true);
+        // return travel id
+        return travelDto.getTravelId();
     }
 
     @PutMapping("/{travelId}/updateTravelName")
