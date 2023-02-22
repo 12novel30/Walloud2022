@@ -1,7 +1,7 @@
 package com.spring.mydiv.Dto;
 
+import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Entity.Travel;
-import com.spring.mydiv.Entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,18 +14,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class TravelDto {
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class Request {
-        @NotNull
-        private String Name;
-    }
 
     @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -34,6 +24,7 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String Name;
+        @Nullable
         private Boolean IsSuper;
 
         public static Response fromEntity(Travel travel) {
@@ -42,28 +33,13 @@ public class TravelDto {
                     .Name(travel.getName())
                     .build();
         }
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class ResponseWithImage {
-        @NotNull
-        private Long TravelId;
-        @NotNull
-        private String Name;
-        @Nullable
-        private String Imageurl;
-        public static ResponseWithImage fromEntity(Travel travel) {
-            return ResponseWithImage.builder()
-                    .TravelId(travel.getId())
-                    .Name(travel.getName())
-                    .Imageurl(travel.getImage())
+        public static Response fromPersonEntity(Person person) {
+            return Response.builder()
+                    .TravelId(person.getTravel().getId())
+                    .Name(person.getTravel().getName())
+                    .IsSuper(person.getIsSuper())
                     .build();
         }
-
     }
 
     @Getter
@@ -76,23 +52,27 @@ public class TravelDto {
         private Long TravelId;
         @NotNull
         private String TravelName;
+        // TODO - homeView 에 image 넣을지 논의해야 함
+//        @Nullable
+//        private String Imageurl;
         @Nullable
-        private String Imageurl;
-
         private List<PersonDto.HomeView> PersonList;
+        @Nullable
         private int PersonCount;
-
-        private List<EventDto.HomeView> EventList;
+        @Nullable
+        private List<EventDto.Detail> EventList;
+        @Nullable
         private int EventCount;
+        @Nullable
         private String Period;
-
-        private Long SuperUser;
+        @Nullable
+        private Long SuperUserPersonId;
 
         public static HomeView fromEntity(Travel travel) {
             return HomeView.builder()
                     .TravelId(travel.getId())
                     .TravelName(travel.getName())
-                    .Imageurl(travel.getImage())
+//                    .Imageurl(travel.getImage())
                     .build();
         }
     }

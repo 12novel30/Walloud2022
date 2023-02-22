@@ -1,14 +1,10 @@
 package com.spring.mydiv.Dto;
 
 import com.spring.mydiv.Entity.Event;
-import com.spring.mydiv.Entity.Person;
-import com.spring.mydiv.Entity.Travel;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 public class EventDto {
@@ -17,53 +13,21 @@ public class EventDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class basic {
-        private Travel Travel;
-        private String Name;
-        private Date Date;
-        private int Price;
-
-        public static basic fromEntity(Event event){
-            return basic.builder()
-                    .Travel(event.getTravel())
-                    .Name(event.getName())
-                    .Date(event.getDate())
-                    .Price(event.getPrice())
-                    .build();
-        }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class deleteRequest {
-        @NotNull
-        private List<Person> joinedPerson;
-        @NotNull
-        private Long payerId;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
     public static class Request {
         @NotNull
-        private String Name;
-        private TravelDto.Response Travel;
+        private String event_name;
         @NotNull
         private java.util.Date Date;
         @NotNull
-        private int Price;
-        private String Image;
+        private int price;
         @NotNull
-        private Long PayerPersonId;
+        private Long payer_person_id;
+        private TravelDto.Response TravelDto;
+        private List<ParticipantDto.CRUDEvent> parti_list;
+        private String Image;
     }
 
     @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -86,58 +50,7 @@ public class EventDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class ResponseWithImage {
-        @NotNull
-        private Long EventId;
-        @NotNull
-        private String Name;
-        @Nullable
-        private String Imageurl;
-
-        public static ResponseWithImage fromEntity(Event event) {
-            return ResponseWithImage.builder()
-                    .EventId(event.getId())
-                    .Name(event.getName())
-                    .Imageurl(event.getImage())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class HomeView {
-        @NotNull
-        private Long EventId;
-        @NotNull
-        private String Name;
-        @NotNull
-        private java.util.Date Date;
-        @NotNull
-        private int Price;
-        private String PayerName;
-        @Nullable
-        private String Imageurl;
-
-        public static HomeView fromEntity(Event event) {
-            return HomeView.builder()
-                    .EventId(event.getId())
-                    .Name(event.getName())
-                    .Date(event.getDate())
-                    .Price(event.getPrice())
-                    .Imageurl(event.getImage())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class PersonView {
+    public static class Detail {
         @NotNull
         private Long EventId;
         @NotNull
@@ -146,14 +59,20 @@ public class EventDto {
         private java.util.Date Date;
         @NotNull
         private int Price;
+        @NotNull
         private Long PayerId;
+        @Nullable
         private String PayerName;
-        public static PersonView fromEntity(Event event) {
-            return PersonView.builder()
+        @Nullable
+        private String ImageUrl;
+
+        public static Detail fromEntity(Event event) {
+            return Detail.builder()
                     .EventId(event.getId())
                     .EventName(event.getName())
                     .Date(event.getDate())
                     .Price(event.getPrice())
+                    .PayerId(event.getPayerPersonid())
                     .build();
         }
     }
