@@ -99,7 +99,7 @@ function TravelBox(
   const name = travelName;
   //   const navigate = useNavigate();
   axios
-    .get(`/api/${userId}/${id}/getTravelImage`)
+    .get(`/api/${id}/getTravelImage`)
     .then((response) => {
       const div = document.getElementById(`${id}-image`);
       // const image = document.createElement("img");
