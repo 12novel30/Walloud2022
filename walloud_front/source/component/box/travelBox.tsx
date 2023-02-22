@@ -183,13 +183,15 @@ function TravelBox(
           >
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
-          <button
-            onClick={() => {
-              isSuper ? onClickDelete(id, travelName) : null;
-            }}
-          >
-            <img alt="delete" src="source/assets/icon/delete.svg" />
-          </button>
+          {isSuper ? (
+            <button
+              onClick={() => {
+                onClickDelete(id, travelName);
+              }}
+            >
+              <img alt="delete" src="source/assets/icon/delete.svg" />
+            </button>
+          ) : null}
           {isSuper ? (
             <button onClick={() => onClickEdit(id)}>
               <img alt="edit" src="source/assets/icon/edit.svg" />
