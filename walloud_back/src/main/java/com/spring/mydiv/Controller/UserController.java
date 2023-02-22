@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public Long login(@RequestBody UserDto.Login loginUser) {
+    public UserDto.Response login(@RequestBody UserDto.Login loginUser) {
         return userService.login(loginUser);
     }
 }

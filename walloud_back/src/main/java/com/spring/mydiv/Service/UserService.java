@@ -45,10 +45,10 @@ public class UserService {
     public boolean validateIsEmailRegistered(@NonNull String email) {
         return userRepository.existsByEmail(email);
     }
-    public Long login(@NonNull UserDto.Login loginUser) {
+    public UserDto.Response login(@NonNull UserDto.Login loginUser) {
         User entity = getUserEntityByEmail(loginUser.getEmail());
         if (loginUser.getPassword().equals(entity.getPassword()))
-            return entity.getId();
+            return UserDto.Response.fromEntity(entity);
         else throw new DefaultException(WRONG_PASSWORD);
     }
 
