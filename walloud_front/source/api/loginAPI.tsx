@@ -16,15 +16,19 @@ const LoginAPI = async (
   SetboolEmail: SetterOrUpdater<boolean>,
   SetboolPass: SetterOrUpdater<boolean>
 ) => {
+  const data = JSON.stringify({
+    email: email,
+    password: password,
+  });
+
   axios
-    .post("/api/login", null, {
-      params: {
-        email: email,
-        password: password,
+    .post("/api/login", data, {
+      headers: {
+        "Content-Type": "application/json", // application/json 타입 선언
       },
     })
     .then((response) => {
-      console.log(response);
+      console.log(response.data);
       setLogined(true);
       setUser({
         id: response.data.userId,
