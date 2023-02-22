@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "axios";
 import { SetterOrUpdater, useRecoilState } from "recoil";
 import { TravelProps } from "../recoils/travel";
 

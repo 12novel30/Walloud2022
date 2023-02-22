@@ -1,4 +1,5 @@
 package com.spring.mydiv.Controller;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class UserController {
     private final TravelService travelservice;
     private final PersonService personservice;
     private final S3UploaderService s3UploaderService;
+
+    /* --------------- not image zone --------------- */
     @PostMapping(value = "/register")
     public ResponseEntity<UserDto.Response> createUser(UserDto.Request request) {
         if (!userservice.checkIsEmailRegistered(request.getEmail())) {
@@ -34,21 +37,11 @@ public class UserController {
         } else throw new DefaultException(ALREADY_REGISTERED);
     }
 
-    @PostMapping(value = "/login")
-    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
-        return userservice.login(loginUser);
-    }
-
     @DeleteMapping("/{userId}/deregister")
     public void deregister(@PathVariable("userId") int user_id){
         if(userservice.getUserJoinedTravel(user_id).size() == 0){
             userservice.deleteUser(user_id);
         } else throw new DefaultException(INVALID_DELETE_TRAVELEXISTED);
-    }
-    
-    @GetMapping("/{userId}/getImage")
-    public String getUserImage(@PathVariable int userId){
-        return userservice.getUserImageURL(userId);
     }
 
     @PostMapping("/{userId}/createTravel")
@@ -78,10 +71,25 @@ public class UserController {
         }
     }
 
+
+
+    /* --------------- not image zone --------------- */
+
+    @PostMapping(value = "/login")
+    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
+        return userservice.login(loginUser);
+    }
+
+    @GetMapping("/{userId}/getUserImage")
+    public String getUserImage(@PathVariable int userId){
+        return userservice.getUserImageURL(userId);
+    }
+
     @PutMapping("/{userId}/updateUserImage")
-    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
-                                                                     @RequestPart(value="file",required = false) MultipartFile file)
-                                                    throws IOException {
+    public ResponseEntity<UserDto.ResponseWithImage> uploadUserImage(
+            @PathVariable int userId,
+            @RequestPart(value="file",required = false) MultipartFile file)
+            throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);
         return ResponseEntity.ok(userservice.updateUserImage(userId, objectURL));

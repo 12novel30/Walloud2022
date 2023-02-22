@@ -165,14 +165,15 @@ public class EventController {
     }
 
     /************image************/
-    @GetMapping("/{eventid}/getImage")
+    @GetMapping("/{eventid}/getEventImage")
     public String getEventImage(@PathVariable int eventid){
         return eventService.getEventImageURL(eventid);
     }
 
     @PutMapping("/{eventid}/uploadUserImage")
-    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(@PathVariable int userId,
-                                                                     @RequestPart(value="file",required = false) MultipartFile file)
+    public ResponseEntity<EventDto.ResponseWithImage> uploadUserImage(
+            @PathVariable int userId,
+            @RequestPart(value="file",required = false) MultipartFile file)
             throws IOException {
         String objectURL = s3UploaderService.upload(file, "test");
         System.out.println(objectURL);

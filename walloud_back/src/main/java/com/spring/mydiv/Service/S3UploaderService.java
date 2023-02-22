@@ -1,6 +1,10 @@
 package com.spring.mydiv.Service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -34,7 +38,14 @@ public class S3UploaderService {
     }
 
     public void deleteImage(String fileName) {
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+//        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.AP_NORTHEAST_2).build();
+        try {
+            s3.deleteObject(bucket, fileName);
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+            System.exit(1);
+        }
     }
 
     public String getFileUrl(String path) {

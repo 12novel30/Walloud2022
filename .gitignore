@@ -4,9 +4,9 @@ walloud_back/build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+walloud_back/src/main/resources/application.properties
 walloud_back/src/main/resources/application-awsS3.yml
 walloud_back/src/main/resources/application-OAuth2.yml
-walloud_back/src/main/resources/application.properties
 
 
 ### STS ###
