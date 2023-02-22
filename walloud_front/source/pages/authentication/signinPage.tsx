@@ -13,6 +13,9 @@ import React from 'react';
 import Logo from '../../component/image/logo';
 import { FontSize } from '../../layout/globalStyle/globalSize';
 import Color from '../../layout/globalStyle/globalColor';
+import { Button } from 'antd';
+import GoogleLogin from '@leecheuk/react-google-login';
+import axios, { Axios } from 'axios';
 
 const catchPharseStyle = css`
     text-align: center;
@@ -46,6 +49,19 @@ function SigninPage() {
     const setUser = useSetRecoilState(userState);
     const path = useNavigate();
 
+    const responseGoogle = async (response: any) => {
+        console.log(1, response);
+        let jwtToken = await axios.post(
+          "/v1/oauth/login",
+          JSON.stringify(response),
+        );
+        if (jwtToken.status === 200) {
+            console.log(jwtToken);
+          console.log(2, jwtToken.data);
+          localStorage.setItem("jwtToken", jwtToken.data);
+        }
+      };
+
     return (
         <MobileContainer>
             <div css = {catchPharseStyle}>
@@ -64,6 +80,15 @@ function SigninPage() {
                     <span>비밀번호 찾기 </span>
                     <span>|</span>
                     <span> 회원가입하기</span>
+                </div>
+                <div>
+                <GoogleLogin
+                    clientId="클라이언트ID"
+                    buttonText="구글로 로그인"
+                    onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
+                    cookiePolicy={"single_host_origin"}
+                />
                 </div>
             </div>
         </MobileContainer>
