@@ -1,148 +1,121 @@
 package com.spring.mydiv.Service;
 
-import javax.transaction.Transactional;
-
-import com.spring.mydiv.Code.ErrorCode;
 import com.spring.mydiv.Dto.*;
-import com.spring.mydiv.Entity.Person;
 import com.spring.mydiv.Exception.DefaultException;
-import org.springframework.http.HttpStatus;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.spring.mydiv.Entity.Travel;
 import com.spring.mydiv.Entity.User;
 import com.spring.mydiv.Repository.PersonRepository;
-import com.spring.mydiv.Repository.TravelRepository;
 import com.spring.mydiv.Repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.spring.mydiv.Code.ErrorCode.*;
+import static com.spring.mydiv.Code.S3Code.DEFAULT_IMAGE;
 
-/**
- * @author 12nov
- */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final PersonRepository personRepository;
-	private final TravelRepository travelRepository;
-    private final S3UploaderService s3UploaderService;
-	
-    @Transactional
-    public UserDto.Response createUser(UserDto.Request request) {
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .account(request.getAccount())
-                .bank(request.getBank())
-                .build();
-        userRepository.save(user);
-        return UserDto.Response.fromEntity(user);
-    } //fin
 
-    public boolean checkIsEmailRegistered(String email){
+    @Transactional
+    public UserDto.Response createUser(@NonNull UserDto.Request request) {
+        if (!validateIsEmailRegistered(request.getUser_email()))
+            return UserDto.Response.fromEntity(
+                    userRepository.save(
+                            User.builder()
+                                    .name(request.getUser_name())
+                                    .email(request.getUser_email())
+                                    .password(request.getUser_password())
+                                    .account(request.getUser_account())
+                                    .bank(request.getUser_bank())
+                                    .info(DEFAULT_IMAGE.getDescription())
+                                    .build()));
+        else throw new DefaultException(ALREADY_REGISTERED);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean validateIsEmailRegistered(@NonNull String email) {
         return userRepository.existsByEmail(email);
     }
-    public UserDto.ResponseWithImage login(UserDto.Login loginUser) {
-        User entity = userRepository.findByEmail(loginUser.getEmail())
-                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+    public Long login(@NonNull UserDto.Login loginUser) {
+        User entity = getUserEntityByEmail(loginUser.getEmail());
         if (loginUser.getPassword().equals(entity.getPassword()))
-            return UserDto.ResponseWithImage.fromEntity(entity);
+            return entity.getId();
         else throw new DefaultException(WRONG_PASSWORD);
-    } //ing
-
-    public UserDto.Response getUserInfo(int no){
-        return userRepository.findById(Long.valueOf(no))
-                .map(UserDto.Response::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER));
-    } //fin
-
-    public List<TravelDto.Response> getUserJoinedTravel(int userId){
-        List<Person> list = personRepository.findByUser_Id(Long.valueOf(userId));
-        List<TravelDto.Response> result = new ArrayList<>();
-        for (Person p : list){
-            TravelDto.Response travel = TravelDto.Response.builder()
-                    .TravelId(p.getTravel().getId())
-                    .Name(p.getTravel().getName())
-                    .IsSuper(p.getIsSuper())
-                    .build();
-            result.add(travel);
-        }
-        return result;
-    } //fin
-
-
-
-    public UserDto.WithTravel getUserInfoWithTravel(int no){
-        User entity = userRepository.findById(Long.valueOf(no))
-                .orElseThrow(()-> new DefaultException(NO_USER));
-        UserDto.WithTravel dto = UserDto.WithTravel.fromEntity(entity);
-        dto.setTravelList(getUserJoinedTravel(no));
-        return dto;
-    } //fin
-
-    public UserDto.Response getUserInfoByEmail(String email){
-        Optional<User> user = userRepository.findByEmail(email);
-        if (!user.isPresent()) return null;
-
-        UserDto.Response dto = UserDto.Response.builder()
-                .UserId(user.get().getId())
-                .Name(user.get().getName())
-                .Email(user.get().getEmail())
-                .Account(user.get().getAccount())
-                .Password(user.get().getPassword())
-                .Bank(user.get().getBank())
-                .build();
-        return dto;
     }
 
     @Transactional
-    public UserDto.Response updateUserInfo(int userId, UserDto.Request updateRequest){
-        User user = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new DefaultException(NO_USER));
+    public void deleteUser(Long userId) {
+        if(getUserJoinedTravel(userId).size() == 0)
+            userRepository.deleteById(userId);
+        else throw new DefaultException(INVALID_DELETE_TRAVEL_EXISTED);
+    }
 
-        if (updateRequest.getName() != null) user.setName(updateRequest.getName());
-        if (updateRequest.getEmail() != null) user.setEmail(updateRequest.getEmail());
-        if (updateRequest.getPassword() != null) user.setPassword(updateRequest.getPassword());
-        if (updateRequest.getAccount() != null) user.setAccount(updateRequest.getAccount());
-        if (updateRequest.getBank() != null) user.setBank(updateRequest.getBank());
+    @Transactional
+    public UserDto.Response updateUserInfo(Long userId,
+                                           @Nullable UserDto.Request updateRequest) {
+        User user = getUserEntityById(userId);
+
+        if (updateRequest.getUser_name() != null)
+            user.setName(updateRequest.getUser_name());
+        if (updateRequest.getUser_email() != null)
+            // 변경하는 email 은 기존에 다른 user 가 등록한 적 없는 것이어야 한다.
+            if (!validateIsEmailRegistered(updateRequest.getUser_email())
+                    || updateRequest.getUser_email().equals(user.getEmail()))
+                user.setEmail(updateRequest.getUser_email());
+            else throw new DefaultException(ALREADY_REGISTERED);
+        if (updateRequest.getUser_password() != null)
+            user.setPassword(updateRequest.getUser_password());
+        if (updateRequest.getUser_account() != null)
+            user.setAccount(updateRequest.getUser_account());
+        if (updateRequest.getUser_bank() != null)
+            user.setBank(updateRequest.getUser_bank());
 
         return UserDto.Response.fromEntity(userRepository.save(user));
     }
-
     @Transactional
-    public UserDto.ResponseWithImage updateUserImage(int userId, String imageURL){
-        User user = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new DefaultException(NO_USER));
-//        deleteUserImage(user);
+    public S3Dto.ImageUrls updateUserImage(Long userId, String imageURL) {
+        User user = getUserEntityById(userId);
+        String prevImage = user.getInfo();
         user.setInfo(imageURL);
-        return UserDto.ResponseWithImage.fromEntity(userRepository.save(user));
+        return S3Dto.ImageUrls.builder()
+                .newImage(userRepository.save(user).getInfo())
+                .deleteImage(prevImage)
+                .build();
     }
 
-    public void deleteUserImage(User user){
-        String userExistingImage = user.getInfo();
-        s3UploaderService.deleteImage(userExistingImage);
+    public String getUserImageURL(Long userId){
+        return getUserEntityById(userId).getInfo();
     }
-
-    public String getUserImageURL(int userId){
-        return userRepository.findById(Long.valueOf(userId))
-                .map(UserDto.ResponseWithImage::fromEntity)
-                .orElseThrow(()-> new DefaultException(NO_USER))
-                .getImageurl();
+    @Transactional(readOnly = true)
+    public List<TravelDto.Response> getUserJoinedTravel(Long userId) {
+        return personRepository.findByUser_Id(userId)
+                .stream()
+                .map(TravelDto.Response::fromPersonEntity)
+                .collect(Collectors.toList());
     }
-
-    public void deleteUser(int userId){
-        userRepository.deleteById(Long.valueOf(userId));
+    public UserDto.Response getUserResponseById(Long userId) {
+        return UserDto.Response.fromEntity(getUserEntityById(userId));
     }
-
+    public UserDto.Response getUserResponseByEmail(String email) {
+        return UserDto.Response.fromEntity(getUserEntityByEmail(email));
+    }
+    @Transactional(readOnly = true)
+    private User getUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new DefaultException(WRONG_EMAIL));
+    }
+    @Transactional(readOnly = true)
+    private User getUserEntityById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new DefaultException(NO_USER));
+    }
 }
-
-//
