@@ -5,7 +5,7 @@ import { TravelProps } from "../recoils/travel";
 const GetTravelImageAPI = async (userId: number, travelId: number) => {
   var image = "";
   axios
-    .get(`/api/${userId}/${travelId}/getTravelImage`)
+    .get(`/api/${travelId}/getTravelImage`)
     .then((response) => {
       image = String(response.data);
     })
