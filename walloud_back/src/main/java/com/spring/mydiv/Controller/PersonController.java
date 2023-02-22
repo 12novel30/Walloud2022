@@ -18,7 +18,6 @@ import static com.spring.mydiv.Code.WalloudCode.OTHERS;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PersonController {
-    // TODO - superUser 변경할 수 있는 메소드 만들어둘지 논의
     private final UserService userService;
     private final TravelService travelService;
     private final PersonService personService;
@@ -51,7 +50,6 @@ public class PersonController {
         personService.validateIsPersonNotSuperUser(person_id);
         // delete person
         personService.deletePerson(person_id);
-        // TODO - isSettled 체크 안되어있으면 프론트단에서 정말 삭제하시겠습니까? 등의 문구 띄우도록 부탁
     }
 
     @GetMapping("/{travelId}/{personId}/getPersonDetailView")
@@ -81,7 +79,6 @@ public class PersonController {
     @GetMapping("/{travelId}/getPersonListToHomeView")
     public List<PersonDto.HomeView> getPersonListToHomeView(
             @PathVariable Long travelId) {
-        // TODO - personList 메소드가 분리되어있는데, getTravelHomeView 에서 삭제할지 고민
         return personService.getPersonHomeViewList(travelId);
     }
 

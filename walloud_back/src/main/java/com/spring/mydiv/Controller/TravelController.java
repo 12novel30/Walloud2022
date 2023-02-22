@@ -77,7 +77,6 @@ public class TravelController {
     @DeleteMapping("/{userId}/{travelId}/deleteTravel")
     public void deleteTravel(@PathVariable(value = "userId") Long userId,
                              @PathVariable(value = "travelId") Long travelId) {
-        // TODO - userId -> personId 논의
         // if this person is not superUser for this travel, then throw Exception
         personService.validateIsUserSuperuser(travelId, userId);
         // delete travel

@@ -30,7 +30,6 @@ public class UserController {
         System.out.println("!!!!!!");
         System.out.println(request);
         return ResponseEntity.ok(userService.createUser(request));
-        // TODO - discuss; userId만 리턴할지 정할 것
     }
 
     @DeleteMapping("/{userId}/deleteUser")
