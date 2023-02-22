@@ -84,17 +84,17 @@ function PersonSection(
         {PersonType("Manager")}
         {PersonType("Recieve")}
       </div>
-      <h4>Add new User</h4>
+      <p>Add new User</p>
       <input id="new-user-email" type="text" placeholder="user email" />
       <BasicButton
-        text="여행 만들기"
+        text="사용자 추가하기"
         onClick={() => {
           const emailInput = document.getElementById(
             "new-user-email"
           ) as HTMLInputElement;
           const email = emailInput.value;
           if (email !== "") {
-            CreatePerson2TravelAPI(travelId, email);
+            CreatePerson2TravelAPI(travelId, email, personList, setPersonList);
           } else {
             alert("이름을 입력하세요");
           }

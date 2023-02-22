@@ -27,6 +27,8 @@ public class UserController {
     @PostMapping(path = "/register") // consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     public ResponseEntity<UserDto.Response> createUser(
             @Valid @RequestBody UserDto.Request request) {
+        System.out.println("!!!!!!");
+        System.out.println(request);
         return ResponseEntity.ok(userService.createUser(request));
         // TODO - discuss; userId만 리턴할지 정할 것
     }
