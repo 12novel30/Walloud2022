@@ -8,14 +8,14 @@ export interface TravelProps {
 }
 export interface EventProps {
   eventId: number;
-  name: string;
+  eventName: string;
   price: number;
   payerName: string;
   date: Date;
   isDetail: boolean;
   partiList: {
-    eventRole: boolean;
-    chargedPrice: number;
+    role: boolean;
+    spent: number;
     name: string;
     personId: number;
   }[];

@@ -70,7 +70,8 @@ function SigninPage() {
             </InputContainer>
             <div css = {loginButtonStyle}>
                 <BasicButton text = "로그인" onClick = {() => {
-                LoginAPI({email, password, setUser, setLogined, path}, boolEmail, boolPass)
+                if(email && password)
+                    LoginAPI({email, password, setUser, setLogined, path}, boolEmail, boolPass)
                 }} />
                 <div>
                     <span>비밀번호 찾기 </span>

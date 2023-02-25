@@ -4,7 +4,7 @@ import { EventProps } from "../recoils/travel";
 
 const GetEventPartiAPI = async (id: number, 
     eventList: EventProps[], setEventList: SetterOrUpdater<EventProps[]>) => {
-    axios.get(`/api/${id}/detail`)
+    axios.get(`/api/${id}/getPartiListInEvent`)
         .then((response) => {
             console.log(response.data)
             setEventList([...eventList].map((e) =>

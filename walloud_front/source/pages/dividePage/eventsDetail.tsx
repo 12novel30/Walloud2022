@@ -82,7 +82,7 @@ function EventsDetail(
             GetEventPartiAPI(event.eventId, eventList, setEventList);
           }}
         ></a>
-        <span>{event.name}</span>
+        <span>{event.eventName}</span>
         <span>{event.price.toLocaleString()}₩</span>
         <span>{event.payerName}</span>
         <span>
@@ -96,7 +96,7 @@ function EventsDetail(
             <>
               <span key={idx}>
                 <div>{participant.name}</div>
-                <div>{participant.chargedPrice.toLocaleString()}₩</div>
+                <div>{participant.spent}₩</div>
               </span>
             </>
           ))}

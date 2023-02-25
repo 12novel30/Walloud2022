@@ -5,7 +5,7 @@ import { EventProps } from "../recoils/travel";
 const DeleteEventAPI = async (travel_id: number, event_id: number,
     eventList: EventProps[], setEventList: SetterOrUpdater<EventProps[]>) => {
     await axios
-        .delete(`/api/100/${travel_id}/${event_id}/deleteEvent`)
+        .delete(`/api/${travel_id}/${event_id}/deleteEvent`)
         .then(() => {
             alert("이벤트가 삭제되었습니다");
             setEventList([...eventList].filter(

@@ -73,7 +73,7 @@ export const EventCreate = () => {
     const onClick = () => {
         let newEvent : EventProps = {
             eventId : -1,
-            name: place,
+            eventName: place,
             price: parseInt(price),
             payerName: "",
             date: new Date(date),
@@ -91,7 +91,8 @@ export const EventCreate = () => {
                 spent: parseInt(price) / participants.length  
             }}
         )
-        CreateEventAPI(travelId, newEvent, payer, PartiRequired)
+        if (PartiRequired.length != 0)
+            CreateEventAPI(travelId, newEvent, payer, PartiRequired)
     }
 
     return (

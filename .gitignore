@@ -7,6 +7,8 @@ walloud_back/build/
 walloud_back/src/main/resources/application.yml
 walloud_back/src/main/resources/application-awsS3.yml
 walloud_back/src/main/resources/application-OAuth2.yml
+walloud_back/src/main/resources/application.properties
+
 
 
 ### STS ###
