@@ -7,6 +7,7 @@ import { FontSize } from "../../layout/globalStyle/globalSize";
 import { SetterOrUpdater, useRecoilValue } from "recoil";
 import { eventListState, EventProps } from "../../recoils/travel";
 import DeleteEventAPI from "../../api/deleteEventAPI";
+import EventImageBox from "../../component/box/eventImageBox";
 
 function EventsDetail(
   event: EventProps,
@@ -89,6 +90,7 @@ function EventsDetail(
           {moment.tz(event.date, "Asia/Seoul").format().substring(5, 10)}
         </span>
       </div>
+      {EventImageBox(event.eventId)}
       <div css={EventsDetailStyle}>
         <div>
           Detail{" "}

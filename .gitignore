@@ -44,3 +44,5 @@ out/
 src/.DS_Store
 walloud_back/src/main/resources/aws-s3.yml
 walloud_back/.DS_Store
+walloud_back/src/.DS_Store
+.gitignore
