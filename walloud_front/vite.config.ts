@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     port: 3030,
     proxy: {
-      '/api': 'http://localhost:8080'
+      '/api': 'http://3.39.213.62:8080' // localhost에서 바꿔놨어용
     }
   }
 })
