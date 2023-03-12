@@ -1,80 +1,47 @@
 package com.spring.mydiv.Dto;
 
+import com.spring.mydiv.Code.WalloudCode;
 import com.spring.mydiv.Entity.*;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public class ParticipantDto {
     @Getter
-    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class basic {
-        private Person person;
-        private Event event;
-        private Boolean eventRole;
-
-        public static basic fromEntity(Participant participant) {
-            return basic.builder()
-                    .person(participant.getPerson())
-                    .event(participant.getEvent())
-                    .eventRole(participant.getEventRole())
-                    .build();
-        }
-
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class response {
-        private Long participantId;
-        private Person person;
-        private Event event;
-        private Boolean eventRole;
-
-        public static response fromEntity(Participant participant) {
-            return response.builder()
-                    .participantId(participant.getId())
-                    .person(participant.getPerson())
-                    .event(participant.getEvent())
-                    .eventRole(participant.getEventRole())
-                    .build();
-        }
-
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class peopleList {
-        @NotNull
-        private List<Person> joinedPerson;
-        @NotNull
-        private Person payer;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class detailView {
-        @NotNull
-        private Long PersonId;
-        @NotNull
+    public static class CRUDEvent {
+        private Long personId;
+        private Boolean role;
+        private Double spent;
         private String Name;
-        @NotNull
-        private boolean eventRole;
-        @NotNull
-        private Double chargedPrice;
+        public static CRUDEvent fromEntity(Participant participant) {
+            return CRUDEvent.builder()
+                    .personId(participant.getPerson().getId())
+                    .role(participant.getEventRole())
+                    .spent(participant.getChargedPrice())
+                    .build();
+        }
+        public static CRUDEvent fromEntityDetailVer(Participant participant) {
+            return CRUDEvent.builder()
+                    .personId(participant.getPerson().getId())
+                    .role(participant.getEventRole())
+                    .spent(participant.getChargedPrice())
+                    .Name(participant.getPerson().getUser().getName())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class forUpdateEvent {
+        private CRUDEvent prev;
+        private CRUDEvent curr;
+        private WalloudCode isParticipatedChange = null;
     }
 
     @Getter
@@ -86,8 +53,6 @@ public class ParticipantDto {
         @NotNull
         private Person person;
         @NotNull
-        private Event event;
-        @NotNull
         private Boolean role;
         /**Boolean eventRole
          * 1, true: payer
@@ -95,6 +60,8 @@ public class ParticipantDto {
          */
         @NotNull
         private Double chargedPrice;
+        @NotNull
+        private Event event;
     }
 
 }

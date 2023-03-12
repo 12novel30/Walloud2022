@@ -11,6 +11,18 @@ export interface UserProps {
 
 const { persistAtom } = recoilPersist()
 
+export const CheckEmailState = atom<boolean>({
+    key: 'checkEmailState',
+    default: true,
+    effects_UNSTABLE: [persistAtom],
+})
+
+export const CheckPasswordState = atom<boolean>({
+    key: 'checkPasswordState',
+    default: true,
+    effects_UNSTABLE: [persistAtom],
+})
+
 export const LoginedState = atom<boolean>({
     key: 'loginedState',
     default: false,

@@ -1,14 +1,18 @@
-import { css } from '@emotion/react'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import GetTravelDetailAPI from '../../api/getTravelDetailAPI';
-import Color from '../../layout/globalStyle/globalColor';
-import { ScreenSize } from '../../layout/globalStyle/globalSize';
-import { currentTravelState, eventListState, personListState } from '../../recoils/travel';
-import { UserProps, userState } from '../../recoils/user';
-import EventsSection from './eventsSection';
-import PersonSection from './personSection';
+import { css } from "@emotion/react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import GetTravelDetailAPI from "../../api/getTravelDetailAPI";
+import Color from "../../layout/globalStyle/globalColor";
+import { ScreenSize } from "../../layout/globalStyle/globalSize";
+import {
+  currentTravelState,
+  eventListState,
+  personListState,
+} from "../../recoils/travel";
+import { UserProps, userState } from "../../recoils/user";
+import EventsSection from "./eventsSection";
+import PersonSection from "./personSection";
 
 const DivideMainPageStyle = css`
   font-size: 40px;
@@ -20,7 +24,7 @@ const DivideMainPageStyle = css`
   display: flex;
   color: white;
   gap: 5vw;
-  &>div {
+  & > div {
     width: 40vw;
     height: 70vh;
     border: 2px solid white;
@@ -29,37 +33,44 @@ const DivideMainPageStyle = css`
   }
   @media only screen and (max-width: ${ScreenSize.tablet}) {
     flex-direction: column;
-    &>div {
-    width: 80vw;
-    height: 60vh;
-    border: 2px solid white;
-    border-radius: 10px;
-    transition: ease 1s;
-  }
+    & > div {
+      width: 80vw;
+      height: 60vh;
+      border: 2px solid white;
+      border-radius: 10px;
+      transition: ease 1s;
+    }
   }
 `;
 
-function TravelPage(){
-    const {travelName} = useParams();
-    const userId = useRecoilValue(userState).id;
-    const travelId = useRecoilValue(currentTravelState);
-    const [personList, setPersonList] = useRecoilState(personListState);
-    const [eventList, setEventList] = useRecoilState(eventListState);
-    const [period, setPeriod] = useState("");
-    const [isManager, setIsManager] = useState(false);
-    
-    useEffect(() => {
-      GetTravelDetailAPI({userId, travelId, setPersonList, setEventList, setPeriod, setIsManager});
-    }, [])
+function TravelPage() {
+  const { travelName } = useParams();
+  const userId = useRecoilValue(userState).id;
+  const travelId = useRecoilValue(currentTravelState);
+  const [personList, setPersonList] = useRecoilState(personListState);
+  const [eventList, setEventList] = useRecoilState(eventListState);
+  const [period, setPeriod] = useState("");
+  const [isManager, setIsManager] = useState(false);
 
-    return (
-        <div css = {DivideMainPageStyle}>
-          {/*ViewSection(period, travelName)*/}
-          {EventsSection(eventList, travelId)}
-          {/*TravelDetailSection(Map, Calendar, etc.)*/}
-          {PersonSection(personList, travelId, isManager)}
-        </div>
-  )
+  useEffect(() => {
+    GetTravelDetailAPI({
+      userId,
+      travelId,
+      setPersonList,
+      setEventList,
+      setPeriod,
+      setIsManager,
+    });
+  }, []);
+
+  return (
+    <div css={DivideMainPageStyle}>
+      {/*ViewSection(period, travelName)*/}
+      {EventsSection(eventList, travelId)}
+      {/*TravelDetailSection(Map, Calendar, etc.)*/}
+      {PersonSection(personList, travelId, isManager)}
+    </div>
+  );
 }
 export default TravelPage;
 

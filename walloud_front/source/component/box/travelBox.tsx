@@ -5,9 +5,11 @@ import Color from "../../layout/globalStyle/globalColor";
 import { FontSize } from "../../layout/globalStyle/globalSize";
 import DeleteTravelAPI from "../../api/deleteTravelAPI";
 import FilpCard from "../../animation/flipCard";
-import UploadImageButton from "../button/uploadImageButton";
+import UploadTravelImageButton from "../button/uploadTravelImageButton";
 import { Link, useNavigate } from "react-router-dom";
 import { TravelProps } from "../../recoils/travel";
+import GetTravelImageAPI from "../../api/getTravelImageAPI";
+import axios from "axios";
 
 const TravelBoxStyle = css`
   height: 240px;
@@ -89,12 +91,31 @@ function TravelBox(
   isSuper: boolean,
   setCurrentTravel: SetterOrUpdater<number>,
   onClickEdit: { (id: number): void; (arg0: number): void },
+  onClickDelete: { (id: number, travelName: string): void },
   isEditMode: number | null,
   travelList: TravelProps[],
   setTravelList: SetterOrUpdater<TravelProps[]>
 ) {
   const name = travelName;
   //   const navigate = useNavigate();
+  axios
+    .get(`/api/${id}/getTravelImage`)
+    .then((response) => {
+      const div = document.getElementById(`${id}-image`);
+      // const image = document.createElement("img");
+      // image.src = response.data;
+      // div.appendChild(image);
+      div.style.backgroundImage = `url(${response.data})`;
+      div.style.backgroundSize = "cover";
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.data.status === 500) {
+        alert(error.response.data.message);
+      } else {
+        alert("예기치 못한 오류가 발생했습니다");
+      }
+    });
 
   return (
     <div css={TravelBoxStyle} key={id}>
@@ -120,7 +141,8 @@ function TravelBox(
           {isEditMode === id ? "Click to Upload Image" : null}
         </div>
       </Link>
-      {UploadImageButton(id, userId)}
+      {UploadTravelImageButton(id, userId)}
+
       <FilpCard>
         <div className="front" id={id.toString() + " front"}>
           <div>{name}</div>
@@ -161,15 +183,22 @@ function TravelBox(
           >
             <img alt="return" src="source/assets/icon/return.svg" />
           </button>
-          <button
-            onClick={() => {isSuper ? DeleteTravelAPI(id, travelList, setTravelList) : 
-              DeletePersonAPI()}}
-          >
-            <img alt="delete" src="source/assets/icon/delete.svg" />
-          </button>
-          {isSuper ? <button onClick={() => onClickEdit(id)}>
-            <img alt="edit" src="source/assets/icon/edit.svg" />
-          </button> : <></>}
+          {isSuper ? (
+            <button
+              onClick={() => {
+                onClickDelete(id, travelName);
+              }}
+            >
+              <img alt="delete" src="source/assets/icon/delete.svg" />
+            </button>
+          ) : null}
+          {isSuper ? (
+            <button onClick={() => onClickEdit(id)}>
+              <img alt="edit" src="source/assets/icon/edit.svg" />
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
       </FilpCard>
     </div>

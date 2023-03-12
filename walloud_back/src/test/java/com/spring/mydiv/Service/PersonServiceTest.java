@@ -1,29 +1,46 @@
 package com.spring.mydiv.Service;
 
 import com.spring.mydiv.Dto.PersonDto;
-import com.spring.mydiv.Dto.TravelDto;
-import com.spring.mydiv.Entity.Person;
+import com.spring.mydiv.Repository.PersonRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.Commit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.Boolean.FALSE;
-
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
-    @Autowired(required=true)
+
+    @Mock
+    private PersonRepository personRepository;
+    @InjectMocks
     private PersonService personService;
-    @Autowired(required=true)
-    private UserService userService;
-    @Autowired(required=true)
-    private TravelService travelService;
-    @Autowired(required=true)
-    private EventService eventService;
+
+    private String printPersonDtoDetail(PersonDto.Detail detailView) {
+        return "PersonId;\n" + detailView.getPersonId() +
+                "SumSend;\n" + detailView.getSumSend() +
+                "SumGet;\n" + detailView.getSumGet() +
+                "Difference;\n" + detailView.getDifference() +
+                "TravelRole;\n" + detailView.getTravelRole() +
+                "isSettled;\n" + " " +
+                "User;\n" + detailView.getPersonId() +
+                "EventList;\n" + detailView.getPersonId() +
+                "PersonInTravelList;" + detailView.getPersonId();
+    }
+    @Test
+    void getPersonDetail(){
+        //given
+        int personId = 510;
+
+        //when
+//        PersonDto.Detail detailView = personService.getPersonDetail(personId);
+
+        //then
+//        System.out.println(printPersonDtoDetail(detailView));
+
+    }
 
 //    @Test
 //    @Commit

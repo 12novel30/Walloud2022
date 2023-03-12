@@ -1,6 +1,5 @@
 package com.spring.mydiv.Dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import com.spring.mydiv.Entity.User;
@@ -9,44 +8,43 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 public class UserDto {
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
 	public static class Login {
 		@NotNull
-		private String Email;
+		private String email;
 		@NotNull
-		private String Password;
+		private String password;
 	}
 
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
 	public static class Request {
 		@NotNull
-		private String Name;
+		private String user_name;
 		@NotNull
-		private String Email;
+		private String user_email;
 		@NotNull
-		private String Password;
+		private String user_password;
 		@NotNull
-		private String Account;
+		private String user_account;
 		@NotNull
-		private String Bank;
+		private String user_bank;
+		/* 현재 create, update 모두에서 사용중,
+		* create 의 경우, 전부 @NotNull 이 보장되어야 하지만
+		* update 의 경우는 그렇지 않음.
+		* 따라서 create 함수에만 @Valid 어노테이션을 사용해 별도로 관리함
+		* TODO - 하지만 이 방법이 맞는지 확인할 필요 있음...!
+		* */
 	}
 
 	@Getter
-	@Setter
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Builder
@@ -67,87 +65,6 @@ public class UserDto {
 		public static Response fromEntity(User user) {
 			return Response.builder()
 					.UserId(user.getId())
-					.Name(user.getName())
-					.Email(user.getEmail())
-					.Password(user.getPassword())
-					.Account(user.getAccount())
-					.Bank(user.getBank())
-					.build();
-		}
-	}
-
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class ResponseWithImage {
-		@NotNull
-		private Long UserId;
-		@NotNull
-		private String Name;
-		@NotNull
-		private String Email;
-		@NotNull
-		private String Password;
-		@NotNull
-		private String Account;
-		@NotNull
-		private String Bank;
-		@Nullable
-		private String Imageurl;
-
-		public static ResponseWithImage fromEntity(User user) {
-			return ResponseWithImage.builder()
-					.UserId(user.getId())
-					.Name(user.getName())
-					.Email(user.getEmail())
-					.Password(user.getPassword())
-					.Account(user.getAccount())
-					.Bank(user.getBank())
-					.Imageurl(user.getInfo())
-					.build();
-		}
-	}
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class Image {
-		@Nullable
-		private String Imageurl;
-		public static Image fromEntity(User user) {
-			return Image.builder()
-					.Imageurl(user.getInfo())
-					.build();
-		}
-	}
-
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Builder
-	public static class WithTravel {
-		@NotNull
-		private Long Id;
-		@NotNull
-		private String Name;
-		@NotNull
-		private String Email;
-		@NotNull
-		private String Password;
-		@NotNull
-		private String Account;
-		@NotNull
-		private String Bank;
-
-		private List<TravelDto.Response> TravelList;
-
-		public static WithTravel fromEntity(User user) {
-			return WithTravel.builder()
-					.Id(user.getId())
 					.Name(user.getName())
 					.Email(user.getEmail())
 					.Password(user.getPassword())

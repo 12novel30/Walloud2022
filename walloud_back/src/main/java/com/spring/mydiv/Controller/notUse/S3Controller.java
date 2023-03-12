@@ -1,4 +1,4 @@
-package com.spring.mydiv.Controller;
+package com.spring.mydiv.Controller.notUse;
 
 import com.spring.mydiv.Service.S3UploaderService;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,14 @@ public class S3Controller  {
     }
 
     @DeleteMapping("/files/delete")
-    public String deleteFile(@RequestParam("filename") String filename) {
+    public String deleteFile(@RequestBody String filename) {
         System.out.println(filename);
         s3UploaderService.deleteImage(filename);
         return "delete";
     }
+    /*@Request form
+    * 1. @RequestParam : Request Header 에 Parameter
+    * 2. @RequestBody : Request Body 에 Data*/
 
     @PostMapping("/files/download")
     public String downloadFile(@RequestParam("imgpath") String imgpath) {
